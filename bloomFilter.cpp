@@ -1,17 +1,17 @@
-#include "bloomFilter"
+#include "bloomFilter.hpp"
 
 
 
-bloomFilter::bloomFilter(int size, int hashCount1, int hashCount2 = 0){}
+bloomFilter::bloomFilter(int size, int hashCount1, int hashCount2) {}
 
-bloomFilter::~bloomFilter(){}
+bloomFilter::~bloomFilter() {}
 
-bloomFilter::void add(const std::string &input){}
+void bloomFilter::add(const std::string &input) {}
 
-bloomFilter::bool isContains(const std::string &input){}
+bool bloomFilter::isContains(const std::string &input) {}
 
-bloomFilter::bool isFalsePositive(const std::string &input){}
+bool bloomFilter::isFalsePositive(const std::string &input) {}
 
-bloomFilter::static bool isValidForCreation(const std::string &input){}
+bool bloomFilter::isValidForCreation(const std::string &input) {}
 
-bloomFilter::static bool isValidForOperation(const std::string &input){}
+bool bloomFilter::isValidForOperation(const std::string &input) {}
