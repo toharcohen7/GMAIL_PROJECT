@@ -1,7 +1,7 @@
 #include "bloomFilter.hpp"
 
 
-int main
+int main()
 {
     return 0;
 }
