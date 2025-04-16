@@ -13,6 +13,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
  
-add_executable(runTest bloomFilter.cpp test.cpp)
+add_executable(runTest bloomFilter.cpp hashFunc.cpp test.cpp)
  
 target_link_libraries(runTest gtest_main)
