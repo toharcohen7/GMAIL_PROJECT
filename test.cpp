@@ -110,6 +110,14 @@ TEST(bloomFilterTest, IsContainTest) {
     EXPECT_FALSE(bf1.isContains("daniel ganuvi"));                    // Not added -> should return false
 }
 
+/*******************************************************************************
+    * Test: hashFuncTest.constructor
+    * Purpose: To validate the constructor behavior under valid and invalid input.
+    * - Verifies construction with a valid set of hash functions and sizes.
+    * - Ensures that invalid parameters (negative size or empty hash functions)
+        throw the correct exceptions.
+ ******************************************************************************/
+
 TEST(hashFuncTest, constractor) {
 
     // Test the constructor with valid parameters
@@ -122,6 +130,16 @@ TEST(hashFuncTest, constractor) {
     // Test the constructor with invalid parameters
     EXPECT_THROW(hashFunc hf6(hashFunction, 0), std::invalid_argument); // timesToHash should be greater than 0
 }
+
+/*******************************************************************************
+    * Test: hashFuncTest.operatorBrackets
+    * Purpose: To test the operator() function of the hashFunc class.
+    - Validates that the operator() function returns different hash values for
+      different timesToHash values.
+    - Ensures that the operator() function works correctly with different strings.
+    - Verifies that the operator() function returns different hash values for different hush times.
+ ******************************************************************************/
+
 
 TEST(hashFuncTest, operatorBrackets) {
 
