@@ -19,7 +19,7 @@ public:
     ~bloomFilter(); // destructor
     void add(const std::string &input); // add a string to the bloom filter
     bool isContains(const std::string &input); // check if a string is in the bloom filter
-    bool isFalsePositive(const std::string &input); // check if a string is a false positive
+    bool isInBlackList(const std::string &input); // check if a string is a false positive
 
     static bool isValidForCreation(const std::string &input);
     static bool isValidForOperation(const std::string &input);
