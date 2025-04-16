@@ -2,7 +2,9 @@
 #include "bloomFilter.hpp" // Include the header file where bloomFilter is defined
 #include "hashFunc.hpp"   // Include the header file where hashFunc is defined
 
-size_t hashFunction(const std::string &str);
+size_t hashFunction(const std::string &str) {
+    return std::hash<std::string>()(str);
+}
 
 TEST(hashFuncTest, constractor) {
 
@@ -14,7 +16,7 @@ TEST(hashFuncTest, constractor) {
     hashFunc hf5(hashFunction);
 
     // Test the constructor with invalid parameters
-    hashFunc hf6(hashFunction, 0);
+    EXPECT_THROW(hashFunc hf6(hashFunction, 0), std::invalid_argument); // timesToHash should be greater than 0
 }
 
 TEST(hashFuncTest, operatorBrackets) {
@@ -35,10 +37,6 @@ TEST(hashFuncTest, operatorBrackets) {
     EXPECT_NE(num1, num2); // Different hash values for different timesToHash
     EXPECT_NE(num1, num3); // Different hash values for different timesToHash
     EXPECT_NE(num2, num3); // Different hash values for different timesToHash
-}
-
-size_t hashFunction(const std::string &str) {
-    return std::hash<std::string>()(str);
 }
 
 int main(int argc, char **argv) {
