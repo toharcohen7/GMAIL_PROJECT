@@ -17,7 +17,11 @@ bloomFilter::bloomFilter(int size, int hashCount1, int hashCount2) {
     blackList = new std::vector<std::string>(); // Initialize the blacklist
 }
 
-bloomFilter::~bloomFilter() {}
+bloomFilter::~bloomFilter() {
+    
+    delete bitVector; // Free the memory allocated for the bit vector
+    delete blackList; // Free the memory allocated for the blacklist
+}
 
 void bloomFilter::add(const std::string &input) {}
 
