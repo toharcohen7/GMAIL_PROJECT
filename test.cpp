@@ -5,7 +5,7 @@
 
 
 size_t hashFunction(const std::string &str) {
-    return std::hash<std::string>()(str)
+    return std::hash<std::string>()(str);
 }
 
 /*******************************************************************************
@@ -100,7 +100,7 @@ TEST(bloomFilterTest, isInBlackListTest) {
 TEST(bloomFilterTest, IsContainTest) {
     std::vector<hashFunc> hashFunctions;
     hashFunctions.push_back(hashFunc(hashFunction, 6));
-    bloomFilter bf1(16, hashFunctions);
+    bloomFilter bf1(1000, hashFunctions);
     bf1.add("");
     bf1.add("https://he.wikipedia.org/wiki/URL");
 
