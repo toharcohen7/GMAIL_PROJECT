@@ -1,7 +1,7 @@
 #include "bloomFilter.hpp"
 #include <stdexcept>
 
-bloomFilter::bloomFilter(int size, std::vector<hashFunc> &hashFunctions) {
+bloomFilter::bloomFilter(size_t size, std::vector<hashFunc> &hashFunctions) {
 
     if (size <= 0) {
         throw std::invalid_argument("Size must be greater than 0.");
