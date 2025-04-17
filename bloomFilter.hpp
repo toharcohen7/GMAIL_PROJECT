@@ -47,14 +47,15 @@ public:
     * @brief Destructor for the bloom filter class.
     * @details This destructor cleans up the resources used by the bloom filter.
  ******************************************************************************/
-    ~bloomFilter();
+    virtual ~bloomFilter();
 
 /*******************************************************************************
     * @brief Adds a string to the bloom filter.
     * @param input The string to be added.
     * @details This function adds the given string to the bloom filter and the blacklist.
+    * Can be overriden in derived classes.
  ******************************************************************************/
-    void add(const std::string &input); 
+    virtual void add(const std::string &input); 
 
 /*******************************************************************************
     * @brief Checks if a string is in the bloom filter.
