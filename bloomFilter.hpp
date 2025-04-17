@@ -47,7 +47,7 @@ public:
     * @brief Destructor for the bloom filter class.
     * @details This destructor cleans up the resources used by the bloom filter.
  ******************************************************************************/
-    ~bloomFilter();
+    virtual ~bloomFilter();
 
 /*******************************************************************************
     * @brief Adds a string to the bloom filter.
