@@ -38,7 +38,7 @@ class immortalBloomFilter : public bloomFilter
     * @details This constructor initializes the immortal bloom filter with the given size and hash functions.
     * @note The constructor is private to prevent direct instantiation of the class.
  ******************************************************************************/
-    immortalBloomFilter(int size, std::vector<hashFunc> &hashFunctions);
+    immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions);
 
     public:
 
@@ -49,7 +49,7 @@ class immortalBloomFilter : public bloomFilter
  * @return Pointer to the created immortal bloom filter.
  * @details This function creates an immortal bloom filter with the given size and hash functions.
  ******************************************************************************/
-static immortalBloomFilter *createImmortalBloomFilter(int size, std::vector<hashFunc> &hashFunctions);
+static immortalBloomFilter *createImmortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions);
 
 /*******************************************************************************
  * @brief   Revives an immortal bloom filter.

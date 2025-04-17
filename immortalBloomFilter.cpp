@@ -6,7 +6,7 @@ const std::string immortalBloomFilter::m_sizeFile = "";          // Name of the 
 const std::string immortalBloomFilter::m_hashFuncsFile = "";     
 const std::string immortalBloomFilter::m_blackListFile = "";      
 
-immortalBloomFilter::immortalBloomFilter(int size, std::vector<hashFunc> &hashFunctions)
+immortalBloomFilter::immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions)
  : bloomFilter(size, hashFunctions) {}
 
 immortalBloomFilter *immortalBloomFilter::createImmortalBloomFilter(int size, std::vector<hashFunc> &hashFunctions) {return nullptr;}
