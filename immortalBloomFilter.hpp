@@ -37,7 +37,8 @@ class immortalBloomFilter : public bloomFilter
     * @param hashFunctions Vector of hash functions to be used.
     * @details This constructor initializes the immortal bloom filter with the given size and hash functions.
  ******************************************************************************/
-    immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions);
+    immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions,
+             const std::string &blackListFile = "./data/blackListFile.txt");
 
 /*******************************************************************************
     * @brief Destructor for the immortal bloom filter class.
@@ -52,7 +53,7 @@ class immortalBloomFilter : public bloomFilter
     *          - It also saves the updated blacklist and bloomFilter bit array to the files.
     *          - It overrides the add method in the bloomFilter class.
  ******************************************************************************/
-    virtual void add(const std::string &str);
+    virtual void add(const std::string &str) override;
 
 /*******************************************************************************
     * @brief Checks if the fiels to revive the immortal bloom filter exist.

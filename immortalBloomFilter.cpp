@@ -5,8 +5,9 @@
 #include <filesystem>
      
 
-immortalBloomFilter::immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions)
- : bloomFilter(size, hashFunctions), m_blackListFile("./data/blackListFile.txt") {
+immortalBloomFilter::immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions,
+    const std::string &blackListFile)
+ : bloomFilter(size, hashFunctions), m_blackListFile(blackListFile) {
 
     
     if (std::filesystem::exists(m_blackListFile)) { // Check if the file exists

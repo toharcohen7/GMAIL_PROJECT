@@ -6,13 +6,18 @@
  * Tohar Yahakov Cohen 211466743
 *******************************************************************************/
 
+#ifndef RUN_PROGRAM_HEADER
+#define RUN_PROGRAM_HEADER
+
 /*******************************************************************************
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
 #include <iostream>
+#include <map> // For std::map
 
 #include "immortalBloomFilter.hpp"
+#include "iCommand.hpp" // iCommand class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -22,16 +27,21 @@ class runProgram
 {
     private:
 
-    immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter object
-    std::ostream &m_outputStream; // Output stream for printing messages
+    std::map<int, iCommand*> &m_commands; //// Map of command numbers to command objects
+    immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter objec
+
     std::istream &m_inputStream; // Input stream for reading user input
 
     public:
-/********************************************************************************
+
+/*******************************************************************************
     * @brief Constructor for the runProgram class.
+    * @param commands Map of command numbers to command objects.
+    * @param inputStream Input stream for reading user input.
     * @details This constructor initializes the runProgram object and creates an immortal bloom filter.
-******************************************************************************/
-    runProgram(std::ostream &outputStream = std::cout, std::istream &inputStream = std::cin);
+*******************************************************************************/
+    runProgram(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf,
+            std::istream &inputStream = std::cin);
 
 /*******************************************************************************
     * @brief Destructor for the runProgram class.
@@ -45,3 +55,5 @@ class runProgram
 *******************************************************************************/
     void run(); 
 };
+
+#endif /* RUN_PROGRAM_HEADER */
