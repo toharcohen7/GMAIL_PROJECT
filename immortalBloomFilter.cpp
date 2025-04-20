@@ -65,6 +65,7 @@ immortalBloomFilter *immortalBloomFilter::reviveImmortalBloomFilter(size_t size,
        filter->bloomFilter::add(line);
    }
 
+
    blackFile.close();
    return filter;
 }
@@ -72,6 +73,7 @@ immortalBloomFilter *immortalBloomFilter::reviveImmortalBloomFilter(size_t size,
 * No additional cleanup needed; bloomFilter handles resource management.
 */
 immortalBloomFilter::~immortalBloomFilter() {} 
+
 
 /*
 * Adds a string to the bloom filter and persists it by appending to the blacklist file

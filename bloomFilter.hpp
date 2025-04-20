@@ -41,7 +41,7 @@ public:
     * @param hashFunctions Vector of hash functions to be used.
     * @details This constructor initializes the bloom filter with the given size and hash functions.
  ******************************************************************************/
-    bloomFilter(int size, std::vector<hashFunc> &hashFunctions);
+    bloomFilter(size_t size, std::vector<hashFunc> &hashFunctions);
 
 /*******************************************************************************
     * @brief Destructor for the bloom filter class.

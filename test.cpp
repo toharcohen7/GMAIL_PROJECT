@@ -23,7 +23,7 @@ TEST(bloomFilterTest, constructor) {
     bloomFilter bf1(8, hashFunctions);                   // Create a valid bloom filter 
     bloomFilter bf2(100, hashFunctions);                 // Create another valid bloom filter
     // Test the constructor with unvalid parameters
-    EXPECT_THROW(bloomFilter bf3(-3, hashFunctions), std::invalid_argument);      // Negative size
+    EXPECT_THROW(bloomFilter bf3(0, hashFunctions), std::invalid_argument);      // Zero size
     EXPECT_THROW(bloomFilter bf4(10, emptyHashFunctions), std::invalid_argument); // Zero hash functions
 }
 /*******************************************************************************
