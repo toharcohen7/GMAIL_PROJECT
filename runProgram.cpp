@@ -2,14 +2,14 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 #include <iostream>
-#include <string>          // string
-#include <vector>         // vector
-
-#include "runProgram.hpp"
-#include "immortalBloomFilter.hpp"
-#include "hashFunc.hpp"    // hashFunc class
-#include <sstream> // istringstream
-
+#include <string>                        // string                     //
+#include <vector>                       // vector                     //
+#include <sstream>                     // istringstream              //
+#include <regex>                      // regex                      //
+                                     //                            //
+#include "runProgram.hpp"           // runProgram class           //
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class  //
+#include "hashFunc.hpp"           // hashFunc class             //
 
 /*******************************************************************************
  *                        SIGNATURES OF HELP FUNCTIONS                         *
@@ -33,12 +33,14 @@ static bool getInputOperation(std::istream &inputStream, int &operationNum, std:
 // Function to run the operations based on user input
 static void runOperations(immortalBloomFilter *ibf, std::ostream &outputStream, std::istream &inputStream);
 
+// Function to check if the URL is valid
+static bool isValidUrl(const std::string &url);
 
 /*******************************************************************************
  *                               IMPLEMANTATIONS                               *
  * ****************************************************************************/
 
-runProgram::runProgram(std::ostream &outputStream, std::istream &inputStream)
+runProgram::runProgram(std::ostream &outputStream, std::istream &inputStream) 
     : m_outputStream(outputStream), m_inputStream(inputStream) {
         m_ibf = createNewIBF(inputStream); // Create a new immortal bloom filter
 }
@@ -75,7 +77,6 @@ static immortalBloomFilter *createNewIBF(std::istream &inputStream) {
         if (getInputCreation(inputStream, size, hashCount1, hashCount2)) {
             break; 
         }
-        std::cout << "Invalid input." << std::endl; // TODO: REMOVE THIS LINE
     }
     
     // Create a vector of hash functions
@@ -145,7 +146,6 @@ static bool CheckInputCreation(const size_t &size, const size_t &hashcount1, con
 
 // Function to get user input for the operation
 static bool getInputOperation(std::istream &inputStream, int &operationNum, std::string &url) {
-    std::cout << "Enter a number followed by a word: ";
 
     std::string line; 
     std::getline(inputStream, line);
@@ -168,7 +168,13 @@ static bool getInputOperation(std::istream &inputStream, int &operationNum, std:
         return false;
     }
 
-    return true;
+    return isValidUrl(url); // Check if the URL is valid
+}
+
+static bool isValidUrl(const std::string &url) {
+    const std::regex urlPattern(
+        R"(^(?:(?:file:///(?:[A-Za-z]:)?(?:/[^\s])?)|(?:(?:[A-Za-z][A-Za-z0-9+.\-])://)?(?:localhost|(?:[A-Za-z0-9\-]+\.)+[A-Za-z0-9\-]+|(?:\d{1,3}\.){3}\d{1,3})(?::\d+)?(?:/[^\s]*)?)$)");
+    return std::regex_match(url, urlPattern);
 }
 
 // Function to run the operations based on user input
@@ -183,7 +189,6 @@ static void runOperations(immortalBloomFilter *ibf, std::ostream &outputStream,
         if (getInputOperation(inputStream, operationNum, url)) {
             break; // Valid input provided
         }
-        outputStream << "Invalid input." << std::endl; // TODO: REMOVE THIS LINE
     }
 
     switch (operationNum) {
@@ -192,21 +197,19 @@ static void runOperations(immortalBloomFilter *ibf, std::ostream &outputStream,
             break;
         case 2:
             if (ibf->isContains(url)) {
-                outputStream << "The URL is in the bloom filter." << std::endl;
+                outputStream << "true " ;
 
                 if (ibf->isInBlackList(url)) {
-                    outputStream << "The URL is in the blacklist." << std::endl;
+                    outputStream << "true" << std::endl;
                 } else {
-                    outputStream << "The URL is not in the blacklist." << std::endl;
+                    outputStream << "false" << std::endl;
                 }
 
             } else {
-                outputStream << "The URL is not in the bloom filter." << std::endl;
+                outputStream << "false" << std::endl;
             }
             break;
         default:
-            outputStream << "Invalid operation number." << std::endl;
             break;
     }
 }
-

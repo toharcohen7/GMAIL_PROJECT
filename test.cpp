@@ -161,11 +161,6 @@ TEST(hashFuncTest, operatorBrackets) {
     EXPECT_NE(num2, num3); // Different hash values for different timesToHash
 }
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
-
 /*******************************************************************************
  * Test: immortalBloomFilterTest.constructor
  * Purpose: To validate the constructor and persistence behavior under valid and invalid input.
@@ -188,14 +183,14 @@ TEST(immortalBloomFilterTest, constructor) {
 
     // Create, then add and then delete the filter (In order to simulate 2 runs)
     {
-        immortalBloomFilter* ibf = immortalBloomFilter::createImmortalBloomFilter(filterSize, hashFunctions);
+        immortalBloomFilter* ibf = new immortalBloomFilter(filterSize, hashFunctions);
         ibf->add("https://check1.me");
         ibf->add("https://check2.me");
         delete ibf; 
     }
     // 2. Revive and check
     {
-        immortalBloomFilter* revived = immortalBloomFilter::reviveImmortalBloomFilter(filterSize, hashFunctions);
+        immortalBloomFilter* revived = new immortalBloomFilter(filterSize, hashFunctions);
         EXPECT_TRUE(revived->isContains("https://check1.me"));
         EXPECT_TRUE(revived->isInBlackList("https://check1.me"));
         EXPECT_TRUE(revived->isContains("https://check2.me"));
@@ -205,4 +200,10 @@ TEST(immortalBloomFilterTest, constructor) {
 
     cleanupImmortalFiles(); // Clean up after test
 }
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
 

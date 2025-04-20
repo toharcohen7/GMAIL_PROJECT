@@ -4,8 +4,6 @@
 
 int main() {
 
-    std::cout << "hi!" << std::endl;
-
     runProgram rp;
     rp.run();
 
