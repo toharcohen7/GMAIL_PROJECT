@@ -19,27 +19,28 @@
 static size_t hasher(const std::string &str);
 
 // Function to create a new immortal bloom filter
-static immortalBloomFilter *createNewIBF();
+static immortalBloomFilter *createNewIBF(std::istream &inputStream);
 
 // Function to get user input for creating a new immortal bloom filter
-static bool getInputCreation(size_t &size, size_t &hashcount1, size_t &hashcount2);
+static bool getInputCreation(std::istream &inputStream, size_t &size, size_t &hashcount1, size_t &hashcount2);
 
 // Function to check if the input values are valid for creating a new immortal bloom filter
 static bool CheckInputCreation(const size_t &size, const size_t &hashcount1, const size_t &hashcount2);
 
 // Function to get user input for the operation
-static bool getInputOperation(int &operationNum, std::string &url);
+static bool getInputOperation(std::istream &inputStream, int &operationNum, std::string &url);
 
 // Function to run the operations based on user input
-static void runOperations(immortalBloomFilter *ibf);
+static void runOperations(immortalBloomFilter *ibf, std::ostream &outputStream, std::istream &inputStream);
 
 
 /*******************************************************************************
  *                               IMPLEMANTATIONS                               *
  * ****************************************************************************/
 
-runProgram::runProgram() {
-    // empty constructor
+runProgram::runProgram(std::ostream &outputStream, std::istream &inputStream)
+    : m_outputStream(outputStream), m_inputStream(inputStream) {
+        m_ibf = createNewIBF(inputStream); // Create a new immortal bloom filter
 }
 
 runProgram::~runProgram() {
@@ -47,11 +48,9 @@ runProgram::~runProgram() {
 }
 
 void runProgram::run() {
-
-    // Get the immortal bloom filter object (either revived or newly created)
-    ibf = createNewIBF();
+    
     while (true) {
-        runOperations(ibf); // Run the operations based on user input
+        runOperations(m_ibf, m_outputStream, m_inputStream); // Run the operations based on user input
     }
 }
 
@@ -65,7 +64,7 @@ static size_t hasher(const std::string &str) {
 }
 
 // Function to create a new immortal bloom filter
-static immortalBloomFilter *createNewIBF() {
+static immortalBloomFilter *createNewIBF(std::istream &inputStream) {
     size_t size = 0;
     size_t hashCount1 = 0;
     size_t hashCount2 = 0;
@@ -73,7 +72,7 @@ static immortalBloomFilter *createNewIBF() {
     // Get user input for size and hash counts, until valid input is provided
     while (true)
     {
-        if (getInputCreation(size, hashCount1, hashCount2)) {
+        if (getInputCreation(inputStream, size, hashCount1, hashCount2)) {
             break; 
         }
         std::cout << "Invalid input." << std::endl; // TODO: REMOVE THIS LINE
@@ -97,10 +96,10 @@ static immortalBloomFilter *createNewIBF() {
 }
 
 // Function to get user input for creating a new immortal bloom filter
-static bool getInputCreation(size_t &size, size_t &hashcount1, size_t &hashcount2) {
+static bool getInputCreation(std::istream &inputStream, size_t &size, size_t &hashcount1, size_t &hashcount2) {
 
     std::string line;
-    std::getline(std::cin, line);
+    std::getline(inputStream, line);
     std::istringstream iss(line);
 
     std::string extra;  // For checking if there are any extra characters after the integers
@@ -145,11 +144,11 @@ static bool CheckInputCreation(const size_t &size, const size_t &hashcount1, con
 }
 
 // Function to get user input for the operation
-static bool getInputOperation(int &operationNum, std::string &url) {
+static bool getInputOperation(std::istream &inputStream, int &operationNum, std::string &url) {
     std::cout << "Enter a number followed by a word: ";
 
     std::string line; 
-    std::getline(std::cin, line);
+    std::getline(inputStream, line);
 
     std::istringstream iss(line);
 
@@ -173,17 +172,18 @@ static bool getInputOperation(int &operationNum, std::string &url) {
 }
 
 // Function to run the operations based on user input
-static void runOperations(immortalBloomFilter *ibf) { // TODO: change prints and orginaze the code
+static void runOperations(immortalBloomFilter *ibf, std::ostream &outputStream, 
+                          std::istream &inputStream) { // TODO: change prints and orginaze the code
 
     int operationNum = 0;
     std::string url;
 
     // Get user input for the operation until valid input is provided
     while (true) {
-        if (getInputOperation(operationNum, url)) {
+        if (getInputOperation(inputStream, operationNum, url)) {
             break; // Valid input provided
         }
-        std::cout << "Invalid input." << std::endl; // TODO: REMOVE THIS LINE
+        outputStream << "Invalid input." << std::endl; // TODO: REMOVE THIS LINE
     }
 
     switch (operationNum) {
@@ -192,20 +192,20 @@ static void runOperations(immortalBloomFilter *ibf) { // TODO: change prints and
             break;
         case 2:
             if (ibf->isContains(url)) {
-                std::cout << "The URL is in the bloom filter." << std::endl;
+                outputStream << "The URL is in the bloom filter." << std::endl;
 
                 if (ibf->isInBlackList(url)) {
-                    std::cout << "The URL is in the blacklist." << std::endl;
+                    outputStream << "The URL is in the blacklist." << std::endl;
                 } else {
-                    std::cout << "The URL is not in the blacklist." << std::endl;
+                    outputStream << "The URL is not in the blacklist." << std::endl;
                 }
 
             } else {
-                std::cout << "The URL is not in the bloom filter." << std::endl;
+                outputStream << "The URL is not in the bloom filter." << std::endl;
             }
             break;
         default:
-            std::cout << "Invalid operation number." << std::endl;
+            outputStream << "Invalid operation number." << std::endl;
             break;
     }
 }

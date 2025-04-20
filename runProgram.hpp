@@ -10,6 +10,8 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
+#include <iostream>
+
 #include "immortalBloomFilter.hpp"
 
 /*******************************************************************************
@@ -20,14 +22,16 @@ class runProgram
 {
     private:
 
-    immortalBloomFilter *ibf; // Pointer to the immortal bloom filter object
+    immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter object
+    std::ostream &m_outputStream; // Output stream for printing messages
+    std::istream &m_inputStream; // Input stream for reading user input
 
     public:
 /********************************************************************************
     * @brief Constructor for the runProgram class.
     * @details This constructor initializes the runProgram object and creates an immortal bloom filter.
 ******************************************************************************/
-    runProgram();
+    runProgram(std::ostream &outputStream = std::cout, std::istream &inputStream = std::cin);
 
 /*******************************************************************************
     * @brief Destructor for the runProgram class.
