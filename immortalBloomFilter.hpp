@@ -27,38 +27,17 @@ class immortalBloomFilter : public bloomFilter
 {
     private:
 
-    const static std::string m_sizeFile;          // Name of the file that stores the size of the bloom filter
-    const static std::string m_hashFuncsFile;     // Name of the file that stores the hash functions
-    const static std::string m_blackListFile;     // Name of the file that stores the blacklist
+    const std::string m_blackListFile;     // Name of the file that stores the blacklist
     
+    public:
+
 /*******************************************************************************
     * @brief Constructor for the immortal bloom filter class.
     * @param size Size of the bloom filter.
     * @param hashFunctions Vector of hash functions to be used.
     * @details This constructor initializes the immortal bloom filter with the given size and hash functions.
-    * @note The constructor is private to prevent direct instantiation of the class.
  ******************************************************************************/
     immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions);
-
-    public:
-
-/*******************************************************************************
-    * @brief Creates an immortal bloom filter.
-    * @param size Size of the bloom filter.
-    * @param hashFunctions Vector of hash functions to be used.
-    * @return Pointer to the created immortal bloom filter.
-    * @details This function creates an immortal bloom filter with the given size and hash functions.
- ******************************************************************************/
-static immortalBloomFilter *createImmortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions);
-
-/*******************************************************************************
-    * @brief   Revives an immortal bloom filter.
-    * @return  Pointer to the revived immortal bloom filter.
-    * @details This function revives an immortal bloom filter from the files that 
-               store the size, hash functions, and blacklist.
-    *          It reads the files and initializes the bloom filter with the stored values.
- ******************************************************************************/
-    static immortalBloomFilter *reviveImmortalBloomFilter();
 
 /*******************************************************************************
     * @brief Destructor for the immortal bloom filter class.

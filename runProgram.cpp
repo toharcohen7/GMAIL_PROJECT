@@ -18,12 +18,6 @@
 // Hash function to be used in the hashFunc class
 static size_t hasher(const std::string &str);
 
-// Function to get the immortal bloom filter object
-static immortalBloomFilter *getIBF();
-
-// Function to revive an old immortal bloom filter
-static immortalBloomFilter *reviveOldIBF(); 
-
 // Function to create a new immortal bloom filter
 static immortalBloomFilter *createNewIBF();
 
@@ -55,7 +49,7 @@ runProgram::~runProgram() {
 void runProgram::run() {
 
     // Get the immortal bloom filter object (either revived or newly created)
-    ibf = getIBF();
+    ibf = createNewIBF();
     while (true) {
         runOperations(ibf); // Run the operations based on user input
     }
@@ -68,23 +62,6 @@ void runProgram::run() {
 // Hash function to be used in the hashFunc class
 static size_t hasher(const std::string &str) {
     return std::hash<std::string>()(str);
-}
-
-// Function to get the immortal bloom filter object
-static immortalBloomFilter *getIBF() {
-    if (immortalBloomFilter::canBeRevive())
-    {
-        return reviveOldIBF();
-    }
-    else
-    {
-        return createNewIBF();
-    }
-}
-
-// Function to revive an old immortal bloom filter
-static immortalBloomFilter *reviveOldIBF() {
-    return immortalBloomFilter::reviveImmortalBloomFilter();
 }
 
 // Function to create a new immortal bloom filter
@@ -116,7 +93,7 @@ static immortalBloomFilter *createNewIBF() {
         hashFunctions.push_back(hf2);
     } 
 
-    return immortalBloomFilter::createImmortalBloomFilter(size, hashFunctions);
+    return new immortalBloomFilter(size, hashFunctions); // Create a new immortal bloom filter
 }
 
 // Function to get user input for creating a new immortal bloom filter
