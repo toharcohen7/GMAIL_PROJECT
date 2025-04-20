@@ -24,20 +24,20 @@ class runProgram
 
     public:
 /********************************************************************************
-* @brief Constructor for the runProgram class.
-* @details This constructor initializes the runProgram object and creates an immortal bloom filter.
+    * @brief Constructor for the runProgram class.
+    * @details This constructor initializes the runProgram object and creates an immortal bloom filter.
 ******************************************************************************/
     runProgram();
 
 /*******************************************************************************
-* @brief Destructor for the runProgram class.
-* @details This destructor cleans up the resources used by the runProgram object.
+    * @brief Destructor for the runProgram class.
+    * @details This destructor cleans up the resources used by the runProgram object.
 *******************************************************************************/
     ~runProgram();
 
 /*******************************************************************************
- * @brief Runs the program.
- * @details This function runs the program and handles user input.
+    * @brief Runs the program.
+    * @details This function runs the program and handles user input.
 *******************************************************************************/
     void run(); 
 };

@@ -3,7 +3,7 @@
 
 bloomFilter::bloomFilter(size_t size, std::vector<hashFunc> &hashFunctions) {
 
-    if (size <= 0) {
+    if (size = 0) {
         throw std::invalid_argument("Size must be greater than 0.");
     }
     if (hashFunctions.empty()) {
