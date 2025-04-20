@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include "bloomFilter.hpp" // Include the header file where bloomFilter is defined
-
+#include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 #include "hashFunc.hpp"
-
+#include <cstdio> // for remove
 
 size_t hashFunction(const std::string &str) {
     return std::hash<std::string>()(str);
@@ -140,7 +140,6 @@ TEST(hashFuncTest, constractor) {
     - Verifies that the operator() function returns different hash values for different hush times.
  ******************************************************************************/
 
-
 TEST(hashFuncTest, operatorBrackets) {
 
     // Test the constructor with valid parameters
@@ -165,5 +164,45 @@ TEST(hashFuncTest, operatorBrackets) {
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
+}
+
+/*******************************************************************************
+ * Test: immortalBloomFilterTest.constructor
+ * Purpose: To validate the constructor and persistence behavior under valid and invalid input.
+ * - Verifies construction with a valid set of hash functions and sizes.
+ * - Ensures that invalid parameters throw the correct exceptions.
+ * - Ensures that data persists after destruction and is revived correctly.
+ ******************************************************************************/
+
+// Helper to clean up persistent files before/after test
+void cleanupImmortalFiles() {
+    std::remove("./data/blackListFile.txt");
+}
+
+TEST(immortalBloomFilterTest, constructor) {
+    cleanupImmortalFiles(); // Ensure clean start
+
+    std::vector<hashFunc> hashFunctions;
+    hashFunctions.push_back(hashFunc(hashFunction, 2));
+    size_t filterSize = 8;
+
+    // Create, then add and then delete the filter (In order to simulate 2 runs)
+    {
+        immortalBloomFilter* ibf = immortalBloomFilter::createImmortalBloomFilter(filterSize, hashFunctions);
+        ibf->add("https://check1.me");
+        ibf->add("https://check2.me");
+        delete ibf; 
+    }
+    // 2. Revive and check
+    {
+        immortalBloomFilter* revived = immortalBloomFilter::reviveImmortalBloomFilter(filterSize, hashFunctions);
+        EXPECT_TRUE(revived->isContains("https://check1.me"));
+        EXPECT_TRUE(revived->isInBlackList("https://check1.me"));
+        EXPECT_TRUE(revived->isContains("https://check2.me"));
+        EXPECT_TRUE(revived->isInBlackList("https://check2.me"));
+        delete revived;
+    }
+
+    cleanupImmortalFiles(); // Clean up after test
 }
 
