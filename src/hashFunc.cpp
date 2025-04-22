@@ -26,5 +26,11 @@ size_t hashFunc::operator()(const std::string &str) const
 
 // Copy Constructor
 hashFunc::hashFunc(const hashFunc& other)
-    : m_hashFunction(other.m_hashFunction), m_timesToHash(other.m_timesToHash) {}
+    : m_hashFunction(other.m_hashFunction), m_timesToHash(other.m_timesToHash) { 
+        // empty body
+}
 
+hashFunc::hashFunc(hashFunc&& other) noexcept
+    : m_hashFunction(std::move(other.m_hashFunction)), m_timesToHash(other.m_timesToHash) {
+    // empty body
+}

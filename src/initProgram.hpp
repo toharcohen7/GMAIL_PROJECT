@@ -1,5 +1,5 @@
 /*******************************************************************************
- * @file ImmortalBloomFilter.hpp
+ * @file initProgram.hpp
  * submitted by:
  * Daniel Jenudi 318852571
  * Harel Mizrahi 322809922
@@ -33,12 +33,12 @@ class initProgram
     public:
 
 /*******************************************************************************
-     * @brief Creates and initializes a new Immortal Bloom Filter.
-     * @param inputStream Input stream to read user input from. Defaults to std::cin.
-     * @return Pointer to a newly created immortalBloomFilter object.
-     * @details This function prompts the user (or reads from a stream) to input the 
-     * bloom filter size and the number of hash functions to use. It validates the input, 
-     * initializes the hash functions, and creates the bloom filter accordingly.
+ * @brief Creates and initializes a new Immortal Bloom Filter.
+ * @param inputStream Input stream to read user input from. Defaults to std::cin.
+ * @return Pointer to a newly created immortalBloomFilter object.
+ * @details This function prompts the user (or reads from a stream) to input the 
+ * bloom filter size and the number of hash functions to use. It validates the input, 
+ * initializes the hash functions, and creates the bloom filter accordingly.
  ******************************************************************************/
     static immortalBloomFilter *createNewIBF(std::istream &inputStream = std::cin);
 

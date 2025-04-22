@@ -49,36 +49,36 @@ public:
     virtual ~bloomFilter();
 
 /*******************************************************************************
- * @brief Copy constructor.
- * @param other The object to copy from.
- * @details Creates a deep copy of the other bloom filter, duplicating its internal structures.
- * @note Not in use (= delete)
+    * @brief Copy constructor.
+    * @param other The object to copy from.
+    * @details Creates a deep copy of the other bloom filter, duplicating its internal structures.
+    * @note Not in use (= delete)
  ******************************************************************************/
     bloomFilter(const bloomFilter& other) = delete;
 
 /*******************************************************************************
- * @brief Copy assignment operator.
- * @param other The object to copy from.
- * @return Reference to the updated object.
- * @details Replaces the current bloom filter's contents with a copy of another.
- * @note Not in use (= delete)
+    * @brief Copy assignment operator.
+    * @param other The object to copy from.
+    * @return Reference to the updated object.
+    * @details Replaces the current bloom filter's contents with a copy of another.
+    * @note Not in use (= delete)
  ******************************************************************************/
     bloomFilter& operator=(const bloomFilter& other) = delete;
 
 /*******************************************************************************
- * @brief Move constructor.
- * @param other The object to move from.
- * @details Transfers ownership of resources from another bloom filter object.
- * @note Not in use (= delete)
+    * @brief Move constructor.
+    * @param other The object to move from.
+    * @details Transfers ownership of resources from another bloom filter object.
+    * @note Not in use (= delete)
  ******************************************************************************/
     bloomFilter(bloomFilter&& other) noexcept = delete;
 
 /*******************************************************************************
- * @brief Move assignment operator.
- * @param other The object to move from.
- * @return Reference to the updated object.
- * @details Efficiently transfers ownership, cleaning up the current object's state.
- * @note Not in use (= delete)
+    * @brief Move assignment operator.
+    * @param other The object to move from.
+    * @return Reference to the updated object.
+    * @details Efficiently transfers ownership, cleaning up the current object's state.
+    * @note Not in use (= delete)
  ******************************************************************************/
     bloomFilter& operator=(bloomFilter&& other) noexcept = delete;
 

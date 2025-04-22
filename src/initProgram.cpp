@@ -1,6 +1,8 @@
-#include "initProgram.hpp"
 #include <iostream>
 #include <sstream>
+
+#include "initProgram.hpp"
+
 // Hash function to be used in the hashFunc class
 static size_t hasher(const std::string &str);
 
@@ -12,7 +14,7 @@ static bool CheckInputCreation(const size_t &size, const size_t &hashcount1, con
 
 
 // Function to create a new immortal bloom filter
-static immortalBloomFilter *createNewIBF(std::istream &inputStream) {
+immortalBloomFilter *initProgram::createNewIBF(std::istream &inputStream) {
     std::vector<hashFunc> hashFunctions;
     size_t size = 0;
     size_t hashCount1 = 0;
@@ -27,12 +29,12 @@ static immortalBloomFilter *createNewIBF(std::istream &inputStream) {
     }
 
     // Create the first hash function with the specified count
-    hashFunctions.push_back(hashFunc hf1(hasher, hashCount1));
+    hashFunctions.push_back(hashFunc(hasher, hashCount1));
 
     // Create the second hash function with the specified count if it's greater than 0
     // This is optional, as the user may choose to use only one hash function
     if (hashCount2 > 0) {
-        hashFunctions.push_back(hashFunc hf2(hasher, hashCount2));
+        hashFunctions.push_back(hashFunc(hasher, hashCount2));
     } 
 
     return new immortalBloomFilter(size, hashFunctions); // Create a new immortal bloom filter
@@ -43,38 +45,38 @@ size_t hasher(const std::string &str) {
     return std::hash<std::string>()(str);
 }
 
-bool getInputCreation(std::istream &inputStream, size_t &size, size_t &hashcount1, size_t &hashcount2) {
-std::string line;
-std::getline(inputStream, line);
-std::istringstream iss(line);
+static bool getInputCreation(std::istream &inputStream, size_t &size, size_t &hashcount1, size_t &hashcount2) {
+    std::string line;
+    std::getline(inputStream, line);
+    std::istringstream iss(line);
 
-std::string extra;  // For checking if there are any extra characters after the integers
-char ch;            // For checking if the third input is a character
+    std::string extra;  // For checking if there are any extra characters after the integers
+    char ch;            // For checking if the third input is a character
 
-// Check if the first two integers are valid
-if (!(iss >> size >> hashcount1)) {
-    return false;
-}
+    // Check if the first two integers are valid
+    if (!(iss >> size >> hashcount1)) {
+        return false;
+    }
 
-// Check if the third integer is valid (optional)
-// If the third integer is not provided, set it to 0
-std::istream::pos_type pos = iss.tellg(); // Get the current position in the stream
+    // Check if the third integer is valid (optional)
+    // If the third integer is not provided, set it to 0
+    std::istream::pos_type pos = iss.tellg(); // Get the current position in the stream
 
-// If successfully check if there extra characters after the thired integer
-if (iss >> hashcount2) {
-    if (iss >> extra) { return false; } // Check if there are any extra characters after the third integer
+    // If successfully check if there extra characters after the thired integer
+    if (iss >> hashcount2) {
+        if (iss >> extra) { return false; } // Check if there are any extra characters after the third integer
 
-// If failed to read the third integer, check if there are any extra characters after the second integer
-} else {
-    
-    iss.clear();    // Clear the fail state of the stream
-    iss.seekg(pos); // Reset the stream position to the last read position
+    // If failed to read the third integer, check if there are any extra characters after the second integer
+    } else {
 
-    if (iss >> ch) { return false; } // Check if there are any extra characters after the second integer
-    hashcount2 = 0; 
-}
+        iss.clear();    // Clear the fail state of the stream
+        iss.seekg(pos); // Reset the stream position to the last read position
 
-return CheckInputCreation(size, hashcount1, hashcount2); // Check if the inputs are valid
+        if (iss >> ch) { return false; } // Check if there are any extra characters after the second integer
+        hashcount2 = 0; 
+    }
+
+    return CheckInputCreation(size, hashcount1, hashcount2); // Check if the inputs are valid
 }
 
 static bool CheckInputCreation(const size_t &size, const size_t &hashcount1, const size_t &hashcount2) {
