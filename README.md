@@ -63,11 +63,62 @@ docker run gmail_project ./runTest
 - Always use `-it` when running the main program to enable interactive input.
 - You do not need `-it` when running the tests.
 
-## Notes
+## Usage Instructions
 
-- The Docker image builds both the main program (`runProg`) and the test suite (`runTest`).
-- You can override the command to run any executable built in the image.
-- For interactive use, always use the `-it` flags with Docker.
+After running the main program `(runProg)`, you will interact with the program via the terminal.  
+The program expects specific input formats and will ignore any invalid input.
+
+### Program Flow
+
+1. **First Line:**  
+   Enter the Bloom filter array size and which hash functions to use.  
+   - Example: `8 1 2` (array size 8, using two hash functions)
+   - Example: `100 1` (array size 100, using one hash function)
+
+2. **Commands:**  
+   - To **add a URL to the blacklist**:  
+     `1 [URL]`
+     
+     Example: `1 www.example.com0`
+
+   - To **check if a URL is blacklisted**:  
+     `2 [URL]` 
+     
+     Example: `2 www.example.com0`
+
+3. **Output:**  
+   - For a check `(2 [URL])`, the program prints `true true` if the URL is blacklisted and confirmed,  
+     `true false` if it is a false positive, or `false` if it is not blacklisted.
+   - Any input not matching the expected format is ignored.
+
+4. **Persistence:**  
+   - The Bloom filter is saved to a file after every update.
+   - On restart, the program loads the previously saved Bloom filter automatically.
+
+5. **Exiting:**  
+   - To exit, you can use `Ctrl+D` or close the terminal.
+
+### Examples
+
+**Build Command:** 
+![Build Command](images/1.jpeg)
+
+**runTest Command:** 
+![runTest Command](images/2.jpeg)
+
+**runProg Command & Code Example:** 
+![runProg Command & Code Example](images/3.jpeg)
+
+**Default Run Behavior & Code Example:** 
+![Default Run Behavior & Code Example](images/4.jpeg)
+
+### Notes
+
+- Only input lines in the correct format will be processed; all others are ignored.
+- Output must match the examples exactly (no extra spaces, newlines, or text).
+- The program supports multiple hash functions and flexible array sizes as specified in the first input line.
+- The Bloom filter is persistent between runs via a file.
+
 
 ## Project Structure
 
@@ -76,20 +127,3 @@ docker run gmail_project ./runTest
 - `CMakeLists.txt` — CMake build configuration.
 - `Dockerfile` — Docker build instructions.
 - Other `.cpp` and `.hpp` files — Project source code.
-
-## Example Commands
-
-Build the image:
-```sh
-docker build -t gmail_project .
-```
-
-Run the main program interactively:
-```sh
-docker run -it gmail_project ./runProg
-```
-
-Run the tests:
-```sh
-docker run gmail_project ./runTest
-```
