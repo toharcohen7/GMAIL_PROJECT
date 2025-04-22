@@ -13,11 +13,10 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
-#include <string>          // string
-#include <vector>          // vector
-
+#include <string>            // string
+#include <vector>           // vector
 #include "bloomFilter.hpp" // bloomFilter class
-#include "hashFunc.hpp"    // hashFunc class
+#include "hashFunc.hpp"   // hashFunc class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -45,6 +44,44 @@ class immortalBloomFilter : public bloomFilter
     * @details This destructor cleans up the resources used by the immortal bloom filter.
  ******************************************************************************/       
     virtual ~immortalBloomFilter();
+
+/*******************************************************************************
+ * @brief Copy constructor.
+ * @param other The object to copy from.
+ * @details Creates a new object as a copy of an existing immortal bloom filter, 
+ * including its internal state and configuration.
+ * @note Not in use (= delete)
+ ******************************************************************************/
+    immortalBloomFilter(const immortalBloomFilter& other) = delete;
+
+/*******************************************************************************
+ * @brief Copy assignment operator.
+ * @param other The object to copy from.
+ * @return Reference to the updated object.
+ * @details Replaces the current object’s contents with a copy of another 
+ * immortal bloom filter, managing any previously held resources.
+ * @note Not in use (= delete)
+ ******************************************************************************/
+    immortalBloomFilter& operator=(const immortalBloomFilter& other) = delete;
+    
+/*******************************************************************************
+ * @brief Move constructor.
+ * @param other The object to move from.
+ * @details Transfers ownership of resources from another immortal bloom filter
+ * without performing a deep copy.
+ * @note Not in use (= delete)
+ ******************************************************************************/
+    immortalBloomFilter(immortalBloomFilter&& other) noexcept = delete;
+
+/*******************************************************************************
+ * @brief Move assignment operator.
+ * @param other The object to move from.
+ * @return Reference to the updated object.
+ * @details Moves the internal resources from another object into this one,
+ * cleaning up the current state beforehand.
+ * @note Not in use (= delete)
+ ******************************************************************************/
+    immortalBloomFilter& operator=(immortalBloomFilter&& other) noexcept = delete;    
 
 /*******************************************************************************
     * @brief Adds a string to the immortal bloom filter.

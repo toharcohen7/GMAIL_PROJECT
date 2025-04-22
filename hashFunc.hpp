@@ -36,7 +36,7 @@ public:
  * @param timesToHash: The number of times to hash the string.
  * This function will be used as the hash function for the hashFunc class.
  ******************************************************************************/
-    hashFunc(std::function<size_t(const std::string &)> hashFunction, size_t timesToHash = 1);
+  hashFunc(std::function<size_t(const std::string &)> hashFunction, size_t timesToHash = 1);
 
 /*******************************************************************************
  * operator()
@@ -45,7 +45,47 @@ public:
  * This function calls the hash function passed to the constructor.
    It takes a string as input and returns an unsigned int as the hash value.
  ******************************************************************************/
-    size_t operator()(const std::string &str) const;
-}; 
+  size_t operator()(const std::string &str) const;
+
+/*******************************************************************************
+ * @brief Copy constructor.
+ * Creates a new hashFunc object as a copy of an existing one.
+ * @param other The hashFunc object to copy from.
+ ******************************************************************************/
+  hashFunc(const hashFunc& other);
+
+/*******************************************************************************
+ * @brief Copy assignment operator.
+ * @return Reference to the assigned object.
+ * @note Not in use (= delete) 
+ ******************************************************************************/
+  hashFunc& operator=(const hashFunc& other) = delete;
+
+/*******************************************************************************
+ * @brief Move constructor.
+ * Transfers ownership of resources from another hashFunc object to this one.
+ * The source object is left in a valid but unspecified state.
+ * @param other The hashFunc object to move from.
+ * @note Not in use (= delete)
+ ******************************************************************************/
+  hashFunc(hashFunc&& other) noexcept = delete;
+
+/*******************************************************************************
+  * @brief Move assignment operator.
+  * Replaces the contents of this object by transferring ownership from another hashFunc object.
+  * The source object is left in a valid but unspecified state.
+  * @param other The hashFunc object to move from.   
+  * @return Reference to the assigned object.
+  * @note Not in use (= delete)
+  ******************************************************************************/
+  hashFunc& operator=(hashFunc&& other) noexcept = delete;
+
+/*******************************************************************************
+ * @brief Destructor.
+ * Cleans up resources used by the hashFunc object. Since this class doesn't
+ * manage dynamic memory explicitly, the destructor does not need custom logic.
+ ******************************************************************************/
+  ~hashFunc() = default; 
+};
 
 #endif /* HASH_FUNC_HEADER */

@@ -2,7 +2,7 @@
 #include "hashFunc.hpp" // hashFunc class
 #include <stdexcept>
 
-
+// Constructor
 hashFunc::hashFunc(std::function<size_t(const std::string &)> hashFunction, size_t timesToHash)
                                      : m_hashFunction(hashFunction), m_timesToHash(timesToHash) 
 {
@@ -11,7 +11,6 @@ hashFunc::hashFunc(std::function<size_t(const std::string &)> hashFunction, size
         throw std::invalid_argument("timesToHash must be greater than 0");
     }
 }
-
 
 size_t hashFunc::operator()(const std::string &str) const 
 {
@@ -24,3 +23,8 @@ size_t hashFunc::operator()(const std::string &str) const
     }
     return hashResult;
 }
+
+// Copy Constructor
+hashFunc::hashFunc(const hashFunc& other)
+    : m_hashFunction(other.m_hashFunction), m_timesToHash(other.m_timesToHash) {}
+
