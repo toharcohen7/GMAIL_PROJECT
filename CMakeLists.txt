@@ -16,9 +16,9 @@ FetchContent_MakeAvailable(googletest)
  
 # Test executable
 add_executable(runTest test.cpp bloomFilter.cpp hashFunc.cpp immortalBloomFilter.cpp runProgram.cpp
-              addUrlToIBF.cpp searchUrlInIBF.cpp)
+              addUrlToIBF.cpp searchUrlInIBF.cpp initProgram.cpp)
 target_link_libraries(runTest gtest_main)
 
 # Main program executable
 add_executable(runProg bloomFilter.cpp hashFunc.cpp main.cpp immortalBloomFilter.cpp runProgram.cpp
-              addUrlToIBF.cpp searchUrlInIBF.cpp)
+              addUrlToIBF.cpp searchUrlInIBF.cpp initProgram.cpp)
