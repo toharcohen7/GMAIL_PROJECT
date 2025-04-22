@@ -15,10 +15,25 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
  
 # Test executable
-add_executable(runTest test.cpp bloomFilter.cpp hashFunc.cpp immortalBloomFilter.cpp runProgram.cpp
-              addUrlToIBF.cpp searchUrlInIBF.cpp initProgram.cpp)
+add_executable(runTest
+    src/test.cpp
+    src/bloomFilter.cpp
+    src/hashFunc.cpp
+    src/immortalBloomFilter.cpp
+    src/runProgram.cpp
+    src/addUrlToIBF.cpp
+    src/searchUrlInIBF.cpp
+    src/initProgram.cpp)
 target_link_libraries(runTest gtest_main)
 
 # Main program executable
-add_executable(runProg bloomFilter.cpp hashFunc.cpp main.cpp immortalBloomFilter.cpp runProgram.cpp
-              addUrlToIBF.cpp searchUrlInIBF.cpp initProgram.cpp)
+add_executable(runProg
+    src/bloomFilter.cpp
+    src/hashFunc.cpp
+    src/main.cpp
+    src/immortalBloomFilter.cpp
+    src/runProgram.cpp
+    src/addUrlToIBF.cpp
+    src/searchUrlInIBF.cpp
+    src/initProgram.cpp)
+    
