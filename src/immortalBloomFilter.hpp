@@ -37,7 +37,7 @@ class immortalBloomFilter : public bloomFilter
     * @details This constructor initializes the immortal bloom filter with the given size and hash functions.
  ******************************************************************************/
     immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions,
-             const std::string &blackListFile = "./data/blackListFile.txt");
+             const std::string &blackListFile = "../data/blackListFile.txt");
 
 /*******************************************************************************
     * @brief Destructor for the immortal bloom filter class.
