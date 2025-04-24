@@ -7,16 +7,22 @@
 #include <iostream>         // cout, cin, endl
 
 
+// Helper functions implimetation
+size_t hasher(const std::string &str) {
+    return std::hash<std::string>()(str);
+}
+
 int main() {
 
     std::map<int, iCommand*> commands; // Map to store commands
     immortalBloomFilter *ibf = nullptr; // Pointer to the immortal bloom filter object
+    std::vector<hashFunc> hashFunctions; // Vector to hold hash functions
 
     commands[1] = new addUrlToIBF(); // Add URL command
     commands[2] = new searchUrlInIBF(); // Search URL command
 
-    ibf = initProgram::createNewIBF(); // Create a new immortal bloom filter
-    
+    ibf = initProgram::createNewIBF(hashFunctions); // Create a new immortal bloom filter
+
     runProgram rp(commands, ibf); // Create runProgram object with commands
     rp.run();
 

@@ -3,13 +3,14 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+
+#include <iostream>
      
 
 immortalBloomFilter::immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions,
     const std::string &blackListFile)
  : bloomFilter(size, hashFunctions), m_blackListFile(blackListFile) {
 
-    
     if (std::filesystem::exists(m_blackListFile)) { // Check if the file exists
         
         std::ifstream blackFile(m_blackListFile);
@@ -20,7 +21,7 @@ immortalBloomFilter::immortalBloomFilter(size_t size, std::vector<hashFunc> &has
 
         std::string line;
         while (std::getline(blackFile, line)) {
-            this->bloomFilter::add(line);
+            this->bloomFilter::add(line);    
         }
 
         blackFile.close();
