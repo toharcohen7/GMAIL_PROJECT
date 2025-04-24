@@ -1,3 +1,5 @@
-a.out
+*.out
 data/
 blacklist.txt
+.vscode/
+*.json
