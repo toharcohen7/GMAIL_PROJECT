@@ -1,11 +1,11 @@
-#include "runProgram.hpp"         // runProgram class
-#include "iCommand.hpp"          // iCommand class
-#include "addUrlToIBF.hpp"      // addUrlToIBF class
-#include "searchUrlInIBF.hpp"  // searchUrlInIBF class
-#include "initProgram.hpp"    // initProgram class
-#include <map>               // For std::map    
-#include <iostream>         // cout, cin, endl
+#include <map>                        // For std::map    
+#include <iostream>                  // cout, cin, endl
 
+#include "runProgram.hpp"          // runProgram class
+#include "iCommand.hpp"           // iCommand class
+#include "addUrlToIBF.hpp"       // addUrlToIBF class
+#include "searchUrlInIBF.hpp"   // searchUrlInIBF class
+#include "initProgram.hpp"     // initProgram class
 
 // Helper functions implimetation
 size_t hasher(const std::string &str) {

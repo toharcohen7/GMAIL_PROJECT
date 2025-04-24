@@ -1,6 +1,8 @@
 
+#include <stdexcept>      // std::invalid_argument
+
 #include "hashFunc.hpp" // hashFunc class
-#include <stdexcept>
+
 
 // Constructor
 hashFunc::hashFunc(std::function<size_t(const std::string &)> hashFunction, size_t timesToHash)

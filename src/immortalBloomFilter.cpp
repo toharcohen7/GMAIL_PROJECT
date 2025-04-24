@@ -1,10 +1,9 @@
 
-#include "immortalBloomFilter.hpp"
-#include <fstream>
-#include <sstream>
-#include <filesystem>
+#include <fstream>      // ifstream, ofstream
+#include <sstream>     // stringstream
+#include <filesystem> // filesystem
 
-#include <iostream>
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class
      
 
 immortalBloomFilter::immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions,

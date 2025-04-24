@@ -65,7 +65,7 @@ static void runOperations(std::map<int, iCommand*> &commands, immortalBloomFilte
 
     try
     {
-        commands[operationNum]->execute(ibf, url); // Execute the command based on user input
+        commands.at(operationNum)->execute(ibf, url); // Execute the command based on user input
     }
     catch(const std::exception& e)
     {
