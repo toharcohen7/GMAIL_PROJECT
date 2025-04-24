@@ -35,12 +35,19 @@ class initProgram
 /*******************************************************************************
  * @brief Creates and initializes a new Immortal Bloom Filter.
  * @param inputStream Input stream to read user input from. Defaults to std::cin.
+ * @param hashFunctions Vector of hash functions to be used in the bloom filter.
  * @return Pointer to a newly created immortalBloomFilter object.
  * @details This function prompts the user (or reads from a stream) to input the 
  * bloom filter size and the number of hash functions to use. It validates the input, 
  * initializes the hash functions, and creates the bloom filter accordingly.
+ * @note - If there are more hash functions than hash counts, the remaining hash functions
+ *         are stay the same.
+ *       - if there are more hash counts from the input than hash functions,
+ *         new hash functions (std::hash) are created for the remaining counts.
+ *       - The user must enter size bigger than 0 and at least one hash count bigger than 0.   
  ******************************************************************************/
-    static immortalBloomFilter *createNewIBF(std::istream &inputStream = std::cin);
+    static immortalBloomFilter *createNewIBF(std::vector<hashFunc> &hashFunctions, 
+                                             std::istream &inputStream = std::cin);
 
 };
 

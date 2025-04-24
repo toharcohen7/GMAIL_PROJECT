@@ -27,7 +27,7 @@ class hashFunc
 {
 private:
     const std::function<size_t (const std::string &)> m_hashFunction;
-    const size_t m_timesToHash;
+    size_t m_timesToHash;
 
 public:
 /*******************************************************************************
@@ -48,18 +48,26 @@ public:
   size_t operator()(const std::string &str) const;
 
 /*******************************************************************************
+    * @brief Sets the number of times to hash the string.
+    * @param timesToHash: The number of times to hash the string.
+    * This function sets the number of times to hash the string.
+    * @throw std::invalid_argument if timesToHash is 0.
+*******************************************************************************/
+  void setHashCount(size_t timesToHash);
+
+/*******************************************************************************
+    * @brief Gets the number of times to hash the string.
+    * @return: The number of times to hash the string.
+    * This function returns the number of times to hash the string.
+*******************************************************************************/
+  size_t getHashCount() const noexcept;
+
+/*******************************************************************************
     * @brief Copy constructor.
     * Creates a new hashFunc object as a copy of an existing one.
     * @param other The hashFunc object to copy from.
  ******************************************************************************/
   hashFunc(const hashFunc& other);
-
-/*******************************************************************************
-    * @brief Copy assignment operator.
-    * @return Reference to the assigned object.
-    * @note Not in use (= delete) 
- ******************************************************************************/
-  hashFunc& operator=(const hashFunc& other) = delete;
 
 /*******************************************************************************
     * @brief Move constructor.
@@ -68,6 +76,20 @@ public:
     * @param other The hashFunc object to move from.
  ******************************************************************************/
   hashFunc(hashFunc&& other) noexcept;
+
+/*******************************************************************************
+    * @brief Destructor.
+    * Cleans up resources used by the hashFunc object. Since this class doesn't
+    * manage dynamic memory explicitly, the destructor does not need custom logic.
+ ******************************************************************************/
+  ~hashFunc() = default; 
+
+/*******************************************************************************
+    * @brief Copy assignment operator.
+    * @return Reference to the assigned object.
+    * @note Not in use (= delete) 
+ ******************************************************************************/
+  hashFunc& operator=(const hashFunc& other) = delete;
 
 /*******************************************************************************
     * @brief Move assignment operator.
@@ -79,12 +101,6 @@ public:
   ******************************************************************************/
   hashFunc& operator=(hashFunc&& other) noexcept = delete;
 
-/*******************************************************************************
-    * @brief Destructor.
-    * Cleans up resources used by the hashFunc object. Since this class doesn't
-    * manage dynamic memory explicitly, the destructor does not need custom logic.
- ******************************************************************************/
-  ~hashFunc() = default; 
 };
 
 #endif /* HASH_FUNC_HEADER */
