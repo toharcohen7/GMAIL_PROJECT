@@ -71,9 +71,15 @@ The program expects specific input formats and will ignore any invalid input.
 ### Program Flow
 
 1. **First Line:**  
-   Enter the Bloom filter array size and which hash functions to use.  
-   - Example: `8 1 2` (array size 8, using two hash functions)
-   - Example: `100 1` (array size 100, using one hash function)
+   Enter the Bloom filter array size and how many times to use the hash functions.  
+   The number of numbers you write after the array size determines how many hash functions will be used.  
+   Each number specifies how many times the corresponding hash function will be applied.  
+   - Example: `8 1 2` (array size 8, using the first hash function once and the second hash function twice)
+   - Example: `256 1 2 3 4 5 6 7`  
+     (array size 256 bits, using 7 hash functions:  
+     - The first hash function is applied once.  
+     - The second hash function is applied twice.  
+     - The third hash function is applied three times, and so on.)
 
 2. **Commands:**  
    - To **add a URL to the blacklist**:  
