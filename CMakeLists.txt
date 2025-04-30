@@ -23,7 +23,8 @@ add_executable(runTest
     src/runProgram.cpp
     src/addUrlToIBF.cpp
     src/searchUrlInIBF.cpp
-    src/initProgram.cpp)
+    src/initProgram.cpp
+    src/promptHandler.cpp)
 target_link_libraries(runTest gtest_main)
 
 # Main program executable
@@ -35,5 +36,6 @@ add_executable(runProg
     src/runProgram.cpp
     src/addUrlToIBF.cpp
     src/searchUrlInIBF.cpp
-    src/initProgram.cpp)
+    src/initProgram.cpp
+    src/promptHandler.cpp)
     
