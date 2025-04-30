@@ -1,18 +1,21 @@
-#include <sstream> // istringstream
+#include <sstream>                    // istringstream
 
-#include "initProgram.hpp"
+#include "initProgram.hpp"          // initProgram class
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "hashFunc.hpp"           // hashFunc class
+#include "iInputHandler.hpp"     // iInputHandler class
 
 // Hash function to be used in the hashFunc class
 static size_t hasher(const std::string &str);
 
 // Function to get user input for creating a new immortal bloom filter
-static bool getInputCreation(std::istream &inputStream, int &size, std::vector<int> &hashcounts);
+static bool getInputCreation(iInputHandler &inputStream, int &size, std::vector<int> &hashcounts);
 
 // Function to check if the input values are valid for creating a new immortal bloom filter
 static bool CheckInputCreation(const int &size, const std::vector<int> &hashcounts);
 
 // Function to create a new immortal bloom filter
-immortalBloomFilter *initProgram::createNewIBF(std::vector<hashFunc> &hashFunctions, std::istream &inputStream) {
+immortalBloomFilter *initProgram::createNewIBF(std::vector<hashFunc> &hashFunctions, iInputHandler &inputStream) {
 
     int size = 0;
     std::vector<int> hashCounts; // Vector to hold hash counts
@@ -49,12 +52,12 @@ static size_t hasher(const std::string &str) {
     return std::hash<std::string>()(str);
 }
 
-static bool getInputCreation(std::istream &inputStream, int &size, std::vector<int> &hashcounts) {
+static bool getInputCreation(iInputHandler &inputStream, int &size, std::vector<int> &hashcounts) {
     
     std::string extra;  // For checking if there are any extra characters after the integers
     std::string line;
 
-    std::getline(inputStream, line);
+    line = inputStream.getInput(); // Get user input
     std::istringstream iss(line);
 
     // Check if the first integer are valid

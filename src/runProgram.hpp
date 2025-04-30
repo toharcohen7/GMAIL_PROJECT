@@ -18,6 +18,7 @@
 
 #include "immortalBloomFilter.hpp"
 #include "iCommand.hpp" // iCommand class
+#include "iInputHandler.hpp" // iInputHandler class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -30,7 +31,7 @@ class runProgram
     std::map<int, iCommand*> &m_commands; //// Map of command numbers to command objects
     immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter objec
 
-    std::istream &m_inputStream; // Input stream for reading user input
+    iInputHandler &m_inputStream; // Input stream for reading user input
 
     public:
 
@@ -41,7 +42,7 @@ class runProgram
     * @details This constructor initializes the runProgram object and creates an immortal bloom filter.
 *******************************************************************************/
     runProgram(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf,
-            std::istream &inputStream = std::cin);
+                iInputHandler &inputStream);
 
 /*******************************************************************************
     * @brief Destructor for the runProgram class.
