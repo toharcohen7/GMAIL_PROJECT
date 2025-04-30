@@ -1,7 +1,6 @@
 /*******************************************************************************
  *                                INCLUDES                                     *
  * ****************************************************************************/
-#include <iostream>                       // cout, cin, endl            //
 #include <string>                        // string                     //
 #include <vector>                       // vector                     //
 #include <sstream>                     // istringstream              //
@@ -10,17 +9,18 @@
 #include "runProgram.hpp"           // runProgram class           //
 #include "immortalBloomFilter.hpp" // immortalBloomFilter class  //
 #include "hashFunc.hpp"           // hashFunc class             //
+#include "iInputHandler.hpp"     // iInputHandler class         //
 
 /*******************************************************************************
  *                        SIGNATURES OF HELP FUNCTIONS                         *
  * ****************************************************************************/
 
 // Function to get user input for the operation
-static bool getInputOperation(std::istream &inputStream, int &operationNum, std::string &url);
+static bool getInputOperation(iInputHandler &inputStream, int &operationNum, std::string &url);
 
 // Function to run the operations based on user input
 static void runOperations(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf, 
-        std::istream &inputStream);
+                            iInputHandler &inputStream);
 
 // Function to check if the URL is valid
 static bool isValidUrl(const std::string &url);
@@ -30,7 +30,7 @@ static bool isValidUrl(const std::string &url);
  * ****************************************************************************/
 
 runProgram::runProgram(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf,
-    std::istream &inputStream) : m_commands(commands), m_ibf(ibf), m_inputStream(inputStream) {
+    iInputHandler &inputStream) : m_commands(commands), m_ibf(ibf), m_inputStream(inputStream) {
     // empty constructor
 }
     
@@ -51,7 +51,7 @@ void runProgram::run() {
 
 // Function to run the operations based on user input
 static void runOperations(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf,
-        std::istream &inputStream) {
+                            iInputHandler &inputStream) {
 
     int operationNum = 0;
     std::string url;
@@ -75,10 +75,10 @@ static void runOperations(std::map<int, iCommand*> &commands, immortalBloomFilte
 }
 
 // Function to get user input for the operation
-static bool getInputOperation(std::istream &inputStream, int &operationNum, std::string &url) {
+static bool getInputOperation(iInputHandler &inputStream, int &operationNum, std::string &url) {
 
     std::string line; 
-    std::getline(inputStream, line);
+    line = inputStream.getInput(); // Get user input from the input stream
 
     std::istringstream iss(line);
 

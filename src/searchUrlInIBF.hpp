@@ -18,6 +18,7 @@
 
 #include "iCommand.hpp"
 #include "immortalBloomFilter.hpp" 
+#include "iOutputHandler.hpp"
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -26,7 +27,7 @@
 class searchUrlInIBF : public iCommand {
 
     private:
-    std::ostream &m_outputStream; // Output stream for printing messages
+    iOutputHandler &m_outputStream; // Output stream for printing messages
 
 public:
     
@@ -35,7 +36,7 @@ public:
     * @param outputStream Output stream for printing messages.
     * @details This constructor initializes the searchUrlInIBF object and sets the output stream.
 *******************************************************************************/
-    searchUrlInIBF(std::ostream &outputStream = std::cout);
+    searchUrlInIBF(iOutputHandler &outputStream);
   
 /*******************************************************************************
     * @brief Destructor for the searchUrlInIBF class.
