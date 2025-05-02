@@ -5,6 +5,16 @@
 This project implements a Bloom Filter and related functionality in C++.  
 It includes both a main program (`runProg`) and a test suite (`runTest`) using GoogleTest.
 
+## Milestones
+
+If you like to see a previous milestone please connect to the designated branch
+
+Milestone 1 branch:
+
+```sh
+GPDTH-99-branch-for-milestone-1
+```
+
 ## Building with Docker
 
 The project is set up to build and run inside a Docker container using GCC and CMake.
