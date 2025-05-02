@@ -91,15 +91,6 @@ class immortalBloomFilter : public bloomFilter
     *          - It overrides the add method in the bloomFilter class.
  ******************************************************************************/
     virtual void add(const std::string &str) override;
-
-/*******************************************************************************
-    * @brief Checks if the fiels to revive the immortal bloom filter exist.
-    * @return True if the files exist, false otherwise.
-    * @details This function checks if the files that store the size, 
-    *          hash functions, and blacklist exist.
-    *        - If the files exist, it means that the immortal bloom filter can be revived.
- ******************************************************************************/
-    static bool canBeRevive();
 };
 
 #endif /* IMMORTAL_BLOOM_FILTER_HEADER */
