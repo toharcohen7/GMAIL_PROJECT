@@ -13,16 +13,19 @@ searchUrlInIBF::searchUrlInIBF(iOutputHandler &outputStream)
 }
 
 void searchUrlInIBF::execute(immortalBloomFilter *ibf, const std::string &url) {
+    std::string returnStr;
+    returnStr.append("200 Ok\n\n");
     if (ibf->isContains(url)) { // Check if the URL is in the immortal bloom filter
        
-        m_outputStream << "true "; // URL found in the bloom filter
+        returnStr.append("true "); // URL found in the bloom filter
 
         // If the URL is in the bloom filter, check if it is a false positive
-        ibf->isInBlackList(url) ? m_outputStream << "true" : m_outputStream << "false"; 
+        ibf->isInBlackList(url) ? returnStr.append("true") : returnStr.append("false"); 
 
     } else {
-        m_outputStream << "false"; // URL not found in the bloom filter
+        returnStr.append("false"); // URL not found in the bloom filter
     }
 
-    m_outputStream << "\n"; // Print a new line
+    returnStr.append("\n"); // Print a new line
+    m_outputStream << returnStr;
 }
