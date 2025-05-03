@@ -212,7 +212,7 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
     {
         immortalBloomFilter* ibf = new immortalBloomFilter(filterSize, hashFunctions);
         ibf->add("https://check1.me");
-        ibf->delete("https://check1.me");
+        ibf->remove("https://check1.me");
         EXPECT_TRUE(ibf->isContains("https://check1.me"));
         EXPECT_FALSE(ibf->isInBlackList("https://check1.me"));
         delete ibf;
@@ -221,7 +221,7 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
     {
         immortalBloomFilter* revived = new immortalBloomFilter(filterSize, hashFunctions);
         revived->add("https://check2.me");
-        revived->delete("https://check2.me");
+        revived->remove("https://check2.me");
         EXPECT_TRUE(revived->isContains("https://check2.me"));
         EXPECT_FALSE(revived->isInBlackList("https://check2.me"));
         delete revived;

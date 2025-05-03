@@ -112,8 +112,9 @@ public:
     * @param input The string to be deleted.
     * @details This function deletes the given string from the blacklist.
     * Can be overriden in derived classes.
+    * @note Returns true if an element was removed.
  ******************************************************************************/
-virtual void deleteUrl(const std::string &input);     
+virtual bool remove(const std::string &input);     
 };
 
 #endif /* BLOOM_FILTER_HEADER */

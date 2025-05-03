@@ -99,7 +99,7 @@ class immortalBloomFilter : public bloomFilter
     *          - It also saves the updated blacklist file.
     *          - It overrides the deleteUrl method in the bloomFilter class.
  ******************************************************************************/
-    virtual void deleteUrl(const std::string &str) override;            
+    virtual bool remove(const std::string &str) override;            
 };
 
 #endif /* IMMORTAL_BLOOM_FILTER_HEADER */

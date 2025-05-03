@@ -7,5 +7,5 @@ deleteUrlFromIBF:: deleteUrlFromIBF(iOutputHandler &outputStream): m_outputStrea
 }
 
 void deleteUrlFromIBF:: execute(immortalBloomFilter *ibf, const std::string &url){
-    ibf->deleteUrl(url); // delete the URL to the immortal bloom filter
+    ibf->remove(url); // delete the URL from the immortal bloom filter
 }

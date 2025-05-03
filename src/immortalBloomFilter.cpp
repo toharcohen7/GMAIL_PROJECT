@@ -53,31 +53,34 @@ void immortalBloomFilter::add(const std::string &str) {
     bloomFilter::add(str);
 }
 
-void immortalBloomFilter::deleteUrl(const std::string &str){
-
-    std:: ifstream blackListFileIn(m_blackListFile);
-    if (!blackListFileIn.is_open()) {
-        throw std::runtime_error("Failed to open blacklist file for reading");
-    }
-
-    std::vector<std::string> updatedLines;
-    std::string line;
-    while (std::getline(blackListFileIn, line)) {
-        if (line != str) {
-            updatedLines.push_back(line);
+bool immortalBloomFilter::remove(const std::string &str){
+    if(bloomFilter::remove(str)){
+    // open the blacklist file
+        std::ifstream blackListFileIn(m_blackListFile);
+        if (!blackListFileIn.is_open()) {
+            throw std::runtime_error("Failed to open blacklist file for reading");
         }
-    }
-    blackListFileIn.close();
+    // insert all blackilst strings exept the one we want to delete to a vector  
+        std::vector<std::string> updatedLines;
+        std::string line;
+        while (std::getline(blackListFileIn, line)) {
+            if (line != str) {
+                updatedLines.push_back(line);
+            }
+        }
+        blackListFileIn.close();
+    // open the blacklist file and clean it from content
+        std::ofstream blackListFileOut(m_blackListFile, std::ios::trunc);
+        if (!blackListFileOut.is_open()) {
+            throw std::runtime_error("Failed to open blacklist file for overwriting");
+        }
+    // insert all strings (without the one we want to delete) to the blacklist file
+        for (const auto& entry : updatedLines) {
+            blackListFileOut << entry << '\n';
+        }
+        blackListFileOut.close();
 
-    std::ofstream blackListFileOut(m_blackListFile, std::ios::trunc);
-    if (!blackListFileOut.is_open()) {
-        throw std::runtime_error("Failed to open blacklist file for overwriting");
+        return true;
     }
-
-    for (const auto& entry : updatedLines) {
-        blackListFileOut << entry << '\n';
-    }
-    blackListFileOut.close();
-
-    bloomFilter::deleteUrl(str);
+    return false;
 }
