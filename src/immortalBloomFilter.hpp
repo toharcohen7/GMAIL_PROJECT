@@ -91,6 +91,15 @@ class immortalBloomFilter : public bloomFilter
     *          - It overrides the add method in the bloomFilter class.
  ******************************************************************************/
     virtual void add(const std::string &str) override;
+
+/*******************************************************************************
+    * @brief deletes a string from the immortal bloom filter (only the blacklist vector and file).
+    * @param str The string to be deleted.
+    * @details - This function deletes the given string from the blacklist vector.
+    *          - It also saves the updated blacklist file.
+    *          - It overrides the deleteUrl method in the bloomFilter class.
+ ******************************************************************************/
+    virtual void deleteUrl(const std::string &str) override;            
 };
 
 #endif /* IMMORTAL_BLOOM_FILTER_HEADER */

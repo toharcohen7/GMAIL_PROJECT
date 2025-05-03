@@ -52,3 +52,7 @@ bool bloomFilter::isInBlackList(const std::string &input) const {
     }
     return false; // Not found in the blacklist
 }
+void bloomFilter:: deleteUrl(const std::string &input) {
+    // this will erase all of the url Instances
+    m_blackList->erase(std::remove(m_blackList->begin(), m_blackList->end(), input),m_blackList->end());
+}
