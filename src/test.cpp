@@ -182,11 +182,11 @@ TEST(immortalBloomFilterTest, constructor) {
     size_t filterSize = 8;
 
     // Create, then add and then delete the filter (In order to simulate 2 runs)
-    {
+    { 
         immortalBloomFilter* ibf = new immortalBloomFilter(filterSize, hashFunctions);
         ibf->add("https://check1.me");
         ibf->add("https://check2.me");
-        delete ibf; 
+        delete ibf;
     }
     // 2. Revive and check
     {
@@ -198,6 +198,34 @@ TEST(immortalBloomFilterTest, constructor) {
         delete revived;
     }
 
+    cleanupImmortalFiles(); // Clean up after test
+}
+
+TEST(deleteUrlFromIBFTest, deleteFlow) {
+    cleanupImmortalFiles(); // Ensure clean start
+
+    std::vector<hashFunc> hashFunctions;
+    hashFunctions.push_back(hashFunc(hashFunction, 2));
+    size_t filterSize = 8;
+
+    // Create, then add and then delete the filter (In order to simulate 2 runs)
+    {
+        immortalBloomFilter* ibf = new immortalBloomFilter(filterSize, hashFunctions);
+        ibf->add("https://check1.me");
+        ibf->remove("https://check1.me");
+        EXPECT_TRUE(ibf->isContains("https://check1.me"));
+        EXPECT_FALSE(ibf->isInBlackList("https://check1.me"));
+        delete ibf;
+    }  
+    // 2. Revive and check again
+    {
+        immortalBloomFilter* revived = new immortalBloomFilter(filterSize, hashFunctions);
+        revived->add("https://check2.me");
+        revived->remove("https://check2.me");
+        EXPECT_TRUE(revived->isContains("https://check2.me"));
+        EXPECT_FALSE(revived->isInBlackList("https://check2.me"));
+        delete revived;
+    }  
     cleanupImmortalFiles(); // Clean up after test
 }
 

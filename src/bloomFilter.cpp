@@ -1,5 +1,6 @@
 #include "bloomFilter.hpp"
 #include <stdexcept>
+#include <algorithm>
 
 bloomFilter::bloomFilter(size_t size, std::vector<hashFunc> &hashFunctions) {
 
@@ -51,4 +52,12 @@ bool bloomFilter::isInBlackList(const std::string &input) const {
         }
     }
     return false; // Not found in the blacklist
+}
+bool bloomFilter::remove(const std::string &input) {
+ // checking if the string exists in the vector if so erasing all of the instances    
+    if(isInBlackList(input)){
+        m_blackList->erase(std::remove(m_blackList->begin(), m_blackList->end(), input),m_blackList->end());
+        return true;
+    }
+    return false; 
 }

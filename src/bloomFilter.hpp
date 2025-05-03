@@ -106,6 +106,15 @@ public:
     * @details This function checks if the given string is in the blacklist.
  ******************************************************************************/
     bool isInBlackList(const std::string &input) const; 
+
+/*******************************************************************************
+    * @brief delete a string from the bloom filter (only the blacklist vector).
+    * @param input The string to be deleted.
+    * @details This function deletes the given string from the blacklist.
+    * Can be overriden in derived classes.
+    * @note Returns true if an element was removed.
+ ******************************************************************************/
+    virtual bool remove(const std::string &input);     
 };
 
 #endif /* BLOOM_FILTER_HEADER */
