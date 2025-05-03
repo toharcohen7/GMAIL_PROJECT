@@ -114,7 +114,7 @@ public:
     * Can be overriden in derived classes.
     * @note Returns true if an element was removed.
  ******************************************************************************/
-virtual bool remove(const std::string &input);     
+    virtual bool remove(const std::string &input);     
 };
 
 #endif /* BLOOM_FILTER_HEADER */

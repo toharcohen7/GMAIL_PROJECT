@@ -54,13 +54,13 @@ void immortalBloomFilter::add(const std::string &str) {
 }
 
 bool immortalBloomFilter::remove(const std::string &str){
-    if(bloomFilter::remove(str)){
+    if(bloomFilter::isInBlackList){
     // open the blacklist file
         std::ifstream blackListFileIn(m_blackListFile);
         if (!blackListFileIn.is_open()) {
             throw std::runtime_error("Failed to open blacklist file for reading");
         }
-    // insert all blackilst strings exept the one we want to delete to a vector  
+    // insert all blackilst strings except the one we want to delete to a vector  
         std::vector<std::string> updatedLines;
         std::string line;
         while (std::getline(blackListFileIn, line)) {
@@ -80,6 +80,7 @@ bool immortalBloomFilter::remove(const std::string &str){
         }
         blackListFileOut.close();
 
+        bloomFilter::remove(str);
         return true;
     }
     return false;
