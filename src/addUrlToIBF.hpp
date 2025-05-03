@@ -14,9 +14,9 @@
  * ****************************************************************************/
 
 #include <string> 
-
 #include "iCommand.hpp"
 #include "immortalBloomFilter.hpp" 
+#include "iOutputHandler.hpp"
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -24,13 +24,16 @@
 
 class addUrlToIBF : public iCommand {
 
+    private:
+    iOutputHandler &m_outputStream; // Output stream for printing messages
+
 public:
     
 /*******************************************************************************
     * @brief Constructor for the addUrlToIBF class.
     * @details Empty constructor for the addUrlToIBF class. It initializes the object.
 *******************************************************************************/
-    addUrlToIBF();
+    addUrlToIBF(iOutputHandler &m_outputStream);
   
 /*******************************************************************************
     * @brief Destructor for the addUrlToIBF class.

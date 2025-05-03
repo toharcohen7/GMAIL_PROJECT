@@ -18,6 +18,7 @@
 #include <string>                // string
 #include "hashFunc.hpp"         // hashFunc class
 #include "iInputHandler.hpp"   // iInputHandler class
+#include "iOutputHandler.hpp" // iOutputHandler class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -36,6 +37,7 @@ class initProgram
 /*******************************************************************************
  * @brief Creates and initializes a new Immortal Bloom Filter.
  * @param inputStream Input handler for reading user input.
+ * @param outputStream Output handler for printing user output.
  * @param hashFunctions Vector of hash functions to be used in the bloom filter.
  * @return Pointer to a newly created immortalBloomFilter object.
  * @details This function prompts the user (or reads from a stream) to input the 
@@ -48,7 +50,7 @@ class initProgram
  *       - The user must enter size bigger than 0 and at least one hash count bigger than 0.   
  ******************************************************************************/
     static immortalBloomFilter *createNewIBF(std::vector<hashFunc> &hashFunctions, 
-                                             iInputHandler &inputStream);
+                                             iInputHandler &inputStream, iOutputHandler &outputStream);
 
 };
 

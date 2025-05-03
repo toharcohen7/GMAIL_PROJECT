@@ -4,6 +4,7 @@
 #include "immortalBloomFilter.hpp" // immortalBloomFilter class
 #include "hashFunc.hpp"           // hashFunc class
 #include "iInputHandler.hpp"     // iInputHandler class
+#include "iOutputHandler.hpp"   // iOutputHandler class 
 
 // Hash function to be used in the hashFunc class
 static size_t hasher(const std::string &str);
@@ -15,7 +16,7 @@ static bool getInputCreation(iInputHandler &inputStream, int &size, std::vector<
 static bool CheckInputCreation(const int &size, const std::vector<int> &hashcounts);
 
 // Function to create a new immortal bloom filter
-immortalBloomFilter *initProgram::createNewIBF(std::vector<hashFunc> &hashFunctions, iInputHandler &inputStream) {
+immortalBloomFilter *initProgram::createNewIBF(std::vector<hashFunc> &hashFunctions, iInputHandler &inputStream,iOutputHandler &outputStream) {
 
     int size = 0;
     std::vector<int> hashCounts; // Vector to hold hash counts
@@ -25,6 +26,10 @@ immortalBloomFilter *initProgram::createNewIBF(std::vector<hashFunc> &hashFuncti
     {
         if (getInputCreation(inputStream, size, hashCounts)) {
             break; 
+        }
+        else
+        {
+            outputStream <<"400 Bad Request\n";
         }
         hashCounts.clear(); // Clear the hash counts vector for the next input attempt
     }

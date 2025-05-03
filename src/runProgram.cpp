@@ -9,18 +9,19 @@
 #include "runProgram.hpp"           // runProgram class           //
 #include "immortalBloomFilter.hpp" // immortalBloomFilter class  //
 #include "hashFunc.hpp"           // hashFunc class             //
-#include "iInputHandler.hpp"     // iInputHandler class         //
+#include "iInputHandler.hpp"     // iInputHandler class        //
+#include "iOutputHandler.hpp"   // iOutputHandler class       //
 
 /*******************************************************************************
  *                        SIGNATURES OF HELP FUNCTIONS                         *
  * ****************************************************************************/
 
 // Function to get user input for the operation
-static bool getInputOperation(iInputHandler &inputStream, int &operationNum, std::string &url);
+static bool getInputOperation(iInputHandler &inputStream, std::string &operationStr, std::string &url);
 
 // Function to run the operations based on user input
-static void runOperations(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf, 
-                            iInputHandler &inputStream);
+static void runOperations(std::map<std::string, iCommand*> &commands, immortalBloomFilter *ibf, 
+                            iInputHandler &inputStream,iOutputHandler &outputStream);
 
 // Function to check if the URL is valid
 static bool isValidUrl(const std::string &url);
@@ -29,8 +30,8 @@ static bool isValidUrl(const std::string &url);
  *                               IMPLEMANTATIONS                               *
  * ****************************************************************************/
 
-runProgram::runProgram(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf,
-    iInputHandler &inputStream) : m_commands(commands), m_ibf(ibf), m_inputStream(inputStream) {
+runProgram::runProgram(std::map<std::string, iCommand*> &commands, immortalBloomFilter *ibf,iInputHandler &inputStream,
+     iOutputHandler &outputStream) : m_commands(commands), m_ibf(ibf), m_inputStream(inputStream), m_outputStream(outputStream) {
     // empty constructor
 }
     
@@ -41,7 +42,7 @@ runProgram::~runProgram() {
 void runProgram::run() {
     
     while (true) {
-        runOperations(m_commands ,m_ibf, m_inputStream); // Run the operations based on user input
+        runOperations(m_commands ,m_ibf, m_inputStream,m_outputStream); // Run the operations based on user input
     }
 }
 
@@ -50,40 +51,45 @@ void runProgram::run() {
  * ****************************************************************************/
 
 // Function to run the operations based on user input
-static void runOperations(std::map<int, iCommand*> &commands, immortalBloomFilter *ibf,
-                            iInputHandler &inputStream) {
+static void runOperations(std::map<std::string, iCommand*> &commands, immortalBloomFilter *ibf,
+                            iInputHandler &inputStream,iOutputHandler &outputStream) {
 
-    int operationNum = 0;
+    std::string operationStr;
     std::string url;
 
     // Get user input for the operation until valid input is provided
     while (true) {
-        if (getInputOperation(inputStream, operationNum, url)) {
+        if (getInputOperation(inputStream, operationStr, url)) 
+        {
             break; // Valid input provided
+        }
+        else
+        {
+            outputStream <<"400 Bad Request\n";
         }
     }
 
     try
     {
-        commands.at(operationNum)->execute(ibf, url); // Execute the command based on user input
+        commands.at(operationStr)->execute(ibf, url); // Execute the command based on user input
     }
     catch(const std::exception& e)
     {
-        // Do nothing
+        outputStream <<"400 Bad Request\n";
     }
     
 }
 
 // Function to get user input for the operation
-static bool getInputOperation(iInputHandler &inputStream, int &operationNum, std::string &url) {
+static bool getInputOperation(iInputHandler &inputStream, std::string &operationStr, std::string &url) {
 
     std::string line; 
     line = inputStream.getInput(); // Get user input from the input stream
 
     std::istringstream iss(line);
 
-    // check if the first part is a valid integer
-    if (!(iss >> operationNum)) {
+    // check if the first part is a valid word
+    if (!(iss >> operationStr)) {
         return false;
     }
 
@@ -97,7 +103,7 @@ static bool getInputOperation(iInputHandler &inputStream, int &operationNum, std
     if (iss >> extra) {
         return false;
     }
-
+    
     return isValidUrl(url); // Check if the URL is valid
 }
 
