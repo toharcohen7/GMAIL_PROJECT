@@ -54,7 +54,7 @@ void immortalBloomFilter::add(const std::string &str) {
 }
 
 bool immortalBloomFilter::remove(const std::string &str){
-    if(bloomFilter::isInBlackList){
+    if(bloomFilter::isInBlackList(str)){
     // open the blacklist file
         std::ifstream blackListFileIn(m_blackListFile);
         if (!blackListFileIn.is_open()) {

@@ -8,7 +8,7 @@ deleteUrlFromIBF:: deleteUrlFromIBF(iOutputHandler &outputStream): m_outputStrea
 
 void deleteUrlFromIBF:: execute(immortalBloomFilter *ibf, const std::string &url){
     if(ibf->remove(url)){ // delete the URL from the immortal bloom filter
-        m_outputStream << "204 No Content";
+        m_outputStream << "204 No Content\n";
     }
-     m_outputStream << "404 Not Found";
+     m_outputStream << "404 Not Found\n";
 }
