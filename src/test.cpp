@@ -3,6 +3,8 @@
 #include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 #include "hashFunc.hpp"
 #include <cstdio> // for remove
+#include "socketInputHandler.hpp"
+#include "socketOutputHandler.hpp"
 
 size_t hashFunction(const std::string &str) {
     return std::hash<std::string>()(str);
@@ -227,6 +229,43 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
         delete revived;
     }  
     cleanupImmortalFiles(); // Clean up after test
+}
+
+/*******************************************************************************
+ * Test: SocketHandlerTest.combinedFlow
+ * Purpose: To test the combined functionality of socketInputHandler and socketOutputHandler.
+ * - Validates that a message sent from the client is correctly received by the server.
+ * - Ensures that the server can handle incoming messages and the client can send them.
+ * - Tests the socket communication between client and server.
+ * - Uses a separate thread for the server to allow for concurrent execution
+ ******************************************************************************/
+
+ TEST(SocketHandlerTest, combinedFlow) {
+    int port = 12345;
+    std::string expectedMessage = "Hello, Server!";
+    std::string receivedMessage;
+
+    // Start the server in a separate thread
+    std::thread serverThread([&]() {
+        socketInputHandler server(port);
+        std::cout << "Server is waiting for a message..." << std::endl;
+        receivedMessage = server.getInput(); // Wait for client message
+        std::cout << "Server received: " << receivedMessage << std::endl;
+    });
+
+    // Give the server some time to start
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Client code
+    socketOutputHandler client(port);
+    client << expectedMessage; // Send message to server
+    std::cout << "Client sent: " << expectedMessage << std::endl;
+
+    // Wait for the server thread to finish
+    serverThread.join();
+
+    // Validate the received message
+    EXPECT_EQ(receivedMessage, expectedMessage);
 }
 
 int main(int argc, char **argv) {
