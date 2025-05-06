@@ -31,8 +31,8 @@ class runProgram
 
     std::map<std::string, iCommand*> &m_commands; //// Map of command numbers to command objects
     immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter objec
-    iOutputHandler &m_outputStream; // Output stream for printing messages
     iInputHandler &m_inputStream; // Input stream for reading user input
+    iOutputHandler &m_outputStream; // Output stream for printing messages
 
     public:
 
