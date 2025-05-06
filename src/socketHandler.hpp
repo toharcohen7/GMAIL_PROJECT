@@ -25,23 +25,16 @@
 
 class socketHandler : public iInputHandler , public iOutputHandler
 {
-    const int m_port;            // Port number for the server
-    const int m_socketType;     // Socket type (TCP or UDP)
-    const int m_addressFamily; // Address family (IPv4 or IPv6)
-
     int m_clientSocket; // Socket for the client connection
-    int m_socket;            // Socket to listen for incoming connections
 
 public:
 /*******************************************************************************
  * @brief Constructor for the socketHandler class.
  * @details This constructor initializes the socketHandler object.
- * @param port Port number for the server.
- * @param socketType Socket type (TCP or UDP).
- * @param addressFamily Address family (IPv4 or IPv6).
- * @param numToListen Number of connections to listen for.
+ * @param severSocket The server socket to accept client connections.
+ * @note This constructor is blocking, meaning that it will wait for a client connection.
  ******************************************************************************/
-    socketHandler(int port, int socketType = SOCK_STREAM, int addressFamily = AF_INET, size_t numToListen = 5);
+    socketHandler(int severSocket);
 
 /*******************************************************************************
  * @brief Destructor for the socketHandler class.
@@ -49,13 +42,6 @@ public:
  * @note This destructor is virtual, allowing for proper cleanup of derived classes.
  ******************************************************************************/
     ~socketHandler();
-
-/*******************************************************************************
- * @brief Accepts a client connection.
- * @details This function accepts a client connection and sets the client socket.
- * @note This function is waiting for a client connection.
-*******************************************************************************/
-    void acceptClient();
 
 /*******************************************************************************
  * @brief Gets the user input from the socket.
