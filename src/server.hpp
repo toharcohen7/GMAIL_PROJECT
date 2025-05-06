@@ -19,6 +19,16 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include "iCommand.hpp"                // iCommand class
+#include "addUrlToIBF.hpp"            // addUrlToIBF class
+#include "searchUrlInIBF.hpp"        // searchUrlInIBF class
+#include "initProgram.hpp"          // initProgram class
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "hashFunc.hpp"           // hashFunc class
+#include "promptHandler.hpp"     // promptHandler class
+#include "runProgram.hpp"
+#include "deleteUrlFromIBF.hpp"
+
 /*******************************************************************************
  *                                CLASS                                        *
  * ****************************************************************************/
@@ -27,10 +37,8 @@ class server
 {
 
 private:
-    
-    const int m_port;            // Port number for the server
-    const int m_socketType;     // Socket type (TCP or UDP)
-    const int m_addressFamily; // Address family (IPv4 or IPv6)
+
+    int m_serverSocket; // Socket to listen for incoming connections
 
 public:
 
@@ -39,12 +47,12 @@ public:
   * @param port Port number for the server.
   * @param socketType Socket type (TCP or UDP).
   * @param addressFamily Address family (IPv4 or IPv6).
+  * @param numToListen Number of connections to listen for.
   * @details This constructor initializes the server object with the specified port,
   * socket type, and address family.
   * It also creates a socket for the server using the specified parameters.
  * *****************************************************************************/
-    server(int port, int socketType = SOCK_STREAM, int addressFamily = AF_INET);
-
+    server(int port, int socketType = SOCK_STREAM, int addressFamily = AF_INET, size_t numToListen = 5);
 
 /*******************************************************************************
  * @brief Destructor for the server class.
@@ -52,7 +60,6 @@ public:
  * It closes the socket and releases any allocated resources.
  ******************************************************************************/
     ~server();
-
 
 /*******************************************************************************
  * @brief Starts the server and listens for incoming connections.
