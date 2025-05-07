@@ -1,16 +1,19 @@
 /*******************************************************************************
  *                                INCLUDES                                     *
  * ****************************************************************************/
-#include <string>                        // string                     //
-#include <vector>                       // vector                     //
-#include <sstream>                     // istringstream              //
-#include <regex>                      // regex                      //
-                                     //                            //
-#include "runProgram.hpp"           // runProgram class           //
-#include "immortalBloomFilter.hpp" // immortalBloomFilter class  //
-#include "hashFunc.hpp"           // hashFunc class             //
-#include "iInputHandler.hpp"     // iInputHandler class        //
-#include "iOutputHandler.hpp"   // iOutputHandler class       //
+#include <string>                           // string                     //
+#include <vector>                          // vector                     //
+#include <sstream>                        // istringstream              //
+#include <regex>                         // regex                      //
+                                        //                            //
+#include "runProgram.hpp"              // runProgram class           //
+#include "immortalBloomFilter.hpp"    // immortalBloomFilter class  //
+#include "iInputHandler.hpp"         // iInputHandler class        //
+#include "iOutputHandler.hpp"       // iOutputHandler class       //
+#include "iCommand.hpp"            // iCommand class             //
+#include "addUrlToIBF.hpp"        // addUrlToIBF class          //
+#include "searchUrlInIBF.hpp"    // searchUrlInIBF class       //
+#include "deleteUrlFromIBF.hpp" // deleteUrlFromIBF class     //
 
 /*******************************************************************************
  *                        SIGNATURES OF HELP FUNCTIONS                         *
@@ -20,8 +23,8 @@
 static bool getInputOperation(iInputHandler &inputStream, std::string &operationStr, std::string &url);
 
 // Function to run the operations based on user input
-static void runOperations(std::map<std::string, iCommand*> &commands, immortalBloomFilter *ibf, 
-                            iInputHandler &inputStream,iOutputHandler &outputStream);
+static void runOperations(std::map<std::string, iCommand*> &commands, iInputHandler &inputStream,
+                            iOutputHandler &outputStream);
 
 // Function to check if the URL is valid
 static bool isValidUrl(const std::string &url);
@@ -30,19 +33,26 @@ static bool isValidUrl(const std::string &url);
  *                               IMPLEMANTATIONS                               *
  * ****************************************************************************/
 
-runProgram::runProgram(std::map<std::string, iCommand*> &commands, immortalBloomFilter *ibf,iInputHandler &inputStream,
-     iOutputHandler &outputStream) : m_commands(commands), m_ibf(ibf), m_inputStream(inputStream), m_outputStream(outputStream) {
-    // empty constructor
+runProgram::runProgram(immortalBloomFilter *ibf) 
+    : m_ibf(ibf) {
+    
+        m_commands["POST"] = new addUrlToIBF(m_ibf); // Add URL command
+        m_commands["GET"] = new searchUrlInIBF(m_ibf); // Search URL command
+        m_commands["DELETE"] = new deleteUrlFromIBF(m_ibf); // Delete URL command
 }
     
 runProgram::~runProgram() {
-    // empty destructor
+    // Clean up dynamically allocated memory
+    for (auto &command : m_commands) {
+        delete command.second; // Delete each command object
+    }
+    m_commands.clear(); // Clear the map
 }
 
-void runProgram::run() {
+void runProgram::run(iInputHandler &inputStream, iOutputHandler &outputStream) {
     
     while (true) {
-        runOperations(m_commands ,m_ibf, m_inputStream,m_outputStream); // Run the operations based on user input
+        runOperations(m_commands, inputStream, outputStream); // Run the operations based on user input
     }
 }
 
@@ -51,7 +61,7 @@ void runProgram::run() {
  * ****************************************************************************/
 
 // Function to run the operations based on user input
-static void runOperations(std::map<std::string, iCommand*> &commands, immortalBloomFilter *ibf,
+static void runOperations(std::map<std::string, iCommand*> &commands, 
                             iInputHandler &inputStream,iOutputHandler &outputStream) {
 
     std::string operationStr;
@@ -71,7 +81,7 @@ static void runOperations(std::map<std::string, iCommand*> &commands, immortalBl
 
     try
     {
-        commands.at(operationStr)->execute(ibf, url); // Execute the command based on user input
+        commands.at(operationStr)->execute(inputStream, outputStream, url); // Execute the command based on user input
     }
     catch(const std::exception& e)
     {

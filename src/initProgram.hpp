@@ -13,12 +13,12 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
-#include "immortalBloomFilter.hpp" // immortalBloomFilter class 
 #include <iostream>               // iostream
 #include <string>                // string
-#include "hashFunc.hpp"         // hashFunc class
-#include "iInputHandler.hpp"   // iInputHandler class
-#include "iOutputHandler.hpp" // iOutputHandler class
+
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class 
+#include "hashFunc.hpp"           // hashFunc class
+#include "runProgram.hpp"      // runProgram class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -36,21 +36,28 @@ class initProgram
 
 /*******************************************************************************
  * @brief Creates and initializes a new Immortal Bloom Filter.
- * @param inputStream Input handler for reading user input.
- * @param outputStream Output handler for printing user output.
- * @param hashFunctions Vector of hash functions to be used in the bloom filter.
+ * @param ibfSize Size of the bloom filter.
+ * @param hashCounts Vector of ints that indicate the number of times to hash for each function.
+ * @param hashFunctions Vector of hash functions to be used.
  * @return Pointer to a newly created immortalBloomFilter object.
- * @details This function prompts the user (or reads from a stream) to input the 
- * bloom filter size and the number of hash functions to use. It validates the input, 
- * initializes the hash functions, and creates the bloom filter accordingly.
+ * @details This function creates a new immortal bloom filter with the specified size and hash functions.
  * @note - If there are more hash functions than hash counts, the remaining hash functions
  *         are stay the same.
  *       - if there are more hash counts from the input than hash functions,
  *         new hash functions (std::hash) are created for the remaining counts.
  *       - The user must enter size bigger than 0 and at least one hash count bigger than 0.   
  ******************************************************************************/
-    static immortalBloomFilter *createNewIBF(std::vector<hashFunc> &hashFunctions, 
-                                             iInputHandler &inputStream, iOutputHandler &outputStream);
+    static immortalBloomFilter *createNewIBF(size_t ibfSize, std::vector<int> hashCounts, 
+                                                std::vector<hashFunc> &hashFunctions);
+
+/*******************************************************************************
+ * @brief Creates a new runProgram object.
+ * @param ibf Pointer to the immortal bloom filter object.
+ * @return Pointer to a new runProgram object.
+ * @details This function creates a new runProgram object with the specified immortal bloom filter.
+ * @note The runProgram object is responsible for running the program and handling user input.
+ ******************************************************************************/
+    static runProgram *createRunProgram(immortalBloomFilter *ibf);
 
 };
 

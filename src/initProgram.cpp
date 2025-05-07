@@ -2,90 +2,49 @@
 
 #include "initProgram.hpp"          // initProgram class
 #include "immortalBloomFilter.hpp" // immortalBloomFilter class
-#include "hashFunc.hpp"           // hashFunc class
-#include "iInputHandler.hpp"     // iInputHandler class
-#include "iOutputHandler.hpp"   // iOutputHandler class 
+#include "hashFunc.hpp"           // hashFunc class 
 
 // Hash function to be used in the hashFunc class
 static size_t hasher(const std::string &str);
-
-// Function to get user input for creating a new immortal bloom filter
-static bool getInputCreation(iInputHandler &inputStream, int &size, std::vector<int> &hashcounts);
 
 // Function to check if the input values are valid for creating a new immortal bloom filter
 static bool CheckInputCreation(const int &size, const std::vector<int> &hashcounts);
 
 // Function to create a new immortal bloom filter
-immortalBloomFilter *initProgram::createNewIBF(std::vector<hashFunc> &hashFunctions, iInputHandler &inputStream,iOutputHandler &outputStream) {
-
-    int size = 0;
-    std::vector<int> hashCounts; // Vector to hold hash counts
-
-    // Get user input for size and hash counts, until valid input is provided
-    while (true)
-    {
-        if (getInputCreation(inputStream, size, hashCounts)) {
-            break; 
-        }
-        else
-        {
-            outputStream <<"400 Bad Request\n";
-        }
-        hashCounts.clear(); // Clear the hash counts vector for the next input attempt
+immortalBloomFilter *initProgram::createNewIBF(size_t ibfSize, std::vector<int> hashCounts, 
+                                                std::vector<hashFunc> &hashFunctions) {
+    // Check if the input values are valid
+    if (!CheckInputCreation(ibfSize, hashCounts)) {
+        throw std::runtime_error("Invalid input values for creating a new immortal bloom filter\n");
     }
+                    
+    auto runnerCounts = hashCounts.begin();     // Iterator for the hash counts
+    auto runnerFuncs = hashFunctions.begin(); // Iterator for the hash functions
 
-    size_t runner = 0;
-    
+
     // Set the hash count for each hash function
-    for (; runner < hashFunctions.size() && runner < hashCounts.size(); ++runner)
+    while(runnerFuncs != hashFunctions.end())
     {
         // Set the hash count for each hash function
-        hashFunctions[runner].setHashCount(static_cast<size_t>(hashCounts[runner]));
+        runnerFuncs->setHashCount(static_cast<size_t>(*runnerCounts));
+        ++runnerCounts;
+        ++runnerFuncs;
     }
     
     // If there are more hash counts than hash functions, create new hash functions for the remaining counts
-    for (; runner < hashCounts.size(); ++runner)
+    while(runnerCounts != hashCounts.end()) 
     {
         // Create new hash functions for remaining counts
-        hashFunctions.push_back(hashFunc(hasher, static_cast<size_t>(hashCounts[runner]))); 
+        std::cout << static_cast<size_t>(static_cast<size_t>(*runnerCounts)) << std::endl;
+        hashFunctions.push_back(hashFunc(hasher, static_cast<size_t>(*runnerCounts))); 
+        ++runnerCounts;
     }
 
-    return new immortalBloomFilter(size, hashFunctions); // Create a new immortal bloom filter
+    return new immortalBloomFilter(ibfSize, hashFunctions); // Create a new immortal bloom filter
 }
 
 static size_t hasher(const std::string &str) {
     return std::hash<std::string>()(str);
-}
-
-static bool getInputCreation(iInputHandler &inputStream, int &size, std::vector<int> &hashcounts) {
-    
-    std::string extra;  // For checking if there are any extra characters after the integers
-    std::string line;
-
-    line = inputStream.getInput(); // Get user input
-    std::istringstream iss(line);
-
-    // Check if the first integer are valid
-    if (!(iss >> size)) {
-        return false;
-    }
-
-    std::istream::pos_type pos = iss.tellg();
-
-    int temp = 0;
-    while (iss >> temp) {
-        hashcounts.push_back(temp);
-         pos = iss.tellg();
-    }
-
-    iss.clear();    // Clear the fail state of the stream
-    iss.seekg(pos); // Reset the stream position to the last read position
-
-    if (iss >> extra) { 
-        return false; // Check if there are any extra characters after the integers
-    } 
-
-    return CheckInputCreation(size, hashcounts); // Check if the inputs are valid
 }
 
 static bool CheckInputCreation(const int &size, const std::vector<int> &hashcounts) {
@@ -101,4 +60,10 @@ static bool CheckInputCreation(const int &size, const std::vector<int> &hashcoun
     }
 
     return true; // All inputs are valid
+}
+
+
+runProgram *initProgram::createRunProgram(immortalBloomFilter *ibf) {
+ 
+    return new runProgram(ibf); // Create a new runProgram object
 }
