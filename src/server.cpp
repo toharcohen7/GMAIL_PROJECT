@@ -1,18 +1,18 @@
-#include <sys/socket.h>   // For socket-related definitions
-#include <netinet/in.h>  // For sockaddr_in
-#include <arpa/inet.h>  // For inet_pton
-#include <unistd.h>    // For close
-#include <cstring>    // For memset
-#include <string>    // For std::cout
-
+#include <sys/socket.h>    // For socket-related definitions
+#include <netinet/in.h>   // For sockaddr_in
+#include <arpa/inet.h>   // For inet_pton
+#include <unistd.h>     // For close
+#include <cstring>     // For memset
+#include <string>     // For std::cout
 #include <stdexcept> // For std::runtime_error
 
 #include "socketHandler.hpp" // socketHandler class
 #include "server.hpp" // server class
+#include "iRunnable.hpp" // iRunnable class
 
-static size_t hasher(const std::string &str);
 
-server::server(int port, int socketType, int addressFamily, size_t numToListen) {
+server::server(int port, iRunnable &runnable, int socketType,
+                 int addressFamily, size_t numToListen) : m_runnable(runnable) {
     // Create a socket
     m_serverSocket = socket(addressFamily, socketType, 0);
     if (m_serverSocket < 0) {
@@ -44,30 +44,6 @@ server::~server() {
 
 void server::startServer() {
 
-    std::map<std::string, iCommand*> commands; // Map to store commands
-    immortalBloomFilter *ibf = nullptr; // Pointer to the immortal bloom filter object
-    std::vector<hashFunc> hashFunctions; // Vector to hold hash functions
     socketHandler socketPrompt(m_serverSocket); // Input handler for user input
-
-    hashFunctions.push_back(hashFunc(hasher, 1)); // Add a default hash function
-    hashFunctions.push_back(hashFunc(hasher, 2)); // Add a default hash function
-
-    commands["POST"] = new addUrlToIBF(socketPrompt); // Add URL command
-    commands["GET"] = new searchUrlInIBF(socketPrompt); // Search URL command
-    commands["DELETE"] = new deleteUrlFromIBF(socketPrompt); // Delete URL command
-
-    ibf = new immortalBloomFilter(8 ,hashFunctions); // Create a new immortal bloom filter
-
-    runProgram rp(commands, ibf, socketPrompt, socketPrompt); // Create runProgram object with commands
-    rp.run();
-
-    // Clean up dynamically allocated memory
-    for (auto &command : commands) {
-        delete command.second; // Delete each command object
-    }
-    commands.clear(); // Clear the map
-}
-
-static size_t hasher(const std::string &str) {
-    return std::hash<std::string>()(str);
+    m_runnable.run(socketPrompt, socketPrompt); // Run the program with the input handler
 }

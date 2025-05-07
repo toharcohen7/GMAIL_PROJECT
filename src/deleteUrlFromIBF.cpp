@@ -2,16 +2,20 @@
 #include "deleteUrlFromIBF.hpp" // Include the header file where deleteUrlToIBF is defined
 #include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 
-deleteUrlFromIBF:: deleteUrlFromIBF(iOutputHandler &outputStream): m_outputStream(outputStream){
+deleteUrlFromIBF::deleteUrlFromIBF(immortalBloomFilter *ibf): m_ibf(ibf){
 // empty constructor
 }
 
-void deleteUrlFromIBF:: execute(immortalBloomFilter *ibf, const std::string &url){
-    if(ibf->remove(url)){ // delete the URL from the immortal bloom filter
-        m_outputStream << "204 No Content\n";
+void deleteUrlFromIBF::execute(iInputHandler &inputStream, iOutputHandler &outputStream,
+    const std::string &url){
+
+    (void)inputStream; // Suppress unused parameter warning
+
+    if(m_ibf->remove(url)){ // delete the URL from the immortal bloom filter
+        outputStream << "204 No Content\n";
     }
     else
     {
-        m_outputStream << "404 Not Found\n";
+        outputStream << "404 Not Found\n";
     }
 }

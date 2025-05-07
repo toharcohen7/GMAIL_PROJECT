@@ -13,39 +13,33 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
-#include <iostream>
 #include <map> // For std::map
 
-#include "immortalBloomFilter.hpp"
-#include "iCommand.hpp" // iCommand class
-#include "iInputHandler.hpp" // iInputHandler class
-#include "iOutputHandler.hpp"
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "iCommand.hpp"           // iCommand class
+#include "iInputHandler.hpp"     // iInputHandler class
+#include "iOutputHandler.hpp"   // iOutputHandler class
+#include "iRunnable.hpp"       // iRunnable class
 
 /*******************************************************************************
  *                                CLASS                                        *
  * ****************************************************************************/
 
-class runProgram
+class runProgram : public iRunnable
 {
     private:
 
-    std::map<std::string, iCommand*> &m_commands; //// Map of command numbers to command objects
+    std::map<std::string, iCommand*> m_commands; // Map of command numbers to command objects
     immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter objec
-    iInputHandler &m_inputStream; // Input stream for reading user input
-    iOutputHandler &m_outputStream; // Output stream for printing messages
 
     public:
 
 /*******************************************************************************
     * @brief Constructor for the runProgram class.
-    * @param commands Map of command numbers to command objects.
-    * @param inputStream Input stream for reading user input.
-    * @param outputStream Output stream for printing user output.
     * @param ibf The immortal bloom filter instance to operate on.
     * @details This constructor initializes the runProgram object and creates an immortal bloom filter.
 *******************************************************************************/
-    runProgram(std::map<std::string, iCommand*> &commands, immortalBloomFilter *ibf,
-                iInputHandler &inputStream,iOutputHandler &outputStream);
+    runProgram(immortalBloomFilter *ibf);
 
 /*******************************************************************************
     * @brief Destructor for the runProgram class.
@@ -56,8 +50,10 @@ class runProgram
 /*******************************************************************************
     * @brief Runs the program.
     * @details This function runs the program and handles user input.
+    * @param inputStream Input stream for reading user input.
+    * @param outputStream Output stream for sending messages.
 *******************************************************************************/
-    void run(); 
+    virtual void run(iInputHandler &inputStream, iOutputHandler &outputStream) override; 
 };
 
 #endif /* RUN_PROGRAM_HEADER */
