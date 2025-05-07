@@ -4,6 +4,7 @@ project(Gmail_Project)
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
  
 include(FetchContent)
 FetchContent_Declare(
@@ -25,8 +26,10 @@ add_executable(runTest
     src/searchUrlInIBF.cpp
     src/initProgram.cpp
     src/promptHandler.cpp
-    src/deleteUrlFromIBF.cpp)
-target_link_libraries(runTest gtest_main)
+    src/deleteUrlFromIBF.cpp
+    src/server.cpp
+    src/socketHandler.cpp)
+target_link_libraries(runTest gtest_main pthread)
 
 # Main program executable
 add_executable(runProg
@@ -39,5 +42,7 @@ add_executable(runProg
     src/searchUrlInIBF.cpp
     src/initProgram.cpp
     src/promptHandler.cpp
-    src/deleteUrlFromIBF.cpp)
-    
+    src/deleteUrlFromIBF.cpp
+    src/server.cpp
+    src/socketHandler.cpp)
+    target_link_libraries(runProg pthread)

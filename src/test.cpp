@@ -3,7 +3,9 @@
 #include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 #include "hashFunc.hpp"
 #include <cstdio> // for remove
-
+#include "initProgram.hpp"
+#include <thread>
+#include "server.hpp"
 
 size_t hashFunction(const std::string &str) {
     return std::hash<std::string>()(str);
@@ -231,6 +233,45 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
 }
 
 /*******************************************************************************
+ * Test: SocketHandlerTest.clientIntegration
+ * Purpose: To test the client-server interaction.
+ * - Validates that the client can connect to the server and send a request.
+ * - Ensures that the server responds correctly to the client's request.
+ * - Verifies that the client can handle the server's response.
+ ******************************************************************************/
+
+ TEST(SocketHandlerTest, clientIntegration) {
+    int port = 12345;
+    size_t bloomFilterSize = 8; // Use 8 as the Bloom filter size
+    std::vector<int> hashCounts = {1, 2, 3};
+    std::vector<hashFunc> hashFunctions;
+
+    // Create the immortal bloom filter
+    auto *ibf = initProgram::createNewIBF(bloomFilterSize, hashCounts, hashFunctions);
+
+    // Create the runProgram object
+    auto *rp = initProgram::createRunProgram(ibf);
+
+    // Start the server in a separate thread
+    std::thread serverThread([&]() {
+        server myServer(port, *rp);
+        myServer.startServer();
+    });
+
+    // Give the server some time to start
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    // Invoke the Python client
+    int result = system("python3 client.py");
+    ASSERT_EQ(result, 0) << "Python client failed";
+
+    // Clean up
+    serverThread.detach();
+    delete rp;
+    delete ibf;
+}
+
+/*******************************************************************************
  * Test: SocketHandlerTest.serverIntegration
  * Purpose: To test the server.
  * - Validates that the server can accept a connection and respond correctly.
@@ -284,69 +325,6 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
     for (int i = 0; i < 3; ++i) {
         close(clientSockets[i]);
     }
-    serverThread.detach();
-    delete rp;
-    delete ibf;
-}
-/*******************************************************************************
- * Test: SocketHandlerTest.clientIntegration
- * Purpose: To test the client-server interaction.
- * - Validates that the client can connect to the server and send a request.
- * - Ensures that the server responds correctly to the client's request.
- * - Verifies that the client can handle the server's response.
- ******************************************************************************/
-
- TEST(SocketHandlerTest, clientIntegration) {
-    int port = 12345;
-    size_t bloomFilterSize = 8; // Use 8 as the Bloom filter size
-    std::vector<int> hashCounts = {1, 2, 3};
-    std::vector<hashFunc> hashFunctions;
-
-    // Create the immortal bloom filter
-    auto *ibf = initProgram::createNewIBF(bloomFilterSize, hashCounts, hashFunctions);
-
-    // Create the runProgram object
-    auto *rp = initProgram::createRunProgram(ibf);
-
-    // Start the server in a separate thread
-    std::thread serverThread([&]() {
-        server myServer(port, *rp);
-        myServer.startServer();
-    });
-
-    // Give the server some time to start
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    // Simulate the client behavior
-    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-    ASSERT_NE(clientSocket, -1) << "Failed to create client socket";
-
-    struct sockaddr_in serverAddr;
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(port);
-    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-    // Connect to the server
-    ASSERT_EQ(connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)), 0)
-        << "Failed to connect to server";
-
-    // Send a request to the server
-    std::string request = "POST http://example.com\n";
-    send(clientSocket, request.c_str(), request.size(), 0);
-
-    // Receive the server's response
-    char buffer[4096] = {0};
-    int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-    ASSERT_GT(bytesRead, 0) << "Failed to receive response from server";
-
-    // Validate the response
-    std::string response(buffer);
-    EXPECT_EQ(response, "201 Created\n");
-
-    // Close the client socket
-    close(clientSocket);
-
-    // Clean up
     serverThread.detach();
     delete rp;
     delete ibf;
