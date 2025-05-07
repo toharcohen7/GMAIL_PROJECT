@@ -13,7 +13,7 @@ bloomFilter::bloomFilter(size_t size, std::vector<hashFunc> &hashFunctions) {
 
     m_hashFunctions = new std::vector<hashFunc>(hashFunctions); // Deep copy of the hash functions
     m_bitVector = new std::vector<bool>(size, false);
-    m_blackList = new std::vector<std::string>();
+    m_blackList = new std::set<std::string>();
 }
 
 bloomFilter::~bloomFilter() {
@@ -27,7 +27,7 @@ bloomFilter::~bloomFilter() {
 
 void bloomFilter::add(const std::string &input) {
 
-    m_blackList->push_back(input); // Add to the blacklist
+    m_blackList->insert(input); // Add to the blacklist
 
     for (const auto &hashFunction : *m_hashFunctions) {
         size_t hashValue = hashFunction(input) % m_bitVector->size(); // Hash the input and get the index
@@ -46,17 +46,13 @@ bool bloomFilter::isContains(const std::string &input) const {
 }
 
 bool bloomFilter::isInBlackList(const std::string &input) const {
-    for (const auto &str : *m_blackList) {
-        if (str == input) { // Check if the input is in the blacklist
-            return true;
-        }
-    }
-    return false; // Not found in the blacklist
+    return m_blackList->find(input) != m_blackList->end();
 }
+
 bool bloomFilter::remove(const std::string &input) {
- // checking if the string exists in the vector if so erasing all of the instances    
+ // checking if the string exists in the set if so erasethe instances    
     if(isInBlackList(input)){
-        m_blackList->erase(std::remove(m_blackList->begin(), m_blackList->end(), input),m_blackList->end());
+        m_blackList->erase(input);
         return true;
     }
     return false; 

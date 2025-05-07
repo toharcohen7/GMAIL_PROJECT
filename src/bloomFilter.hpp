@@ -15,7 +15,8 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
-#include <vector>         // vector
+#include <vector>          // vector
+#include <set>            // set
 #include <string>        // string
 #include "hashFunc.hpp" // hashFunc class
 
@@ -30,7 +31,7 @@ private:
     // bit vector to store the bloom filter 
     std::vector<bool> *m_bitVector; 
     // blacklist to store the actual strings that are in the bloom filter
-    std::vector<std::string> *m_blackList; 
+    std::set<std::string> *m_blackList; 
 
 public:
 
