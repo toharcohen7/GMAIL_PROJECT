@@ -35,7 +35,6 @@ immortalBloomFilter *initProgram::createNewIBF(size_t ibfSize, std::vector<int> 
     while(runnerCounts != hashCounts.end()) 
     {
         // Create new hash functions for remaining counts
-        std::cout << static_cast<size_t>(static_cast<size_t>(*runnerCounts)) << std::endl;
         hashFunctions.push_back(hashFunc(hasher, static_cast<size_t>(*runnerCounts))); 
         ++runnerCounts;
     }

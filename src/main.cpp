@@ -1,16 +1,9 @@
-#include <map>                            // For std::map    
-#include <iostream>                      // cout, cin, endl
-#include <string>                       // string 
-#include "iCommand.hpp"                // iCommand class
-#include "addUrlToIBF.hpp"            // addUrlToIBF class
-#include "searchUrlInIBF.hpp"        // searchUrlInIBF class
+#include <string>                    // string 
 #include "initProgram.hpp"          // initProgram class
 #include "immortalBloomFilter.hpp" // immortalBloomFilter class
 #include "hashFunc.hpp"           // hashFunc class
-#include "promptHandler.hpp"     // promptHandler class
-#include "runProgram.hpp"
-#include "deleteUrlFromIBF.hpp"
-#include "server.hpp"         // server class
+#include "runProgram.hpp"        // runProgram class
+#include "server.hpp"           // server class
 
 enum inputArguments {
     MAIN_FILE = 0,
