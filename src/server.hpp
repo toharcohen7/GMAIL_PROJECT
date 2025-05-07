@@ -19,15 +19,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#include "iCommand.hpp"                // iCommand class
-#include "addUrlToIBF.hpp"            // addUrlToIBF class
-#include "searchUrlInIBF.hpp"        // searchUrlInIBF class
-#include "initProgram.hpp"          // initProgram class
-#include "immortalBloomFilter.hpp" // immortalBloomFilter class
-#include "hashFunc.hpp"           // hashFunc class
-#include "promptHandler.hpp"     // promptHandler class
-#include "runProgram.hpp"
-#include "deleteUrlFromIBF.hpp"
+#include "iRunnable.hpp"       // iRunnable class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -39,12 +31,14 @@ class server
 private:
 
     int m_serverSocket; // Socket to listen for incoming connections
+    iRunnable &m_runnable;
 
 public:
 
 /*******************************************************************************
   * @brief Constructor for the server class.
   * @param port Port number for the server.
+  * @param runnable the program to run when a client connects.
   * @param socketType Socket type (TCP or UDP).
   * @param addressFamily Address family (IPv4 or IPv6).
   * @param numToListen Number of connections to listen for.
@@ -52,7 +46,8 @@ public:
   * socket type, and address family.
   * It also creates a socket for the server using the specified parameters.
  * *****************************************************************************/
-    server(int port, int socketType = SOCK_STREAM, int addressFamily = AF_INET, size_t numToListen = 5);
+    server(int port, iRunnable &runnable ,int socketType = SOCK_STREAM, 
+            int addressFamily = AF_INET, size_t numToListen = 5);
 
 /*******************************************************************************
  * @brief Destructor for the server class.
@@ -65,7 +60,7 @@ public:
  * @brief Starts the server and listens for incoming connections.
  * @details This function binds the server socket to the specified port and address,
  * and starts listening for incoming connections.
- * It accepts incoming connections and handles them in a loop.
+ * It accepts incoming connections and run the specified program (iRunnable) for each connection.
  ******************************************************************************/
     void startServer();
 };
