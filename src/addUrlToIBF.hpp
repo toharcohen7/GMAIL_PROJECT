@@ -13,10 +13,12 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
-#include <string> 
-#include "iCommand.hpp"
-#include "immortalBloomFilter.hpp" 
-#include "iOutputHandler.hpp"
+#include <string> // For std::string
+
+#include "iCommand.hpp"             // iCommand class
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "iOutputHandler.hpp"     // iOutputHandler class
+#include "iInputHandler.hpp"     // iInputHandler class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -25,7 +27,7 @@
 class addUrlToIBF : public iCommand {
 
     private:
-    iOutputHandler &m_outputStream; // Output stream for printing messages
+    immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter object
 
 public:
     
@@ -33,7 +35,7 @@ public:
     * @brief Constructor for the addUrlToIBF class.
     * @details Empty constructor for the addUrlToIBF class. It initializes the object.
 *******************************************************************************/
-    addUrlToIBF(iOutputHandler &m_outputStream);
+    addUrlToIBF(immortalBloomFilter *ibf);
   
 /*******************************************************************************
     * @brief Destructor for the addUrlToIBF class.
@@ -44,12 +46,14 @@ public:
 
 /*******************************************************************************
     * @brief Executes the command to add a URL to the immortal bloom filter.
-    * @param ibf Pointer to the immortal bloom filter object.
-    * @param url URL to be added to the bloom filter.
+    * @param inputStream The input handler for reading input.
+    * @param outputStream The output handler for writing output.
+    * @param url The URL to be added to the immortal bloom filter.
     * @details This function adds the URL to the immortal bloom filter and prints a message indicating success.
     * It overrides the execute method in the iCommand class.
  *********************************************************************************/
-    void execute(immortalBloomFilter *ibf, const std::string &url) override;
+    void execute(iInputHandler &inputStream, iOutputHandler &outputStream,
+                  const std::string &url) override;
 };
 
 #endif /* ADDURLTOIBF_HPP */

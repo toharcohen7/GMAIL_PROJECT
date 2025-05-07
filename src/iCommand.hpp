@@ -16,7 +16,9 @@
 
 #include <string> // For std::string
 
-#include "immortalBloomFilter.hpp"
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "iOutputHandler.hpp"     // iOutputHandler class
+#include "iInputHandler.hpp"     // iInputHandler class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -27,13 +29,15 @@ class iCommand
     public:
 /*******************************************************************************
     * @brief Executes the command.
-    * @param ibf Pointer to the immortal bloom filter object.
-    * @param url URL for operation in the immortal bloom filter.
+    * @param inputStream The input handler for reading input.
+    * @param outputStream The output handler for writing output.
+    * @param url The URL to be processed.
     * @details This function is a pure virtual function that must be implemented by derived classes.
     * It defines the interface for executing commands in the program.
     * @note This function is pure virtual, meaning that any derived class must implement this function.
 *******************************************************************************/
-        virtual void execute(immortalBloomFilter *ibf, const std::string &url) = 0;
+        virtual void execute(iInputHandler &inputStream, iOutputHandler &outputStream,
+                                const std::string &url) = 0;
 
 /*******************************************************************************
     * @brief Destructor for the iCommand class.

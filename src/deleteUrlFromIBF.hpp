@@ -13,12 +13,12 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
-#include <string> 
-#include <iostream> // For std::cout and std::cin
+#include <string> // For std::string
 
-#include "iCommand.hpp"
-#include "immortalBloomFilter.hpp" 
-#include "iOutputHandler.hpp"
+#include "iCommand.hpp"             // iCommand class
+#include "immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "iOutputHandler.hpp"     // iOutputHandler class
+#include "iInputHandler.hpp"     // iInputHandler class
 
 /*******************************************************************************
  *                                CLASS                                        *
@@ -27,8 +27,7 @@
 class deleteUrlFromIBF : public iCommand {
 
     private:
-    iOutputHandler &m_outputStream; // Output stream for printing messages
-
+    immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter object
 public:
     
 /*******************************************************************************
@@ -36,7 +35,7 @@ public:
     * @param outputStream Output stream for printing messages.
     * @details This constructor initializes the deleteUrlFromIBF object and sets the output stream.
 *******************************************************************************/
-    deleteUrlFromIBF(iOutputHandler &outputStream);
+    deleteUrlFromIBF(immortalBloomFilter *ibf);
   
 /*******************************************************************************
     * @brief Destructor for the deleteUrlFromIBF class.
@@ -47,14 +46,16 @@ public:
 
 /*******************************************************************************
     * @brief Executes the command to delete a URL from the immortal bloom filter.
-    * @param ibf Pointer to the immortal bloom filter object.
-    * @param url URL to be searched in the bloom filter.
+    * @param inputStream The input handler for reading input.
+    * @param outputStream The output handler for writing output.
+    * @param url The URL to be deleted from the immortal bloom filter.
     * @details This function deletes the URL from the immortal bloom filter.
     * It also checks if the URL is present in the bloom filter before deletion.
     * It prints a message indicating success or failure.
     * It overrides the execute method in the iCommand class.
  *********************************************************************************/
-    void execute(immortalBloomFilter *ibf, const std::string &url) override;
+    void execute(iInputHandler &inputStream, iOutputHandler &outputStream,
+        const std::string &url) override;
 };
 
 #endif /* DELETEURLFROMIBF_HPP */
