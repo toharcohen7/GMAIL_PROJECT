@@ -262,7 +262,7 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     // Invoke the Python client
-    int result = system("python3 client.py");
+    int result = system("echo 'Hello, server!' | python3 ../src/client.py 12345");
     ASSERT_EQ(result, 0) << "Python client failed";
 
     // Clean up
