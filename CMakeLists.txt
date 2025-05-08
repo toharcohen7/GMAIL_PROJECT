@@ -32,7 +32,7 @@ add_executable(runTest
 target_link_libraries(runTest gtest_main pthread)
 
 # Main program executable
-add_executable(runProg
+add_executable(runServer
     src/bloomFilter.cpp
     src/hashFunc.cpp
     src/main.cpp
@@ -45,4 +45,4 @@ add_executable(runProg
     src/deleteUrlFromIBF.cpp
     src/server.cpp
     src/socketHandler.cpp)
-    target_link_libraries(runProg pthread)
+    target_link_libraries(runServer pthread)
