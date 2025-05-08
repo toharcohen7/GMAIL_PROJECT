@@ -7,11 +7,10 @@ WORKDIR /usr/src/mytest
 RUN mkdir build
  
 WORKDIR /usr/src/mytest/build
-RUN apt-get update && apt-get install -y cmake
+RUN apt-get update && apt-get install -y cmake python3
 RUN cmake .. && make
 
-# Set entrypoint so user can choose what to run
-ENTRYPOINT []
+# Expose the server port 
+EXPOSE 12345
 
-# Default command to run the test
-CMD ["./runProg"]
+CMD ["echo", "Please specify a command to run"]

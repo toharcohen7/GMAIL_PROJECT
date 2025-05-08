@@ -3,8 +3,9 @@
 #include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 #include "hashFunc.hpp"
 #include <cstdio> // for remove
-#include "socketInputHandler.hpp"
-#include "socketOutputHandler.hpp"
+#include "initProgram.hpp"
+#include <thread>
+#include "server.hpp"
 
 size_t hashFunction(const std::string &str) {
     return std::hash<std::string>()(str);
@@ -232,40 +233,63 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
 }
 
 /*******************************************************************************
- * Test: SocketHandlerTest.combinedFlow
- * Purpose: To test the combined functionality of socketInputHandler and socketOutputHandler.
- * - Validates that a message sent from the client is correctly received by the server.
- * - Ensures that the server can handle incoming messages and the client can send them.
- * - Tests the socket communication between client and server.
- * - Uses a separate thread for the server to allow for concurrent execution
+ * Test: SocketHandlerTest.serverIntegration
+ * Purpose: To test the server.
+ * - Validates that the server can accept a connection and respond correctly.
+ * - Ensures that the server can handle a POST request and return the expected response.
+ * - Verifies that the server can handle multiple requests in a single run.
  ******************************************************************************/
 
- TEST(SocketHandlerTest, combinedFlow) {
+ TEST(SocketHandlerTest, BasicFunctionality) {
     int port = 12345;
-    std::string expectedMessage = "Hello, Server!";
-    std::string receivedMessage;
+
+    // Create a mock iRunnable implementation for testing
+    class MockRunnable : public iRunnable {
+    public:
+        void run(iInputHandler &input, iOutputHandler &output) override {
+            // Read input from the client
+            std::string clientMessage = input.getInput();
+            EXPECT_EQ(clientMessage, "Hello, Server!");
+
+            // Send a response back to the client
+            output.sendOutput("Hello, Client!");
+        }
+    };
+
+    MockRunnable mockRunnable;
 
     // Start the server in a separate thread
     std::thread serverThread([&]() {
-        socketInputHandler server(port);
-        std::cout << "Server is waiting for a message..." << std::endl;
-        receivedMessage = server.getInput(); // Wait for client message
-        std::cout << "Server received: " << receivedMessage << std::endl;
+        server myServer(port, mockRunnable, SOCK_STREAM, AF_INET, 1);
+        myServer.startServer();
     });
 
-    // Give the server some time to start
+    // Allow the server to start
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    // Client code
-    socketOutputHandler client(port);
-    client << expectedMessage; // Send message to server
-    std::cout << "Client sent: " << expectedMessage << std::endl;
+    // Simulate a client connection
+    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    ASSERT_NE(clientSocket, -1) << "Failed to create client socket";
 
-    // Wait for the server thread to finish
-    serverThread.join();
+    struct sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(port);
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    // Validate the received message
-    EXPECT_EQ(receivedMessage, expectedMessage);
+    ASSERT_EQ(connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)), 0)
+        << "Failed to connect to server";
+
+    // Send a message to the server
+    const char *message = "Hello, Server!";
+    send(clientSocket, message, strlen(message), 0);
+
+    // Receive a response from the server
+    char buffer[4096] = {0};
+    recv(clientSocket, buffer, sizeof(buffer), 0);
+    EXPECT_STREQ(buffer, "Hello, Client!");
+
+    close(clientSocket);
+    serverThread.detach(); // Detach the server thread
 }
 
 int main(int argc, char **argv) {

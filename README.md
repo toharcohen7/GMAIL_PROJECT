@@ -2,8 +2,8 @@
 
 ## Overview
 
-This project implements a Bloom Filter and related functionality in C++.  
-It includes both a main program (`runProg`) and a test suite (`runTest`) using GoogleTest.
+This project implements a Bloom Filter and related functionality in C++ using a client-server architecture.  
+It includes a C++ server (`runServer`), a Python client (`client.py`), and a test suite (`runTest`) using GoogleTest.
 
 ## Milestones
 
@@ -17,7 +17,7 @@ GPDTH-99-branch-for-milestone-1
 
 ## Building with Docker
 
-The project is set up to build and run inside a Docker container using GCC and CMake.
+The project is set up to build and run inside a Docker container using GCC, CMake, and Python3.
 
 ### Build the Docker Image
 
@@ -29,15 +29,28 @@ docker build -t gmail_project .
 
 ## Running the Program
 
-### Interactive Main Program
+### Running the Server
 
-To run the main program interactively (recommended):
+Open a terminal and run:
 
 ```sh
-docker run -it gmail_project ./runProg
+docker run -p 12345:12345 gmail_project ./runServer 12345 8 3
 ```
 
-- The `-it` flag attaches an interactive terminal, allowing you to provide input to the program.
+- `12345`: Port number to listen on
+- `8`: Bloom filter size
+- `3`: Hash count (add more numbers for more hash functions if needed)
+
+### Running the Client
+
+Open a **second terminal** and run:
+
+```sh
+docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/client.py 12345
+```
+
+- The `--network="host"` flag allows the client to connect to the server running on your host.
+- The `-it` flag attaches an interactive terminal so you can type commands.
 
 ### Running the Test Suite
 
@@ -49,97 +62,76 @@ docker run gmail_project ./runTest
 
 - This will execute all unit tests and print the results.
 
-## Default Run Behavior
-
-By default, when you run the Docker container **without specifying a command**, it will execute the main program:
-
-```sh
-docker run -it gmail_project
-```
-
-This is equivalent to:
-
-```sh
-docker run -it gmail_project ./runProg
-```
-
-If you want to run the test suite instead, simply specify `./runTest` as the command:
-
-```sh
-docker run gmail_project ./runTest
-```
-
-**Note:**  
-- Always use `-it` when running the main program to enable interactive input.
-- You do not need `-it` when running the tests.
-
 ## Usage Instructions
 
-After running the main program `(runProg)`, you will interact with the program via the terminal.  
-The program expects specific input formats and will ignore any invalid input.
+After starting both server and client, interact with the system through the client terminal using the following commands:
 
-### Program Flow
+1. **POST (Add a URL to the blacklist):**
+   ```
+   POST www.example.com
+   ```
 
-1. **First Line:**  
-   Enter the Bloom filter array size and how many times to use the hash functions.  
-   The number of numbers you write after the array size determines how many hash functions will be used.  
-   Each number specifies how many times the corresponding hash function will be applied.  
-   - Example: `8 1 2` (array size 8, using the first hash function once and the second hash function twice)
-   - Example: `256 1 2 3 4 5 6 7`  
-     (array size 256 bits, using 7 hash functions:  
-     - The first hash function is applied once.  
-     - The second hash function is applied twice.  
-     - The third hash function is applied three times, and so on.)
+2. **GET (Check if a URL is blacklisted):**
+   ```
+   GET www.example.com
+   ```
 
-2. **Commands:**  
-   - To **add a URL to the blacklist**:  
-     `1 [URL]`
-     
-     Example: `1 www.example.com0`
+3. **DELETE (Remove a URL from the blacklist):**
+   ```
+   DELETE www.example.com
+   ```
 
-   - To **check if a URL is blacklisted**:  
-     `2 [URL]` 
-     
-     Example: `2 www.example.com0`
+- The server will respond with the result of your command.
 
-3. **Output:**  
-   - For a check `(2 [URL])`, the program prints `true true` if the URL is blacklisted and confirmed,  
-     `true false` if it is a false positive, or `false` if it is not blacklisted.
-   - Any input not matching the expected format is ignored.
+---
 
-4. **Persistence:**  
-   - The Bloom filter is saved to a file after every update.
-   - On restart, the program loads the previously saved Bloom filter automatically.
+**Note:**  
+- Only input lines in the correct format will be processed; all others are ignored.
+- Output must match the examples exactly (no extra spaces, newlines, or text).
+- The Bloom filter is persistent between runs via a file.
 
-5. **Exiting:**  
-   - To exit, you can use `Ctrl+D` or close the terminal.
+## Program Flow
+
+1. **Start the server** in one terminal with the desired configuration (port, bloom filter size, hash count).
+2. **Start the client** in another terminal and connect to the server.
+3. **Send commands** from the client to the server using the POST, GET, and DELETE formats as shown above.
+4. **Server processes the commands** and responds accordingly.
+5. **Bloom filter state is saved** after every update and loaded automatically on server restart.
+6. **To exit:**  
+   - Use `Ctrl+D` or close the client terminal to disconnect the client.
+   - Use `Ctrl+C` in the server terminal to stop the server.
 
 ### Examples
 
-**Build Command:** 
+**Build Command:**  
 ![Build Command](images/1.jpeg)
 
-**runTest Command:** 
+**runTest Command:**  
 ![runTest Command](images/2.jpeg)
 
-**runProg Command & Code Example:** 
-![runProg Command & Code Example](images/3.jpeg)
+**Server Run Command:**  
+![Server Run Command](images/3.jpeg)
 
-**Default Run Behavior & Code Example:** 
-![Default Run Behavior & Code Example](images/4.jpeg)
+**Client Run Command:**  
+![Client Run Command](images/4.jpeg)
 
-### Notes
+**Sample Client Interaction:**  
+![Sample Client Interaction](images/5.jpeg)
 
-- Only input lines in the correct format will be processed; all others are ignored.
-- Output must match the examples exactly (no extra spaces, newlines, or text).
-- The program supports multiple hash functions and flexible array sizes as specified in the first input line.
-- The Bloom filter is persistent between runs via a file.
-
+---
 
 ## Project Structure
 
-- `main.cpp` — Entry point for the main program.
-- `test.cpp` — Contains GoogleTest unit tests.
-- `CMakeLists.txt` — CMake build configuration.
-- `Dockerfile` — Docker build instructions.
-- Other `.cpp` and `.hpp` files — Project source code.
+- `src/main.cpp` — Server program entry point
+- `src/server.cpp/hpp` — Server implementation
+- `src/socketHandler.cpp/hpp` — Socket communication handling
+- `src/client.py` — Python client implementation
+- `src/bloomFilter.cpp/hpp`, `src/immortalBloomFilter.cpp/hpp` — Bloom filter implementation
+- `src/test.cpp` — Test suite
+- `CMakeLists.txt` — Build configuration
+- `Dockerfile` — Docker configuration
+
+## Requirements
+
+- Docker
+- Two terminal windows (one for server, one for client)
