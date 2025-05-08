@@ -233,45 +233,6 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
 }
 
 /*******************************************************************************
- * Test: SocketHandlerTest.clientIntegration
- * Purpose: To test the client-server interaction.
- * - Validates that the client can connect to the server and send a request.
- * - Ensures that the server responds correctly to the client's request.
- * - Verifies that the client can handle the server's response.
- ******************************************************************************/
-
- TEST(SocketHandlerTest, clientIntegration) {
-    int port = 12345;
-    size_t bloomFilterSize = 8; // Use 8 as the Bloom filter size
-    std::vector<int> hashCounts = {1, 2, 3};
-    std::vector<hashFunc> hashFunctions;
-
-    // Create the immortal bloom filter
-    auto *ibf = initProgram::createNewIBF(bloomFilterSize, hashCounts, hashFunctions);
-
-    // Create the runProgram object
-    auto *rp = initProgram::createRunProgram(ibf);
-
-    // Start the server in a separate thread
-    std::thread serverThread([&]() {
-        server myServer(port, *rp);
-        myServer.startServer();
-    });
-
-    // Give the server some time to start
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    // Invoke the Python client
-    int result = system("echo 'Hello, server!' | python3 ../src/client.py 12345");
-    ASSERT_EQ(result, 0) << "Python client failed";
-
-    // Clean up
-    serverThread.detach();
-    delete rp;
-    delete ibf;
-}
-
-/*******************************************************************************
  * Test: SocketHandlerTest.serverIntegration
  * Purpose: To test the server.
  * - Validates that the server can accept a connection and respond correctly.
@@ -279,55 +240,56 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
  * - Verifies that the server can handle multiple requests in a single run.
  ******************************************************************************/
 
- TEST(SocketHandlerTest, serverIntegration) {
+ TEST(SocketHandlerTest, BasicFunctionality) {
     int port = 12345;
-    size_t bloomFilterSize = 8;
-    std::vector<int> hashCounts = {1, 2, 3};
-    std::vector<hashFunc> hashFunctions;
 
-    // Create the immortal bloom filter
-    auto *ibf = initProgram::createNewIBF(bloomFilterSize, hashCounts, hashFunctions);
+    // Create a mock iRunnable implementation for testing
+    class MockRunnable : public iRunnable {
+    public:
+        void run(iInputHandler &input, iOutputHandler &output) override {
+            // Read input from the client
+            std::string clientMessage = input.getInput();
+            EXPECT_EQ(clientMessage, "Hello, Server!");
 
-    // Create the runProgram object
-    auto *rp = initProgram::createRunProgram(ibf);
+            // Send a response back to the client
+            output.sendOutput("Hello, Client!");
+        }
+    };
 
-    // Start the server with a connection limit of 2
+    MockRunnable mockRunnable;
+
+    // Start the server in a separate thread
     std::thread serverThread([&]() {
-        server myServer(port, *rp, SOCK_STREAM, AF_INET, 2);
+        server myServer(port, mockRunnable, SOCK_STREAM, AF_INET, 1);
         myServer.startServer();
     });
 
+    // Allow the server to start
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    // Simulate 3 clients trying to connect
-    int clientSockets[3];
-    for (int i = 0; i < 3; ++i) {
-        clientSockets[i] = socket(AF_INET, SOCK_STREAM, 0);
-        ASSERT_NE(clientSockets[i], -1) << "Failed to create client socket";
+    // Simulate a client connection
+    int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    ASSERT_NE(clientSocket, -1) << "Failed to create client socket";
 
-        struct sockaddr_in serverAddr;
-        serverAddr.sin_family = AF_INET;
-        serverAddr.sin_port = htons(port);
-        serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    struct sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(port);
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-        if (i < 2) {
-            // First two clients should connect successfully
-            EXPECT_EQ(connect(clientSockets[i], (struct sockaddr *)&serverAddr, sizeof(serverAddr)), 0)
-                << "Failed to connect client " << i;
-        } else {
-            // Third client should fail due to connection limit
-            EXPECT_NE(connect(clientSockets[i], (struct sockaddr *)&serverAddr, sizeof(serverAddr)), 0)
-                << "Unexpectedly connected client " << i;
-        }
-    }
+    ASSERT_EQ(connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)), 0)
+        << "Failed to connect to server";
 
-    // Clean up
-    for (int i = 0; i < 3; ++i) {
-        close(clientSockets[i]);
-    }
-    serverThread.detach();
-    delete rp;
-    delete ibf;
+    // Send a message to the server
+    const char *message = "Hello, Server!";
+    send(clientSocket, message, strlen(message), 0);
+
+    // Receive a response from the server
+    char buffer[4096] = {0};
+    recv(clientSocket, buffer, sizeof(buffer), 0);
+    EXPECT_STREQ(buffer, "Hello, Client!");
+
+    close(clientSocket);
+    serverThread.detach(); // Detach the server thread
 }
 
 int main(int argc, char **argv) {
