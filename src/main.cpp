@@ -18,7 +18,7 @@ enum inputArguments {
     PORT_NUMBER = 1,
     BLOOM_FILTER_SIZE = 2,
     FIRST_HASH_COUNT = 3,
-    // Hash Count Start...
+    // Hash Count...
 };
 
 int main(int argc, char *argv[]) {
