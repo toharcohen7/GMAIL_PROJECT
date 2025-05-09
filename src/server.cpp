@@ -43,7 +43,17 @@ server::~server() {
 }
 
 void server::startServer() {
-
-    socketHandler socketPrompt(m_serverSocket); // Input handler for user input
-    m_runnable.run(socketPrompt, socketPrompt); // Run the program with the input handler
+    while (true)
+    {
+        socketHandler socketPrompt(m_serverSocket); // Input handler for user input
+        
+        try {
+            m_runnable.run(socketPrompt, socketPrompt); // Run the program with the socket handler
+        }
+        catch(const std::exception& e) {
+            // do nothing
+        }
+    }   
 }
+
+    
