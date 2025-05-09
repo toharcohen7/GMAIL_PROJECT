@@ -1,6 +1,13 @@
 import socket # import socket module
 import sys    # import sys module
 
+
+if len(sys.argv) != 2: # check if the number of arguments is not equal to 2
+    sys.exit(1) # exit with error code 1
+
+if int(sys.argv[1]) > 65535 or int(sys.argv[1]) < 1024: # check if the port number is not in the range of 1024 to 65535
+    sys.exit(1) # exit with error code 1
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create a TCP socket
 
 dest_ip = 'localhost'           
