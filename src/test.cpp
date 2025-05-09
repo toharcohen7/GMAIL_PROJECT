@@ -6,6 +6,8 @@
 #include "initProgram.hpp"
 #include <thread>
 #include "server.hpp"
+#include "socketHandler.hpp"
+#include <unistd.h> // For close function
 
 size_t hashFunction(const std::string &str) {
     return std::hash<std::string>()(str);
@@ -260,8 +262,34 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
 
     // Start the server in a separate thread
     std::thread serverThread([&]() {
-        server myServer(port, mockRunnable, SOCK_STREAM, AF_INET, 1);
-        myServer.startServer();
+
+        int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+        if (serverSocket < 0) {
+            throw std::runtime_error("Failed to create socket");
+        }
+    
+        // Set the socket to reuse the address
+        struct sockaddr_in sin;
+        memset(&sin, 0, sizeof(sin));
+        sin.sin_family = AF_INET;
+        sin.sin_addr.s_addr = INADDR_ANY;
+        sin.sin_port = htons(port);
+    
+        // Bind the socket to the specified port
+        if (bind(serverSocket, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
+            close(serverSocket);
+            throw std::runtime_error("Failed to bind socket\n");
+        }
+    
+        // Set the socket to listen for incoming connections
+        if (listen(serverSocket, 1) < 0) {
+            throw std::runtime_error("error listening to a socket\n");
+        }
+
+        socketHandler socketPrompt(serverSocket);
+        mockRunnable.run(socketPrompt, socketPrompt);
+
+        close(serverSocket); 
     });
 
     // Allow the server to start
