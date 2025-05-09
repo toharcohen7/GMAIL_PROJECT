@@ -1,5 +1,19 @@
 # Gmail_Project
 
+## Assignment Questions & Answers
+
+1. **Did the fact that the command names changed require you to touch code that is supposed to be "closed to changes but open to expansion"?**  
+   No, what we did in Exercise 1 was just create a map for the commands, where we changed the command number to its name (like 1 to POST). We only added the print statements inside the command classes and didn’t touch any code outside of them.
+
+2. **Did the fact that new commands were added require you to touch code that is supposed to be "closed to changes but open to expansion"?**  
+   No, we simply created a new class that inherits from the `iCommand` interface, and then added it to the command map. We didn’t change anything outside the new command class.
+
+3. **Did the fact that the command output changed require you to touch code that is supposed to be "closed to changes but open to expansion"?**  
+   No, we only added print statements inside the command classes and didn’t touch anything outside of them.
+
+4. **Did the fact that the input/output comes from sockets and not from the console require you to touch the code that is "closed to changes but open to extension"?**  
+   Yes, originally we planned for the input/output classes to be changeable, so we used `std::ifstream` and `std::ofstream` because they work with both standard input/output and files. We noticed that this could also work with sockets, but in the end we decided to create our own class `iOutputHandler` to make things clearer and more convenient and to avoid problems later on.
+
 ## Overview
 
 This project implements a Bloom Filter and related functionality in C++ using a client-server architecture.  
@@ -31,26 +45,75 @@ docker build -t gmail_project .
 
 ### Running the Server
 
-Open a terminal and run:
+You can run the server in several ways:
 
-```sh
+#### 1. Using Docker Directly
+
+**General format:**
+```
+docker run -p <port>:<port> gmail_project ./runServer <port> <bloom_filter_size> <hash_count> [additional_hash_counts...]
+```
+- `<port>`: Port number (**1024–65535**)
+- `<bloom_filter_size>`: Bloom filter size
+- `<hash_count>`: Number of hash functions (add more numbers for more hash functions if needed)
+
+**Example:**
+```
 docker run -p 12345:12345 gmail_project ./runServer 12345 8 3
 ```
 
-- `12345`: Port number to listen on
-- `8`: Bloom filter size
-- `3`: Hash count (add more numbers for more hash functions if needed)
+#### 2. Using the Provided Script
+
+First, give the script execute permission:
+```
+chmod +x ./rscripts/run_server.sh
+```
+Then run:
+```
+./rscripts/run_server.sh <port> <bloom_filter_size> <hash_count> [additional_hash_counts...]
+```
+**Example:**
+```
+./rscripts/run_server.sh 12345 8 3
+```
+
+---
 
 ### Running the Client
 
-Open a **second terminal** and run:
+You can also run the client in multiple ways:
 
-```sh
+#### 1. Using Docker Directly
+
+**General format:**
+```
+docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/client.py <port>
+```
+- `<port>`: Port number to connect to (**should match the server port**)
+
+**Example:**
+```
 docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/client.py 12345
 ```
 
-- The `--network="host"` flag allows the client to connect to the server running on your host.
-- The `-it` flag attaches an interactive terminal so you can type commands.
+#### 2. Using the Provided Script
+
+First, give the script execute permission:
+```
+chmod +x ./rscripts/run_client.sh
+```
+Then run:
+```
+./rscripts/run_client.sh <port>
+```
+**Example:**
+```
+./rscripts/run_client.sh 12345
+```
+
+---
+
+*Note: The specific command examples above are just for illustration. You can use any valid port (1024–65535) and parameters as needed.*
 
 ### Running the Test Suite
 
