@@ -64,19 +64,16 @@ docker run -p 12345:12345 gmail_project ./runServer 12345 8 3
 
 #### 2. Using the Provided Script
 
-First, give the script execute permission:
+Run:
 ```
-chmod +x ./rscripts/run_server.sh
-```
-Then run:
-```
-./rscripts/run_server.sh <port> <bloom_filter_size> <hash_count> [additional_hash_counts...]
+./rscripts/run_client.sh <port>
 ```
 **Example:**
 ```
-./rscripts/run_server.sh 12345 8 3
+./rscripts/run_client.sh 12345
 ```
-
+> **Note:** If you haven't already, give the script execute permission with  
+> `chmod +x ./rscripts/run_client.sh`
 ---
 
 ### Running the Client
@@ -98,18 +95,16 @@ docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/client
 
 #### 2. Using the Provided Script
 
-First, give the script execute permission:
+Run:
 ```
-chmod +x ./rscripts/run_client.sh
-```
-Then run:
-```
-./rscripts/run_client.sh <port>
+./rscripts/run_server.sh <port> <bloom_filter_size> <hash_count> [additional_hash_counts...]
 ```
 **Example:**
 ```
-./rscripts/run_client.sh 12345
+./rscripts/run_server.sh 12345 8 3
 ```
+> **Note:** If you haven't already, give the script execute permission with  
+> `chmod +x ./rscripts/run_server.sh`
 
 ---
 
