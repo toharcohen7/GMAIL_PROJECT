@@ -10,7 +10,4 @@ WORKDIR /usr/src/mytest/build
 RUN apt-get update && apt-get install -y cmake python3
 RUN cmake .. && make
 
-# Expose the server port 
-EXPOSE 12345
-
 CMD ["echo", "Please specify a command to run"]
