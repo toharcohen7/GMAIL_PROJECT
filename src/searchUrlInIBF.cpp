@@ -30,6 +30,5 @@ void searchUrlInIBF::execute(iInputHandler &inputStream, iOutputHandler &outputS
         returnStr.append("false"); // URL not found in the bloom filter
     }
 
-    returnStr.append("\n"); // Print a new line
     outputStream << returnStr;
 }

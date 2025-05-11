@@ -12,5 +12,5 @@ void addUrlToIBF::execute(iInputHandler &inputStream, iOutputHandler &outputStre
 
     (void)inputStream; // Suppress unused parameter warning
     m_ibf->add(url); // Add the URL to the immortal bloom filter
-    outputStream << "201 Created\n";
+    outputStream << "201 Created";
 }

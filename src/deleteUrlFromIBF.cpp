@@ -12,10 +12,10 @@ void deleteUrlFromIBF::execute(iInputHandler &inputStream, iOutputHandler &outpu
     (void)inputStream; // Suppress unused parameter warning
 
     if(m_ibf->remove(url)){ // delete the URL from the immortal bloom filter
-        outputStream << "204 No Content\n";
+        outputStream << "204 No Content";
     }
     else
     {
-        outputStream << "404 Not Found\n";
+        outputStream << "404 Not Found";
     }
 }

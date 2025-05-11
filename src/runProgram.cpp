@@ -75,7 +75,7 @@ static void runOperations(std::map<std::string, iCommand*> &commands,
         }
         else
         {
-            outputStream <<"400 Bad Request\n";
+            outputStream <<"400 Bad Request";
         }
     }
 
@@ -85,7 +85,7 @@ static void runOperations(std::map<std::string, iCommand*> &commands,
     }
     catch(const std::exception& e)
     {
-        outputStream <<"400 Bad Request\n";
+        outputStream <<"400 Bad Request";
     }
     
 }

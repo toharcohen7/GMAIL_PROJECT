@@ -1,16 +1,20 @@
 import socket # import socket module
 import sys    # import sys module
+import ipaddress
 
 
-if len(sys.argv) != 2: # check if the number of arguments is not equal to 2
+if len(sys.argv) != 3: # check if the number of arguments is not equal to 2
     sys.exit(1) # exit with error code 1
 
 if int(sys.argv[1]) > 65535 or int(sys.argv[1]) < 1024: # check if the port number is not in the range of 1024 to 65535
     sys.exit(1) # exit with error code 1
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create a TCP socket
+try:
+    dest_ip = str(ipaddress.IPv4Address(sys.argv[2])) # check if the IP address is valid
+except ipaddress.AddressValueError:
+    sys.exit(1)  # exit with error code 1
 
-dest_ip = 'localhost'           
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create a TCP socket
 
 dest_port = int(sys.argv[1])               
 s.connect((dest_ip, dest_port)) 
