@@ -155,9 +155,8 @@ After starting both server and client, interact with the system through the clie
 3. **Send commands** from the client to the server using the POST, GET, and DELETE formats as shown above.
 4. **Server processes the commands** and responds accordingly.
 5. **Bloom filter state is saved** after every update and loaded automatically on server restart.
-6. **To exit:**  
-   - Use `Ctrl+D` or close the client terminal to disconnect the client.
-   - Use `Ctrl+C` in the server terminal to stop the server.
+
+> **Note:** The program runs in an infinite loop and does not have a built-in exit option; you can only stop it by killing the process.
 
 ### Examples
 
