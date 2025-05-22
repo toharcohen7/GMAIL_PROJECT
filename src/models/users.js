@@ -3,6 +3,8 @@ const users = [];
 
 const getUser = (id) => {
     const user = users.find(u => u.id === id);
+    if (!user) 
+        return undefined;
     return {
         id: user.id,
         userName: user.userName,
@@ -15,7 +17,7 @@ const getUser = (id) => {
 
 const createUser = (userName, password,firstName,lastName,gender,birthDate) => {
     const newUser = {id: ++idCounter,userName, password,firstName,lastName,gender,birthDate};
-    user.push(newUser);
+    users.push(newUser);
     return newUser;
 };
 
