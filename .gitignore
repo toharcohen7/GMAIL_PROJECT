@@ -4,3 +4,4 @@ blacklist.txt
 .vscode/
 *.json
 .DS_Store
+node_modules/
