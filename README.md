@@ -15,19 +15,11 @@ Milestone 1 branch:
 GPDTH-99-branch-for-milestone-1
 ```
 
-## Assignment Questions & Answers
+Milestone 2 branch:
 
-1. **Did the fact that the command names changed require you to touch code that is supposed to be "closed to changes but open to expansion"?**  
-   No, what we did in Exercise 1 was just create a map for the commands, where we changed the command number to its name (like 1 to POST). We only added the print statements inside the command classes and didn’t touch any code outside of them.
-
-2. **Did the fact that new commands were added require you to touch code that is supposed to be "closed to changes but open to expansion"?**  
-   No, we simply created a new class that inherits from the `iCommand` interface, and then added it to the command map. We didn’t change anything outside the new command class.
-
-3. **Did the fact that the command output changed require you to touch code that is supposed to be "closed to changes but open to expansion"?**  
-   No, we only added print statements inside the command classes and didn’t touch anything outside of them.
-
-4. **Did the fact that the input/output comes from sockets and not from the console require you to touch the code that is "closed to changes but open to extension"?**  
-   Yes, originally we planned for the input/output classes to be changeable, so we used `std::ifstream` and `std::ofstream` because they work with both standard input/output and files. We noticed that this could also work with sockets, but in the end we decided to create our own class `iOutputHandler` to make things clearer and more convenient and to avoid problems later on.
+```sh
+GPDTH-165-branch-for-milestone-2
+```
 
 ## Building with Docker
 
