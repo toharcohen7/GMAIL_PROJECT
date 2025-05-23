@@ -6,6 +6,6 @@ router.route('/')
         .post(controller.createUser)
 
 router.route('/:id')
-        .get(controller.getUser)
+        .get(controller.getUserById)
 
 module.exports = router
