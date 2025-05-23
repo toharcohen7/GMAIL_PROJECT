@@ -17,5 +17,9 @@ exports.createUser = (req, res) => {
 
     const { userName, password, firstName, lastName, gender, birthDate } = req.body;
     const newUser = Users.createUser(userName, password, firstName, lastName, gender, birthDate);
+    if (!newUser) {
+        return res.status(409).json({ error: 'User already exists' });
+    }
+    
     res.status(201).location(`/api/users/${newUser.id}`).end();
 };

@@ -16,12 +16,26 @@ const getUser = (id) => {
 };
 
 const createUser = (userName, password,firstName,lastName,gender,birthDate) => {
-    const newUser = {id: ++idCounter,userName, password,firstName,lastName,gender,birthDate};
+    if (users.find(u => u.userName === userName)) {
+        return undefined;
+    }
+    const newUser = {id: ++idCounter, userName, password, firstName, lastName, gender, birthDate};
     users.push(newUser);
     return newUser;
 };
 
+const signIn = (userName, password) => {
+    const user = users.find(u => u.userName === userName && u.password === password);
+    if (!user) {
+        return undefined;
+    }
+    return {
+        id: user.id
+    }
+}
+
 module.exports = {
     getUser,
-    createUser
+    createUser,
+    signIn
 };
