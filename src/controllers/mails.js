@@ -1,4 +1,5 @@
 const Mails = require('../models/mails')
+const Blacklist = require('../models/blacklist')
 
 exports.getLast50Mails = (req, res) => {
   const userId = parseInt(req.headers['user-id']); // parsing the user name from the http header
@@ -22,8 +23,13 @@ exports.createMail = (req, res) => {
         }
     }
     const {receiverId, subject, content, timestamp } = req.body;
-    const newMail = Mails.createMail(senderId, receiverId, subject, content, timestamp);
+    const blacklist = Blacklist.getBlacklist();
+    const hasBlacklistLink = blacklist.some(link => content.includes(link));
+    if(hasBlacklistLink){
+        return res.status(400).json({ error: 'The mail contains blacklisted link' });
+    }
     
+    const newMail = Mails.createMail(senderId, receiverId, subject, content, timestamp);
     res.status(201).location(`/api/mails/${newMail.id}`).end();
 }
 

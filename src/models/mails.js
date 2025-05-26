@@ -1,18 +1,17 @@
 let idCounter = 0
 const allMails = []
 
-// getLast50Mails returns the last 50 mail sent/reseved by/to a spesific user
 const getLast50Mails = (userId) => {
   return allMails.filter(mail => mail.to === userId || mail.from === userId)
-        .slice(-50).reverse();
-}
+    .sort((a, b) => b.timestamp - a.timestamp).slice(0, 50);
+};
 
 // createMail creates a new mail and pushes it to the end of the mails array
-const createMail = (senderId,receiverId,subject, content, timestamp) => {
+const createMail = (senderId,receiverId,subject,content, timestamp) => {
     const newMail = {id: ++idCounter,senderId,receiverId,subject, content, timestamp};
     allMails.push(newMail);
     return newMail;
-}
+};
 
 // getMailById returns a spesific mail
 const getMailById = (id) => allMails.find(mail => mail.id === id);
@@ -23,7 +22,7 @@ const deleteMail = (id) => {
     if (index !== -1) 
         allMails.splice(index, 1);
     
-}
+};
 // function to find mail index by id
 const getMailIndexById = (id) => {
   return allMails.findIndex(mail => mail.id === id);
