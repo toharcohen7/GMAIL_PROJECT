@@ -51,9 +51,8 @@ runProgram::~runProgram() {
 
 void runProgram::run(iInputHandler &inputStream, iOutputHandler &outputStream) {
     
-    while (true) {
-        runOperations(m_commands, inputStream, outputStream); // Run the operations based on user input
-    }
+    runOperations(m_commands, inputStream, outputStream); // Run the operations based on user input
+    
 }
 
 /*******************************************************************************
@@ -68,16 +67,13 @@ static void runOperations(std::map<std::string, iCommand*> &commands,
     std::string url;
 
     // Get user input for the operation until valid input is provided
-    while (true) {
-        if (getInputOperation(inputStream, operationStr, url)) 
-        {
-            break; // Valid input provided
-        }
-        else
-        {
-            outputStream <<"400 Bad Request";
-        }
+    
+    if (!getInputOperation(inputStream, operationStr, url)) 
+    {
+        outputStream <<"400 Bad Request";
+        return; // Exit if input is invalid
     }
+
 
     try
     {
