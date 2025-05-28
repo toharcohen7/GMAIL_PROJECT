@@ -1,8 +1,14 @@
+const Labels = require('../models/labels')
+
 let idCounter = 0;
 const users = [];
 
-const getUser = (id) => {
-    const user = users.find(u => u.id === id);
+/**
+ * Retrieves a user by ID.
+ * Returns basic information without exposing the password.
+ */
+const getUser = (userId) => {
+    const user = users.find(u => u.id === userId);
     if (!user) 
         return undefined;
     return {
@@ -14,16 +20,24 @@ const getUser = (id) => {
         birthDate: user.birthDate
   };
 };
-
+/**
+ * Creates a new user if the username is not already taken.
+ * Also initializes default labels (like "unlabeled") for the new user.
+ * Returns the created user object or undefined if username exists.
+ */
 const createUser = (userName, password,firstName,lastName,gender,birthDate) => {
     if (users.find(u => u.userName === userName)) {
-        return undefined;
+        return undefined; // Username already exists
     }
     const newUser = {id: ++idCounter, userName, password, firstName, lastName, gender, birthDate};
     users.push(newUser);
+    Labels.initLabelsForUser(newUser.id);
     return newUser;
 };
-
+/**
+ * Authenticates a user by username and password.
+ * Returns the user ID if login is successful, or undefined otherwise.
+ */
 const signIn = (userName, password) => {
     const user = users.find(u => u.userName === userName && u.password === password);
     if (!user) {
