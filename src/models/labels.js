@@ -1,38 +1,62 @@
-let labelIdCounter = 0;
-const labels = [];
-
-const getLabels = () => {
-  return labels;
+// Stores labels per user
+const labels = new Map();
+/**
+ * Returns the list of labels for a specific user.
+ */
+const getLabels = (userId) => {
+  return labels.get(userId).data;
 };
+/**
+ * Creates a new label for the specified user.
+ * The label ID is assigned based on a per-user counter.
+ */
+const createLabel = (userId, name) => {
+  const userLabels = labels.get(userId);
+  const newLabel = { id: userLabels.labelCounter++, name }; 
+  userLabels.data.push(newLabel);
+  return newLabel;
+};
+/**
+ * Retrieves a specific label by its ID for the given user.
+ * Returns null if the label does not exist.
+ */
+const getLabelById = (userId, labelId) => {
+  const userLabels = labels.get(userId).data;
 
-const createLabel = (name) => {
-    const newLabel = { id: ++labelIdCounter,name };
-    labels.push(newLabel);
-    return newLabel;
-}
+  return userLabels.find(label => label.id === labelId) || null;
+};
+/**
+ * Deletes a label by ID from a specific user's label list.
+ */
+const deleteLabel = (userId, labelId) => {
+  const userData = labels.get(userId);
+  userData.data = userData.data.filter(label => label.id !== labelId);
+};
+/**
+ * Updates the name of a label by its ID for a specific user.
+ * Only the 'name' field is updatable.
+ */
+const updateLabel = (userId, labelId, updates) => {
+  const userLabels = labels.get(userId).data;
 
-const getLabelById = (id) => labels.find(label => label.id === id);
-
-const deleteLabel = (id) => {
-    const index = labels.findIndex(label => label.id === id);
-    if (index !== -1) 
-        labels.splice(index, 1);
-}
-
-const getLabelIndexById = (id) => {
-  return labels.findIndex(label => label.id === id);
-}
-
-const patchLabel = (index, updates) => {
-    if (updates.name !== undefined)
-        labels[index].name = updates.name; 
-}
+  const label = userLabels.find(label => label.id === labelId);
+  if (label && updates.name !== undefined) {
+    label.name = updates.name;
+  }
+};
+/**
+ * Initializes the label structure for a new user.
+ * Automatically includes a default label with ID 0 named 'unlabeled'.
+ */
+const initLabelsForUser = (userId) => {
+  labels.set(userId, {labelCounter: 2, data: [{ id: 0, name: 'Sent' }, { id: 1, name: 'Inbox' }]});
+};
 
 module.exports = {
     getLabels,
     createLabel,
     getLabelById,
     deleteLabel,
-    getLabelIndexById,
-    patchLabel
+    initLabelsForUser,
+    updateLabel
 };
