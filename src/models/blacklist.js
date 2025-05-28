@@ -1,5 +1,5 @@
 const net = require('net');
-const Config = require('../config');
+const Config = require('./config');
 
 const sendOperationBlacklistServer = (operation, url) => {
     return new Promise((resolve, reject) => {

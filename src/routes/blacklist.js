@@ -6,6 +6,6 @@ router.route('/')
         .post(controller.addBlacklist)
 
 router.route('/:id')
-        .delete(controller.FromBlacklist)
+        .delete(controller.deleteBlacklist)
 
 module.exports = router
