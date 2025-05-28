@@ -1,8 +1,9 @@
 const net = require('net');
+const Config = require('../config');
 
 const sendOperationBlacklistServer = (operation, url) => {
     return new Promise((resolve, reject) => {
-        const client = net.createConnection({ port: 12345, host: '127.0.0.1' }, () => {
+        const client = net.createConnection({ port: Config.blPort, host: Config.blHost }, () => {
             const message = `${operation} ${url}\n`;
             client.write(message);
         });
