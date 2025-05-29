@@ -13,7 +13,8 @@
  *                                INCLUDES                                     *
  * ****************************************************************************/
 
-#include <map> // For std::map
+#include <map>    // For std::map
+#include <mutex> // For std::mutex
 
 #include "immortalBloomFilter.hpp" // immortalBloomFilter class
 #include "iCommand.hpp"           // iCommand class
@@ -31,6 +32,7 @@ class runProgram : public iRunnable
 
     std::map<std::string, iCommand*> m_commands; // Map of command numbers to command objects
     immortalBloomFilter *m_ibf; // Pointer to the immortal bloom filter objec
+    std::mutex m_mutex;
 
     public:
 
