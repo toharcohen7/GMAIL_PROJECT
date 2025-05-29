@@ -174,8 +174,7 @@ const requireMail = (res, userId, labelId) => {
  * Returns the first blacklisted link found, or null if safe.
  */
 async function checkForBlacklistedLinks(...texts) {
-  const suspiciousUrlRegex = /(?:file:\/\/\/?|(?:[a-zA-Z][a-zA-Z0-9+.-]):\/\/)?(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?::\d+)?(?:\/\S*)?/gi;
-
+  const suspiciousUrlRegex = /(?:^|\s)(?:(?:file:\/\/\/?|(?:[a-zA-Z][a-zA-Z0-9+.-]*):\/\/)?(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?::\d+)?(?:\/\S*)?)(?=\s|$)/gi;
   const extractLinks = (text) => {
     if (!text) return [];
     return [...text.matchAll(suspiciousUrlRegex)].map(match => match[0]);

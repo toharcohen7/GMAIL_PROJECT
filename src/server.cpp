@@ -60,7 +60,7 @@ void server::startServer() {
             continue; // If an error occurs while accepting a connection, continue to the next iteration
         }
         
-        std::thread workerThread(threadFunction, std::ref(m_runnable), std::ref(clientSocket)); // Create a thread to run the program
+        std::thread workerThread(threadFunction, std::ref(m_runnable), clientSocket); // Create a thread to run the program
         workerThread.detach(); // Detach the thread to allow it to run independently 
     }  
 }
