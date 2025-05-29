@@ -11,6 +11,8 @@
 #include "server.hpp"       // server class
 #include "iRunnable.hpp"   // iRunnable class
 
+static void threadFunction(iRunnable &runnable, int clientSocket);
+
 server::server(int port, iRunnable &runnable, int socketType,
                  int addressFamily, size_t numToListen) : m_runnable(runnable) {
     // Create a socket
@@ -41,9 +43,6 @@ server::server(int port, iRunnable &runnable, int socketType,
 server::~server() {
     close(m_serverSocket); // Close the server socket
 }
-
-#include <iostream> // For std::cerr
-static void threadFunction(iRunnable &runnable, int clientSocket);
 
 void server::startServer() {
 
