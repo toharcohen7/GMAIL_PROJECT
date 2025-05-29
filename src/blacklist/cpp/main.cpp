@@ -1,9 +1,9 @@
 #include <string>                    // string 
-#include "initProgram.hpp"          // initProgram class
-#include "immortalBloomFilter.hpp" // immortalBloomFilter class
-#include "hashFunc.hpp"           // hashFunc class
-#include "runProgram.hpp"        // runProgram class
-#include "server.hpp"           // server class
+#include "../hpp/initProgram.hpp"          // initProgram class
+#include "../hpp/immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "../hpp/hashFunc.hpp"           // hashFunc class
+#include "../hpp/runProgram.hpp"        // runProgram class
+#include "../hpp/server.hpp"           // server class
 
 #define SUCCESS 0
 #define ERROR 1 

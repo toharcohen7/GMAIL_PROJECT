@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
-#include "bloomFilter.hpp" // Include the header file where bloomFilter is defined
-#include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
-#include "hashFunc.hpp"
+#include "../hpp/bloomFilter.hpp" // Include the header file where bloomFilter is defined
+#include "../hpp/immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
+#include "../hpp/hashFunc.hpp"
 #include <cstdio> // for remove
-#include "initProgram.hpp"
+#include "../hpp/initProgram.hpp"
 #include <thread>
-#include "server.hpp"
-#include "socketHandler.hpp"
+#include "../hpp/server.hpp"
+#include "../hpp/socketHandler.hpp"
 #include <unistd.h> // For close function
 
 size_t hashFunction(const std::string &str) {

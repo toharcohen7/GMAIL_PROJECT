@@ -1,7 +1,7 @@
 
 #include <stdexcept>      // std::invalid_argument
 
-#include "hashFunc.hpp" // hashFunc class
+#include "../hpp/hashFunc.hpp" // hashFunc class
 
 
 // Constructor

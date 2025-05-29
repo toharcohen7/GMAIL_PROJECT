@@ -7,9 +7,9 @@
 #include <stdexcept>  // For std::runtime_error
 #include <thread>    // For threads
 
-#include "socketHandler.hpp" // socketHandler class
-#include "server.hpp"       // server class
-#include "iRunnable.hpp"   // iRunnable class
+#include "../hpp/socketHandler.hpp" // socketHandler class
+#include "../hpp/server.hpp"       // server class
+#include "../hpp/iRunnable.hpp"   // iRunnable class
 
 static void threadFunction(iRunnable &runnable, int clientSocket);
 

@@ -3,7 +3,7 @@
 #include <sstream>     // stringstream
 #include <filesystem> // filesystem
 
-#include "immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "../hpp/immortalBloomFilter.hpp" // immortalBloomFilter class
      
 
 immortalBloomFilter::immortalBloomFilter(size_t size, std::vector<hashFunc> &hashFunctions,

@@ -1,6 +1,6 @@
 
-#include "addUrlToIBF.hpp" // Include the header file where addUrlToIBF is defined
-#include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
+#include "../hpp/addUrlToIBF.hpp" // Include the header file where addUrlToIBF is defined
+#include "../hpp/immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 
 
 addUrlToIBF::addUrlToIBF(immortalBloomFilter *ibf): m_ibf(ibf) {

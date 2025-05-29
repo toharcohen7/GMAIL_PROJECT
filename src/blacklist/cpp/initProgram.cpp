@@ -1,8 +1,8 @@
 #include <sstream>                    // istringstream
 
-#include "initProgram.hpp"          // initProgram class
-#include "immortalBloomFilter.hpp" // immortalBloomFilter class
-#include "hashFunc.hpp"           // hashFunc class 
+#include "../hpp/initProgram.hpp"          // initProgram class
+#include "../hpp/immortalBloomFilter.hpp" // immortalBloomFilter class
+#include "../hpp/hashFunc.hpp"           // hashFunc class 
 
 // Hash function to be used in the hashFunc class
 static size_t hasher(const std::string &str);

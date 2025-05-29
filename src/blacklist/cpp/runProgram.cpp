@@ -1,19 +1,19 @@
 /*******************************************************************************
  *                                INCLUDES                                     *
  * ****************************************************************************/
-#include <string>                           // string                     //
-#include <vector>                          // vector                     //
-#include <sstream>                        // istringstream              //
-#include <regex>                         // regex                      //
-                                        //                            //
-#include "runProgram.hpp"              // runProgram class           //
-#include "immortalBloomFilter.hpp"    // immortalBloomFilter class  //
-#include "iInputHandler.hpp"         // iInputHandler class        //
-#include "iOutputHandler.hpp"       // iOutputHandler class       //
-#include "iCommand.hpp"            // iCommand class             //
-#include "addUrlToIBF.hpp"        // addUrlToIBF class          //
-#include "searchUrlInIBF.hpp"    // searchUrlInIBF class       //
-#include "deleteUrlFromIBF.hpp" // deleteUrlFromIBF class     //
+#include <string>                                  // string                     //
+#include <vector>                                 // vector                     //
+#include <sstream>                               // istringstream              //
+#include <regex>                                // regex                      //
+                                               //                            //
+#include "../hpp/runProgram.hpp"              // runProgram class           //
+#include "../hpp/immortalBloomFilter.hpp"    // immortalBloomFilter class  //
+#include "../hpp/iInputHandler.hpp"         // iInputHandler class        //
+#include "../hpp/iOutputHandler.hpp"       // iOutputHandler class       //
+#include "../hpp/iCommand.hpp"            // iCommand class             //
+#include "../hpp/addUrlToIBF.hpp"        // addUrlToIBF class          //
+#include "../hpp/searchUrlInIBF.hpp"    // searchUrlInIBF class       //
+#include "../hpp/deleteUrlFromIBF.hpp" // deleteUrlFromIBF class     //
 
 /*******************************************************************************
  *                        SIGNATURES OF HELP FUNCTIONS                         *
