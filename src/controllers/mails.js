@@ -1,6 +1,6 @@
 const Mails = require('../models/mails')
 const Blacklist = require('../models/blacklist');
-const { match } = require('assert');
+const Users = require('../models/users');
 /**
  * Returns the last 50 mails sent or received by the current user.
  * Sorted by timestamp descending. Only relevant fields are returned.
@@ -31,6 +31,11 @@ exports.createMail = async (req, res) => {
           return res.status(400).json({ error: `${field} is required` });
       }
   }
+
+  if (!isReceiverIdUser(req.body.receiverId)) {
+    return res.status(400).json({ error: 'the receiver does not exists'});
+  }
+
   const {receiverId, subject, content } = req.body;
 
   const blacklistedLink = await checkForBlacklistedLinks(subject, content);
@@ -205,4 +210,9 @@ async function isInBlacklist(url) {
   } else {
       return undefined; // Invalid URL or request
   }
+}
+
+function isReceiverIdUser(receiverId) {
+  const id = Number(receiverId);
+  return Users.getUser(id);
 }
