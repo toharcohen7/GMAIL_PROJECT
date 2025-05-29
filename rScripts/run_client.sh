@@ -6,4 +6,4 @@ if [ $# -lt 2 ]; then
   exit 1
 fi
 
-docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/client.py "$@"
+docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/blacklist/client.py "$@"

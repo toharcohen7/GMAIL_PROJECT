@@ -90,13 +90,13 @@ Run:
 
 **General format:**
 ```
-docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/client.py <port> <ip_address>
+docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/blacklist/client.py <port> <ip_address>
 ```
 - `<port>`: Port number to connect to (**should match the server port**)
 
 **Example:**
 ```
-docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/client.py 12345 127.0.0.1
+docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/blacklist/client.py 12345 127.0.0.1
 ```
 ---
 
