@@ -31,10 +31,9 @@ public:
 /*******************************************************************************
  * @brief Constructor for the socketHandler class.
  * @details This constructor initializes the socketHandler object.
- * @param severSocket The server socket to accept client connections.
- * @note This constructor is blocking, meaning that it will wait for a client connection.
+ * @param clientSocket The socket file descriptor for the client connection.
  ******************************************************************************/
-    socketHandler(int severSocket);
+    socketHandler(int clientSocket);
 
 /*******************************************************************************
  * @brief Destructor for the socketHandler class.
@@ -72,6 +71,16 @@ public:
  ******************************************************************************/
     virtual iOutputHandler &operator<<(std::string output) override;
 
+/*******************************************************************************
+ * @brief Accepts a connection on the server socket.
+ * @param serverSocket The server socket file descriptor.
+ * @details This function accepts a connection on the server socket and returns the client socket.
+ * @return The client socket file descriptor.
+ * @note - This function is static and can be called without an instance of the class.
+ *       - This function is used to accept incoming connections on the server socket.
+ *         therefore, this function is blocked until a client connects.
+*******************************************************************************/
+    static int acceptConnection(int serverSocket);
 };
 
 #endif /* SOCKETHANDLER_HEADER */

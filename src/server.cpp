@@ -1,15 +1,15 @@
-#include <sys/socket.h>    // For socket-related definitions
-#include <netinet/in.h>   // For sockaddr_in
-#include <arpa/inet.h>   // For inet_pton
-#include <unistd.h>     // For close
-#include <cstring>     // For memset
-#include <string>     // For std::cout
-#include <stdexcept> // For std::runtime_error
+#include <sys/socket.h>     // For socket-related definitions
+#include <netinet/in.h>    // For sockaddr_in
+#include <arpa/inet.h>    // For inet_pton
+#include <unistd.h>      // For close
+#include <cstring>      // For memset
+#include <string>      // For std::cout
+#include <stdexcept>  // For std::runtime_error
+#include <thread>    // For threads
 
 #include "socketHandler.hpp" // socketHandler class
-#include "server.hpp" // server class
-#include "iRunnable.hpp" // iRunnable class
-
+#include "server.hpp"       // server class
+#include "iRunnable.hpp"   // iRunnable class
 
 server::server(int port, iRunnable &runnable, int socketType,
                  int addressFamily, size_t numToListen) : m_runnable(runnable) {
@@ -42,18 +42,41 @@ server::~server() {
     close(m_serverSocket); // Close the server socket
 }
 
+#include <iostream> // For std::cerr
+static void threadFunction(iRunnable &runnable, int clientSocket);
+
 void server::startServer() {
+
     while (true)
     {
-        socketHandler socketPrompt(m_serverSocket); // Input handler for user input
+        int clientSocket = -1; // Initialize clientSocket to -1
+
+        try
+        {
+            // Accept a connection on the server socket
+            clientSocket = socketHandler::acceptConnection(m_serverSocket); 
+        }
+        catch(const std::exception& e) 
+        {
+            continue; // If an error occurs while accepting a connection, continue to the next iteration
+        }
         
-        try {
-            m_runnable.run(socketPrompt, socketPrompt); // Run the program with the socket handler
-        }
-        catch(const std::exception& e) {
-            // do nothing
-        }
-    }   
+        std::thread workerThread(threadFunction, std::ref(m_runnable), std::ref(clientSocket)); // Create a thread to run the program
+        workerThread.detach(); // Detach the thread to allow it to run independently 
+    }  
+}
+
+static void threadFunction(iRunnable &runnable, int clientSocket) {
+
+    socketHandler socketPrompt(clientSocket);
+
+    try 
+    {
+        runnable.run(socketPrompt, socketPrompt); // Run the program with the socket handler
+    } catch (const std::exception &e) 
+    {
+        // do nothing
+    }
 }
 
     

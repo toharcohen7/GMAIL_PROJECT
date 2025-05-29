@@ -8,18 +8,8 @@
 
 #include "socketHandler.hpp" // socketHandler class
 
-socketHandler::socketHandler(int severSocket) {
-    // Accept a client connection
-    struct sockaddr_in client_sin;
-    unsigned int addr_len = sizeof(client_sin);
-    int client_sock = accept(severSocket, (struct sockaddr *) &client_sin,  &addr_len);
-
-    // Check if the client socket is valid
-    if (client_sock < 0) {
-        throw std::runtime_error("error accepting a socket\n");
-    }
-
-    m_clientSocket = client_sock; // Store the client socket
+socketHandler::socketHandler(int clientSocket) : m_clientSocket(clientSocket) {
+    // do nothing here, the socket is already initialized
 }
 
 socketHandler::~socketHandler() {
@@ -55,4 +45,17 @@ iOutputHandler &socketHandler::sendOutput(std::string output) {
 iOutputHandler &socketHandler::operator<<(std::string output) {
 
     return sendOutput(output); // Call the sendOutput function
+}
+
+int socketHandler::acceptConnection(int serverSocket) {
+        struct sockaddr_in client_sin;
+        unsigned int addr_len = sizeof(client_sin);
+        int clientSocket = accept(serverSocket, (struct sockaddr *) &client_sin, &addr_len);
+        
+        // Check if the client socket is valid
+        if (clientSocket < 0) {
+            throw std::runtime_error("error accepting a socket\n");
+        }
+        
+        return clientSocket; // Return the accepted client socket
 }

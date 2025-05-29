@@ -51,40 +51,32 @@ runProgram::~runProgram() {
 
 void runProgram::run(iInputHandler &inputStream, iOutputHandler &outputStream) {
     
-    runOperations(m_commands, inputStream, outputStream); // Run the operations based on user input
-    
-}
-
-/*******************************************************************************
- *                               HELP FUNCTIONS                                *
- * ****************************************************************************/
-
-// Function to run the operations based on user input
-static void runOperations(std::map<std::string, iCommand*> &commands, 
-                            iInputHandler &inputStream,iOutputHandler &outputStream) {
-
     std::string operationStr;
     std::string url;
 
     // Get user input for the operation until valid input is provided
     
+
     if (!getInputOperation(inputStream, operationStr, url)) 
     {
         outputStream <<"400 Bad Request";
         return; // Exit if input is invalid
     }
 
-
     try
     {
-        commands.at(operationStr)->execute(inputStream, outputStream, url); // Execute the command based on user input
+        std::lock_guard<std::mutex> lock(m_mutex); // Lock the mutex to ensure thread safety
+        m_commands.at(operationStr)->execute(inputStream, outputStream, url); // Execute the command based on user input
     }
     catch(const std::exception& e)
     {
         outputStream <<"400 Bad Request";
     }
-    
 }
+
+/*******************************************************************************
+ *                               HELP FUNCTIONS                                *
+ * ****************************************************************************/
 
 // Function to get user input for the operation
 static bool getInputOperation(iInputHandler &inputStream, std::string &operationStr, std::string &url) {
