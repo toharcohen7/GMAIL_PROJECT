@@ -11,8 +11,8 @@ PORT2=$2
 SERVER_HOST=$3
 
 # Check if the network exists, create if not
-if ! docker network ls | grep -q gmailnet; then
-  docker network create gmailnet
+if ! docker network ls | grep -q gmailnetdth; then
+  docker network create gmailnetdth
 fi
 
-docker run --network gmailnet --name gmail_node -p "$PORT1:$PORT1" gmail_project node /usr/src/mytest/src/app.js "$PORT1" "$PORT2" "$SERVER_HOST"
+docker run --network gmailnetdth --name gmail_node -p "$PORT1:$PORT1" gmail_project node /usr/src/mytest/src/app.js "$PORT1" "$PORT2" "$SERVER_HOST"

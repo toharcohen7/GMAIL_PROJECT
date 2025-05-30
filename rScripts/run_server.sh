@@ -9,8 +9,8 @@ fi
 PORT=$1
 
 # Check if the network exists, create if not
-if ! docker network ls | grep -q gmailnet; then
-  docker network create gmailnet
+if ! docker network ls | grep -q gmailnetdth; then
+  docker network create gmailnetdth
 fi
 
-docker run --network gmailnet --name gmail_server -p "$PORT:$PORT" gmail_project ./runServer "$@"
+docker run --network gmailnetdth --name gmail_server -p "$PORT:$PORT" gmail_project ./runServer "$@"
