@@ -14,6 +14,16 @@ SERVER_PORT=$2
 SERVER_HOST=$3
 shift 3
 
+# Remove existing containers if they exist
+docker rm -f gmail_server 2>/dev/null || true
+docker rm -f gmail_node 2>/dev/null || true
+
+# Remove old image if it exists
+docker rmi -f gmail_project 2>/dev/null || true
+
+# Build the image
+docker build -t gmail_project .
+
 echo "Starting server on port $SERVER_PORT..."
 ./rScripts/run_server.sh "$SERVER_PORT" "$@" &
 

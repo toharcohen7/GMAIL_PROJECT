@@ -8,9 +8,18 @@ fi
 
 PORT=$1
 
+# Remove existing server container if it exists
+docker rm -f gmail_server 2>/dev/null || true
+
+# Check if the image exists, build if not
+if ! docker image inspect gmail_project >/dev/null 2>&1; then
+  docker build -t gmail_project .
+fi
+
 # Check if the network exists, create if not
 if ! docker network ls | grep -q gmailnetdth; then
   docker network create gmailnetdth
 fi
+
 
 docker run --network gmailnetdth --name gmail_server -p "$PORT:$PORT" gmail_project ./runServer "$@"
