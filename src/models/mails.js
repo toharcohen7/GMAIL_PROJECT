@@ -21,16 +21,17 @@ const getLast50Mails = (userId) => {
  */
 const createMail = (senderId, receiverId, subject, content) => {
   const now = new Date();
-
-const timestamp = now.getTime(); // for sorting 
-const formattedTime = now.toLocaleString('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false
-});
+  receiverId = Number(receiverId);
+  
+  const timestamp = now.getTime(); // for sorting 
+  const formattedTime = now.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
 
   if (!userMails.has(senderId)) {
     userMails.set(senderId, { sent: [], received: [] });

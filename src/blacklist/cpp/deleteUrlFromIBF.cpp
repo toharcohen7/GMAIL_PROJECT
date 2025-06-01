@@ -1,6 +1,6 @@
 
-#include "deleteUrlFromIBF.hpp" // Include the header file where deleteUrlToIBF is defined
-#include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
+#include "../hpp/deleteUrlFromIBF.hpp" // Include the header file where deleteUrlToIBF is defined
+#include "../hpp/immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 
 deleteUrlFromIBF::deleteUrlFromIBF(immortalBloomFilter *ibf): m_ibf(ibf){
 // empty constructor

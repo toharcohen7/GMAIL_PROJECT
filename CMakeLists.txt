@@ -17,32 +17,32 @@ FetchContent_MakeAvailable(googletest)
  
 # Test executable
 add_executable(runTest
-    src/test.cpp
-    src/bloomFilter.cpp
-    src/hashFunc.cpp
-    src/immortalBloomFilter.cpp
-    src/runProgram.cpp
-    src/addUrlToIBF.cpp
-    src/searchUrlInIBF.cpp
-    src/initProgram.cpp
-    src/promptHandler.cpp
-    src/deleteUrlFromIBF.cpp
-    src/server.cpp
-    src/socketHandler.cpp)
+    src/blacklist/cpp/test.cpp
+    src/blacklist/cpp/bloomFilter.cpp
+    src/blacklist/cpp/hashFunc.cpp
+    src/blacklist/cpp/immortalBloomFilter.cpp
+    src/blacklist/cpp/runProgram.cpp
+    src/blacklist/cpp/addUrlToIBF.cpp
+    src/blacklist/cpp/searchUrlInIBF.cpp
+    src/blacklist/cpp/initProgram.cpp
+    src/blacklist/cpp/promptHandler.cpp
+    src/blacklist/cpp/deleteUrlFromIBF.cpp
+    src/blacklist/cpp/server.cpp
+    src/blacklist/cpp/socketHandler.cpp)
 target_link_libraries(runTest gtest_main pthread)
 
 # Main program executable
 add_executable(runServer
-    src/bloomFilter.cpp
-    src/hashFunc.cpp
-    src/main.cpp
-    src/immortalBloomFilter.cpp
-    src/runProgram.cpp
-    src/addUrlToIBF.cpp
-    src/searchUrlInIBF.cpp
-    src/initProgram.cpp
-    src/promptHandler.cpp
-    src/deleteUrlFromIBF.cpp
-    src/server.cpp
-    src/socketHandler.cpp)
+    src/blacklist/cpp/bloomFilter.cpp
+    src/blacklist/cpp/hashFunc.cpp
+    src/blacklist/cpp/main.cpp
+    src/blacklist/cpp/immortalBloomFilter.cpp
+    src/blacklist/cpp/runProgram.cpp
+    src/blacklist/cpp/addUrlToIBF.cpp
+    src/blacklist/cpp/searchUrlInIBF.cpp
+    src/blacklist/cpp/initProgram.cpp
+    src/blacklist/cpp/promptHandler.cpp
+    src/blacklist/cpp/deleteUrlFromIBF.cpp
+    src/blacklist/cpp/server.cpp
+    src/blacklist/cpp/socketHandler.cpp)
     target_link_libraries(runServer pthread)

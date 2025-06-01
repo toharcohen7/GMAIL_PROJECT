@@ -1,7 +1,7 @@
 #include <iostream>             // For std::cout, std::cin
 #include <string>              // For std::string
 
-#include "promptHandler.hpp" // Include the header file where promptHandler is defined
+#include "../hpp/promptHandler.hpp" // Include the header file where promptHandler is defined
 
 std::string promptHandler::getInput() {
     std::string input;

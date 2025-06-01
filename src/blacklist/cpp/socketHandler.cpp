@@ -6,7 +6,7 @@
 #include <string>     // For std::cout
 #include <stdexcept> // For std::runtime_error
 
-#include "socketHandler.hpp" // socketHandler class
+#include "../hpp/socketHandler.hpp" // socketHandler class
 
 socketHandler::socketHandler(int clientSocket) : m_clientSocket(clientSocket) {
     // do nothing here, the socket is already initialized

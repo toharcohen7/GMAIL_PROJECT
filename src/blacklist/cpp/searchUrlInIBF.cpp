@@ -2,8 +2,8 @@
 #include <iostream> // For std::cout and std::endl
 #include <string>  // For std::string
 
-#include "searchUrlInIBF.hpp" // Include the header file where addUrlToIBF is defined
-#include "immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
+#include "../hpp/searchUrlInIBF.hpp" // Include the header file where addUrlToIBF is defined
+#include "../hpp/immortalBloomFilter.hpp" // Include the header file where immortalBloomFilter is defined
 
 
 
