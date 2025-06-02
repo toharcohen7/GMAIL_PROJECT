@@ -2,8 +2,16 @@
 
 ## Overview
 
-This project implements a Bloom Filter and related functionality in C++ using a client-server architecture.  
-It includes a C++ server (`runServer`), a Python client (`client.py`), and a test suite (`runTest`) using GoogleTest.
+This project implements the server-side of our Gmail Project, focusing on backend infrastructure and security.  
+It includes:
+
+- **Bloom Filter Server (C++):**  
+  Maintains a persistent Bloom filter to efficiently check and manage blacklisted (bad) URLs.
+
+- **Node.js Gmail Server:**  
+  Provides Gmail-like application logic and REST API endpoints, communicating with the Bloom filter server to validate URLs.
+
+Together, these services form the backend infrastructure for a secure, scalable Gmail-like system with robust URL filtering.
 
 ## Milestones
 
@@ -23,88 +31,179 @@ GPDTH-165-branch-for-milestone-2
 
 ## Building with Docker
 
-The project is set up to build and run inside a Docker container using GCC, CMake, and Python3.
+This project is designed to build and run inside Docker containers using GCC, CMake, Python3, Node.js, and npm.
 
-### Build the Docker Image
+## Running the Program
 
-From the project root directory, run:
+1. **Using Docker Compose**
+
+First, build the image (only needed after changes or the first time):
+
+```sh
+docker-compose build
+```
+
+Default run:
+
+```sh
+docker-compose up
+```
+
+To run in the background (detached mode):
+
+```sh
+docker-compose up -d
+```
+
+Change arguments at runtime:
+
+Format:
+
+```sh
+SERVER_PORT=<server port> NODE_PORT=<node port> BF_SIZE=<bloom filter size> HASH_COUNTS="<hash count 1> <hash count 2> ..." SERVER_HOST=<server host> docker-compose up
+```
+
+Example:
+
+```sh
+SERVER_PORT=5555 NODE_PORT=5556 BF_SIZE=16 HASH_COUNTS="3 5 7 11" SERVER_HOST=gmail_server docker-compose up
+```
+
+How to stop and clean up:
+
+You can stop the running containers at any time with `Ctrl+C`.  
+To remove containers and clean up images/networks, run:
+
+```sh
+docker-compose down --rmi all
+```
+
+> By default, Compose uses values from the `.env` file.  
+> Overriding variables inline only affects that run and does **not** change the `.env` file.
+
+---
+
+2. **Using the `run_both.sh` Script**
+
+Format:
+
+```sh
+./rScripts/run_both.sh <node_port> <server_port> <server_host> [additional server args]
+```
+
+Example:
+
+```sh
+./rScripts/run_both.sh 12345 12346 gmail_server 8 3
+```
+
+> This starts both the server and node in the **same terminal window**.
+
+> **Note:** If you don't have permissions, give any script execute permission with  
+> `chmod +x ./rScripts/run_both.sh`
+
+
+---
+
+3. **Using `run_server.sh` and `run_node.sh` Separately**
+
+**First, clear the image to avoid conflicts with other images:**
+
+```sh
+docker rmi -f gmail_project
+```
+
+**Run the server (in the first terminal):**
+
+Format:
+
+```sh
+./rScripts/run_server.sh <server_port> [additional server args]
+```
+
+Example:
+
+```sh
+./rScripts/run_server.sh 12346 8 3
+```
+
+> **Note:** If you don't have permissions, give any script execute permission with  
+> `chmod +x ./rScripts/run_server.sh`
+
+**Open a separate terminal and run the node:**
+
+Format:
+
+```sh
+./rScripts/run_node.sh <node_port> <server_port> <server_host>
+```
+
+Example:
+
+```sh
+./rScripts/run_node.sh 12345 12346 gmail_server
+```
+
+> **Note:** If you don't have permissions, give any script execute permission with  
+> `chmod +x ./rScripts/run_node.sh`
+
+---
+
+4. **Simplest Docker Run Commands**
+
+**First, build the image:**
 
 ```sh
 docker build -t gmail_project .
 ```
 
-## Running the Program
+**Run the server (in the first terminal):**
 
-### Running the Server
+Format:
 
-You can run the server in several ways:
+```sh
+docker run --network gmailnetdth --name gmail_server -p <server_port>:<server_port> gmail_project ./runServer <server_port> [additional server args]
+```
 
-#### 1. Using the Provided Script
+Example:
 
-Run:
+```sh
+docker run --network gmailnetdth --name gmail_server -p 12346:12346 gmail_project ./runServer 12346 8 3
 ```
-./rscripts/run_server.sh <port> <bloom_filter_size> <hash_count> [additional_hash_counts...]
-```
-**Example:**
-```
-./rscripts/run_server.sh 12345 8 3
-```
-> **Note:** If you don't have permissions, give the script execute permission with  
-> `chmod +x ./rscripts/run_server.sh`
 
-#### 2. Using Docker Directly
+**Open a separate terminal and run the node:**
 
-**General format:**
-```
-docker run -p <port>:<port> gmail_project ./runServer <port> <bloom_filter_size> <hash_count> [additional_hash_counts...]
-```
-- `<port>`: Port number (**1024–65535**)
-- `<bloom_filter_size>`: Bloom filter size
-- `<hash_count>`: Number of hash functions (add more numbers for more hash functions if needed)
+Format:
 
-**Example:**
+```sh
+docker run --network gmailnetdth --name gmail_node -p <node_port>:<node_port> gmail_project node /usr/src/mytest/src/app.js <node_port> <server_port> <server_host>
 ```
-docker run -p 12345:12345 gmail_project ./runServer 12345 8 3
+
+Example:
+
+```sh
+docker run --network gmailnetdth --name gmail_node -p 12345:12345 gmail_project node /usr/src/mytest/src/app.js 12345 12346 gmail_server
 ```
+
+> **Note:** If you use a different image or network name, update the commands accordingly.
+
 ---
 
+> **Note:** If you don't have permissions, give any script execute permission with  
+> `chmod +x <script_path>`
 
-### Running the Client
-
-You can also run the client in multiple ways:
-
-#### 1. Using the Provided Script
-
-Run:
-```
-./rscripts/run_client.sh <port> <ip_address>
-```
-**Example:**
-```
-./rscripts/run_client.sh 12345 127.0.0.1
-```
-> **Note:** If you don't have permissions, give the script execute permission with  
-> `chmod +x ./rscripts/run_client.sh`
-
-#### 2. Using Docker Directly
-
-**General format:**
-```
-docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/blacklist/client.py <port> <ip_address>
-```
-- `<port>`: Port number to connect to (**should match the server port**)
-
-**Example:**
-```
-docker run -it --network="host" gmail_project python3 /usr/src/mytest/src/blacklist/client.py 12345 127.0.0.1
-```
----
-
-*Note: The specific command examples above are just for illustration. You can use any valid port (1024–65535) and parameters as needed.*
 
 ### Running the Test Suite
 
 To run the GoogleTest-based test suite:
+
+**First, build the image:**
+
+```sh
+docker build -t gmail_project .
+```
+
+**Then, run the tests:**
 
 ```sh
 docker run gmail_project ./runTest
@@ -114,73 +213,191 @@ docker run gmail_project ./runTest
 
 ## Usage Instructions
 
-After starting both server and client, interact with the system through the client terminal using the following commands:
+After starting both containers (Node.js server and Bloom filter server), you can interact with the system using the provided REST API endpoints.  
+Below are example `curl` commands for common operations:
 
-1. **POST (Add a URL to the blacklist):**
-   ```
-   POST www.example.com
-   ```
+> **Note:** All example commands below assume the Node.js server is running on port **12345**.
 
-2. **GET (Check if a URL is blacklisted):**
-   ```
-   GET www.example.com
-   ```
+### USERS
 
-3. **DELETE (Remove a URL from the blacklist):**
-   ```
-   DELETE www.example.com
-   ```
+- **Post - create new user:**
+  ```sh
+  curl -i -X POST http://localhost:12345/api/users \
+  -H "Content-Type: application/json" \
+  -d '{ 
+    "userName": "user1",
+    "password": "Pass123!",
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "gender": "female",
+    "birthDate": "1992-05-15"
+  }'
+  ```
 
-- The server will respond with the result of your command.
+- **Get - get user by id:**
+  ```sh
+  curl -i -X GET http://localhost:12345/api/users/1
+  ```
 
+### TOKENS
+
+- **Post - sign in:**
+  ```sh
+  curl -i -X POST http://localhost:12345/api/tokens \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userName": "user1",
+    "password": "Pass123!"
+  }'
+  ```
+
+### LABELS
+
+- **Get - get all labels:**
+  ```sh
+  curl -i -X GET http://localhost:12345/api/labels -H "user-id: 1"
+  ```
+
+- **Post - create label:**
+  ```sh
+  curl -i -X POST http://localhost:12345/api/labels \
+  -H "Content-Type: application/json" -H "user-id: 1" \
+  -d '{"name": "Work"}'
+  ```
+
+- **Get - get label by id:**
+  ```sh
+  curl -i -X GET http://localhost:12345/api/labels/1 -H "user-id: 1"
+  ```
+
+- **Patch - update a label name:**
+  ```sh
+  curl -i -X PATCH http://localhost:12345/api/labels/2 \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"name": "UpdatedLabel"}'
+  ```
+
+- **Delete - delete a label by a specific id:**
+  ```sh
+  curl -i -X DELETE http://localhost:12345/api/labels/2 -H "user-id: 1"
+  ```
+
+### MAILS
+
+- **Get - get last 50 mails:**
+  ```sh
+  curl -i -X GET http://localhost:12345/api/mails -H "user-id: 2"
+  ```
+
+- **Post - create a mail:**
+  ```sh
+  curl -i -X POST http://localhost:12345/api/mails \
+  -H "Content-Type: application/json" -H "user-id: 1" \
+  -d '{ "receiverId":"2",
+    "subject": "Hello mate",
+    "content": "Check this out2!"
+  }'
+  ```
+
+- **Get - search string in all mails:**
+  ```sh
+  curl -i -X GET http://localhost:12345/api/mails/Hello -H "user-id: 2"
+  ```
+
+- **Get - get a mail by id:**
+  ```sh
+  curl -i -X GET http://localhost:12345/api/mails/1 -H "user-id: 1"
+  ```
+
+- **Patch - update a mail (subject/content):**
+  ```sh
+  curl -i -X PATCH http://localhost:12345/api/mails/1 \
+  -H "Content-Type: application/json" -H "user-id: 1" \
+  -d '{ "content": "Check this out: www.example.com" }'
+  ```
+
+- **Delete - delete a mail by a specific id:**
+  ```sh
+  curl -i -X DELETE http://localhost:12345/api/mails/1 -H "user-id: 1"
+  ```
+
+### BLACKLIST
+
+- **Post - add a url to the blacklist:**
+  ```sh
+  curl -i -X POST http://localhost:12345/api/blacklist \
+  -H "Content-Type: application/json" \
+  -d '{"url": "www.example.com"}'
+  ```
+
+- **Delete - delete a url from the blacklist:**
+  ```sh
+  curl -i -X DELETE http://localhost:12345/api/blacklist/www.example.com
+  ```
+
+
+> Replace IDs and data as needed for your use case.  
+> All endpoints are available once both containers are running.
 ---
-
-**Note:**  
-- Only input lines in the correct format will be processed; all others are ignored.
-- Output must match the examples exactly (no extra spaces, newlines, or text).
-- The Bloom filter is persistent between runs via a file.
 
 ## Program Flow
 
-1. **Start the server** in one terminal with the desired configuration (port, bloom filter size, hash count).
-2. **Start the client** in another terminal and connect to the server.
-3. **Send commands** from the client to the server using the POST, GET, and DELETE formats as shown above.
-4. **Server processes the commands** and responds accordingly.
-5. **Bloom filter state is saved** after every update and loaded automatically on server restart.
+1. **Start both containers** using one of the provided methods.
+ This will launch:
+   - The C++ Bloom filter server (handles blacklist logic)
+   - The Node.js Gmail server (handles REST API and Gmail-like features)
 
-> **Note:** The program runs in an infinite loop and does not have a built-in exit option; you can only stop it by killing the process.
+2. **Interact with the system** by sending HTTP requests (using `curl` or similar tools) to the Node.js server
+on port **12345**.
+
+   Use the example commands in the "Usage Instructions" section for creating users, signing in, managing labels, sending mails, and updating the blacklist.
+
+3. **The Node.js server** processes your requests, communicates with the Bloom filter server as needed, and returns responses.
+
+4. **Bloom filter state** is automatically saved and loaded by the server for persistence.
+
+> **Note:** Both servers run continuously to serve requests.  
+> Stop the system at any time with `Ctrl+C` in the terminal running Docker Compose or the containers.
 
 ### Examples
 
-**Build Command:**  
-![Build Command](images/1.jpeg)
+**Building the Docker images with Docker Compose:**  
+![Build Command](images/build_command.jpeg)
 
-**runTest Command:**  
-![runTest Command](images/2.jpeg)
+**Starting all services with Docker Compose:**  
+![Docker Compose Up](images/compose_up.jpeg)
 
-**Server Run Command:**  
-![Server Run Command](images/3.jpeg)
+**removing all services with Compose down:**  
+![Docker Compose Down](images/compose_down.jpeg)
 
-**Client Run Command:**  
-![Client Run Command](images/4.jpeg)
+**Running both servers with the helper script:**  
+![Run Both Script](images/run_both.jpeg)
 
-**Sample Client Interaction:**  
-![Sample Client Interaction](images/5.jpeg)
+**Running the C++ server and Node.js server separately:**  
+![Run Server & Node Script](images/run_separate.jpeg)  
+
+**Running the test suite:**  
+![Run Test Suite](images/run_test.jpeg)
+
+**Sample API interaction (creating a user):**  
+![Sample API Call](images/api_call.jpeg)
 
 ---
 
 ## Project Structure
 
-- `src/main.cpp` — Server program entry point
-- `src/server.cpp/hpp` — Server implementation
-- `src/socketHandler.cpp/hpp` — Socket communication handling
-- `src/client.py` — Python client implementation
-- `src/bloomFilter.cpp/hpp`, `src/immortalBloomFilter.cpp/hpp` — Bloom filter implementation
-- `src/test.cpp` — Test suite
-- `CMakeLists.txt` — Build configuration
-- `Dockerfile` — Docker configuration
+- `src/blacklist/cpp/main.cpp` — C++ Bloom filter server entry point
+- `src/blacklist/cpp/server.cpp` / `server.hpp` — Server logic
+- `src/blacklist/cpp/bloomFilter.cpp` / `bloomFilter.hpp` — Bloom filter logic
+- `src/app.js` — Node.js Gmail server (REST API and Gmail logic)
+- `CMakeLists.txt` — C++ build configuration
+- `Dockerfile` — Docker build instructions
+- `docker-compose.yml` — Multi-container orchestration
+- `rScripts/` — Helper scripts for running containers
 
 ## Requirements
 
-- Docker
-- Two terminal windows (one for server, one for client)
+- [Docker](https://www.docker.com/) (with Docker Compose)
+- Two terminal windows (one for the server, one for the Node.js Gmail server)
+- (Optional) `curl` or similar tool for making HTTP requests to the API
