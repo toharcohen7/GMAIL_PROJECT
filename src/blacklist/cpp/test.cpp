@@ -242,58 +242,29 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
  * - Verifies that the server can handle multiple requests in a single run.
  ******************************************************************************/
 
- TEST(SocketHandlerTest, BasicFunctionality) {
+TEST(SocketHandlerTest, BasicFunctionality) {
     int port = 12345;
 
-    // Create a mock iRunnable implementation for testing
+    // Mock iRunnable implementation
     class MockRunnable : public iRunnable {
     public:
         void run(iInputHandler &input, iOutputHandler &output) override {
-            // Read input from the client
             std::string clientMessage = input.getInput();
             EXPECT_EQ(clientMessage, "Hello, Server!");
-
-            // Send a response back to the client
             output.sendOutput("Hello, Client!");
         }
     };
 
     MockRunnable mockRunnable;
 
-    // Start the server in a separate thread
+    // Start the server in a separate thread using your server class
     std::thread serverThread([&]() {
-
-        int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-        if (serverSocket < 0) {
-            throw std::runtime_error("Failed to create socket");
-        }
-    
-        // Set the socket to reuse the address
-        struct sockaddr_in sin;
-        memset(&sin, 0, sizeof(sin));
-        sin.sin_family = AF_INET;
-        sin.sin_addr.s_addr = INADDR_ANY;
-        sin.sin_port = htons(port);
-    
-        // Bind the socket to the specified port
-        if (bind(serverSocket, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
-            close(serverSocket);
-            throw std::runtime_error("Failed to bind socket\n");
-        }
-    
-        // Set the socket to listen for incoming connections
-        if (listen(serverSocket, 1) < 0) {
-            throw std::runtime_error("error listening to a socket\n");
-        }
-
-        socketHandler socketPrompt(serverSocket);
-        mockRunnable.run(socketPrompt, socketPrompt);
-
-        close(serverSocket); 
+        server s(port, mockRunnable);
+        s.startServer();
     });
 
     // Allow the server to start
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 
     // Simulate a client connection
     int clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -317,7 +288,9 @@ TEST(deleteUrlFromIBFTest, deleteFlow) {
     EXPECT_STREQ(buffer, "Hello, Client!");
 
     close(clientSocket);
-    serverThread.detach(); // Detach the server thread
+
+    // Stop the server thread (optional: you may want to add a mechanism to stop the server cleanly)
+    serverThread.detach();
 }
 
 int main(int argc, char **argv) {
