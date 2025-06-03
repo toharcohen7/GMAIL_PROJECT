@@ -109,7 +109,7 @@ const requireUserId = (req, res) => {
 };
 // Check if label is system-protected (Sent or Inbox)
 const isProtectedLabel = (labelId) => {
-  return labelId === 0 || labelId === 1;
+  return labelId === 0 || labelId === 1 || labelId === 2;
 };
 // Check if label name already exists
 const labelNameExists = (userId, name) => {
