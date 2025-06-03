@@ -4,6 +4,12 @@ const Labels = require('../models/labels')
  * Requires user-id header for authentication.
  */
 exports.getLabels = (req, res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, [])) {
+        return res.status(400).json({ error: 'No extra fields allowed' });
+    }
+
     const userId = requireUserId(req, res);
     if (!userId) return;
 
@@ -16,6 +22,12 @@ exports.getLabels = (req, res) => {
  * Validates that a name is provided and does not already exist.
  */
 exports.createLabel = (req, res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, ['name'])) {
+        return res.status(400).json({ error: 'Only name field is allowed' });
+    }
+
     const userId = requireUserId(req, res);
     if (!userId) return;
 
@@ -36,6 +48,12 @@ exports.createLabel = (req, res) => {
  * Returns only the label name.
  */
 exports.getLabelById = (req, res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, [])) {
+        return res.status(400).json({ error: 'No extra fields allowed' });
+    }
+
     const labelId = parseInt(req.params.id);
     const userId = requireUserId(req, res);
     if (!userId) return;
@@ -50,6 +68,12 @@ exports.getLabelById = (req, res) => {
  * Does not affect any other users.
  */
 exports.deleteLabel = (req,res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, [])) {
+        return res.status(400).json({ error: 'No extra fields allowed' });
+    }
+
     const userId = requireUserId(req, res);
     if (!userId) return;
 
@@ -70,6 +94,12 @@ exports.deleteLabel = (req,res) => {
  * Checks that the new name is unique and valid.
  */
 exports.updateLabel = (req, res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, ['name'])) {
+        return res.status(400).json({ error: 'Only name field is allowed' });
+    }
+
     const userId = requireUserId(req, res);
     if(!userId) return
 
@@ -124,3 +154,16 @@ const requireLabel = (res, userId, labelId) => {
   }
   return label;
 };
+
+// Check for extra fields in the request body
+function isThereExtraFields(req, expectedKeys) {
+
+  if (!req.body || typeof req.body !== 'object') {
+    return false; // No body or not an object, no extra fields to check
+  }
+
+  const receivedKeys = Object.keys(req.body);
+  const extraKeys = receivedKeys.filter(key => !expectedKeys.includes(key));
+
+  return extraKeys.length > 0 ? true : false
+}

@@ -8,9 +8,15 @@ const Labels = require('../models/labels');
  * Sorted by timestamp descending. Only relevant fields are returned.
  */
 exports.getLast50Mails = (req, res) => {
-  const userId = parseInt(req.headers['user-id']);
-  if (!userId) 
-    return res.status(401).json({ error: 'Missing user-id header' });
+
+  if (isThereExtraFields(req, [])) {
+    return res.status(400).json({ error: 'No extra fields allowed' });
+  }
+
+  const userId = getUserIdFromHeaders(req, res);
+  if (userId === undefined) {
+    return res; // Error response already sent in helper function
+  }
 
   // Retrieve last 50 mails for the user
   const mails = Mails.getLast50Mails(userId);
@@ -31,9 +37,15 @@ exports.getLast50Mails = (req, res) => {
  * Validates fields, checks for blacklisted links, and stores the mail for sender and receiver.
  */
 exports.createMail = (req, res) => {
-  const userId = parseInt(req.headers['user-id']);
-  if (!userId) 
-    return res.status(401).json({ error: 'Missing user-id header' });
+
+  if (isThereExtraFields(req, [])) {
+    return res.status(400).json({ error: 'No extra fields allowed' });
+  }
+
+  const userId = getUserIdFromHeaders(req, res);
+  if (userId === undefined) {
+    return res; // Error response already sent in helper function
+  }
 
   // Create new draft mail for the user
   const newMail = Mails.createMail(userId);   
@@ -46,17 +58,20 @@ exports.createMail = (req, res) => {
  * Only returns relevant fields.
  */
 exports.getMailById = (req, res) => {
-  const userId = parseInt(req.headers['user-id']);
-  if (!userId) 
-    return res.status(401).json({ error: 'Missing user-id header' });
 
-  const mailId = parseInt(req.params.id);
-  if (!mailId) 
-    return res.status(400).json({ error: 'mail-id must be provided' });
+  if (isThereExtraFields(req, [])) {
+    return res.status(400).json({ error: 'No extra fields allowed' });
+  }
 
-  const mail = Mails.getMailById(userId, mailId);
-  if (!mail) 
-    return res.status(404).json({ error: 'Mail not found' });
+  const userId = getUserIdFromHeaders(req, res);
+  if (userId === undefined) {
+    return res; // Error response already sent in helper function
+  }
+
+  const mailId = getMailIdFromParams(req, res, userId);
+  if (mailId === undefined) {
+    return res; // Error response already sent in helper function
+  }
 
   const { id, mailStatus, senderId, receiversId, subject, content, formattedTime } = mail;
   let labelName = Labels.getLabelById(userId, mail.labelId).name;
@@ -69,17 +84,20 @@ exports.getMailById = (req, res) => {
  * Does not affect the other party.
  */
 exports.deleteMail = (req, res) => {
-  const userId = parseInt(req.headers['user-id']);
-  if (!userId) 
-    return res.status(401).json({ error: 'Missing user-id header' });
+
+  if (isThereExtraFields(req, [])) {
+    return res.status(400).json({ error: 'No extra fields allowed' });
+  }
+
+  const userId = getUserIdFromHeaders(req, res);
+  if (userId === undefined) {
+    return res; // Error response already sent in helper function
+  }
   
-  const mailId = parseInt(req.params.id);
-  if (!mailId) 
-    return res.status(400).json({ error: 'mail-id must be provided' });
-  
-  const mail = Mails.getMailById(userId, mailId);
-  if (!mail) 
-    return res.status(404).json({ error: 'Mail not found' });
+  const mailId = getMailIdFromParams(req, res, userId);
+  if (mailId === undefined) {
+    return res; // Error response already sent in helper function
+  }
 
   // Perform delete operation
   Mails.deleteMail(userId, mailId);
@@ -98,33 +116,32 @@ exports.deleteMail = (req, res) => {
 exports.updateMail = async (req, res) => {
   const updates = req.body;
 
-  const userId = parseInt(req.headers['user-id']);
-  if (!userId) 
-    return res.status(401).json({ error: 'Missing user-id header' });
-
-  if (Users.getUser(userId) === undefined) {
-    return res.status(404).json({ error: 'User not found' });
+  const userId = getUserIdFromHeaders(req, res);
+  if (userId === undefined) {
+    return res; // Error response already sent in helper function
   }
 
-  const mailId = parseInt(req.params.id);
-  if (!mailId) 
-    return res.status(400).json({ error: 'mail-id must be provided' });
-
-  const mail = Mails.getMailById(userId, mailId);
-  if (!mail) {
-    return res.status(404).json({ error: 'Mail not found' });
+  const mailId = getMailIdFromParams(req, res, userId);
+  if (mailId === undefined) {
+    return res; // Error response already sent in helper function
   }
 
   // Check if the mail is still a draft
   if (Mails.getMailStatus(userId, mailId) === 'Draft') {
-    return changeDraftMail(userId, mailId, updates, res);
+    return changeDraftMail(userId, mailId, updates, req, res);
   } else {
-    return changeLabel(userId, mailId, updates, res);
+    return changeLabel(userId, mailId, updates, req, res);
   }
 };
 
 // Update label for a non-draft mail
-function changeLabel(userId, mailId, updates, res) {
+function changeLabel(userId, mailId, updates, req, res) {
+
+  // Validate no extra fields in request body
+  if(isThereExtraFields(req, ['labelId'])) {
+    return res.status(400).json({ error: 'Only the label can be changed in already sent mails' });
+  } 
+
   if (updates.labelId === undefined) {
     return res.status(400).json({ error: 'labelId is required' });
   }
@@ -150,7 +167,13 @@ function changeLabel(userId, mailId, updates, res) {
 }
 
 // Updates content of a draft mail
-async function changeDraftMail(userId, mailId, updates, res) {
+async function changeDraftMail(userId, mailId, updates, req, res) {
+
+  // Validate no extra fields in request body
+  if(isThereExtraFields(req, ['subject', 'content', 'receiversId', 'labelId'])) {
+    return res.status(400).json({ error: 'Only subject, content, receiversId, and labelId can be changed' });
+  } 
+
   if (!updates.subject && !updates.content && !updates.receiversId && !updates.labelId) {
     return res.status(400).json({ error: 'At least one field must be provided' });
   }
@@ -200,9 +223,15 @@ async function changeDraftMail(userId, mailId, updates, res) {
  * of all sent and received mails of the current user.
  */
 exports.searchQueryInMails = (req, res) => {
-  const userId = parseInt(req.headers['user-id']);
-  if (!userId) 
-    return res.status(401).json({ error: 'Missing user-id header' });
+
+  if(isThereExtraFields(req, [])) {
+    return res.status(400).json({ error: 'No extra fields allowed' });
+  }
+
+  const userId = getUserIdFromHeaders(req, res);
+  if (userId === undefined) {
+    return res; // Error response already sent in helper function
+  }
 
   const query = req.params.query;
   if (!query) {
@@ -261,4 +290,50 @@ async function isInBlacklist(url) {
 function isreceiversIdUser(receiversId) {
   const id = Number(receiversId);
   return Users.getUser(id);
+}
+
+// Extracts and validates the user ID from request headers
+function getUserIdFromHeaders(req, res) {
+  const userId = parseInt(req.headers['user-id']);
+  if (!userId) {
+    res.status(400).json({ error: 'Missing user-id header' });
+    return undefined;
+  }
+
+  if (Users.getUser(userId) === undefined) {
+    res.status(404).json({ error: 'User not found' });
+    return undefined;
+  }
+
+  return userId;
+}
+
+// Extracts and validates the mail ID from request parameters
+function getMailIdFromParams(req, res, userId) {
+  const mailId = parseInt(req.params.id);
+  if (!mailId) {
+    res.status(400).json({ error: 'mail-id must be provided' });
+    return undefined;
+  }
+
+  const mail = Mails.getMailById(userId, mailId);
+  if (!mail) {
+    res.status(404).json({ error: 'Mail not found' });
+    return undefined;
+  }
+
+  return mailId;
+}
+
+// Checks if there are any extra fields in the request body
+function isThereExtraFields(req, expectedKeys) {
+
+  if (!req.body || typeof req.body !== 'object') {
+    return false; // No body or not an object, no extra fields to check
+  }
+
+  const receivedKeys = Object.keys(req.body);
+  const extraKeys = receivedKeys.filter(key => !expectedKeys.includes(key));
+
+  return extraKeys.length > 0 ? true : false
 }

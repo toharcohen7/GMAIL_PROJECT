@@ -1,6 +1,12 @@
 const Users = require('../models/users')
 
 exports.getUserById= (req, res) => {
+
+    // Check if the user ID is provided and is a valid number
+    if (isThereExtraFields(req, [])) {
+    return res.status(400).json({ error: 'No extra fields allowed' });
+    }
+
     const userId = parseInt(req.params.id);
     const user = Users.getUser(userId);
     if(!user)
@@ -12,7 +18,14 @@ exports.getUserById= (req, res) => {
  * Also initializes default labels for the user.
  */
 exports.createUser = (req, res) => {
+
     const requiredFields = ['userName', 'password', 'firstName', 'lastName', 'gender', 'birthDate'];
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, requiredFields)) {
+    return res.status(400).json({ error: 'Only userName, password, firstName, lastName, gender, and birthDate are allowed' });
+    }
+
     for (const field of requiredFields) {
         if (!req.body[field]) {
             return res.status(400).json({ error: `${field} is required` });
@@ -54,4 +67,16 @@ function isValidGender(gender) {
 
 function isValidDate(birthDate) {
     return /^\d{4}-\d{2}-\d{2}$/.test(birthDate);
+}
+
+function isThereExtraFields(req, expectedKeys) {
+
+  if (!req.body || typeof req.body !== 'object') {
+    return false; // No body or not an object, no extra fields to check
+  }
+
+  const receivedKeys = Object.keys(req.body);
+  const extraKeys = receivedKeys.filter(key => !expectedKeys.includes(key));
+
+  return extraKeys.length > 0 ? true : false
 }

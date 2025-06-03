@@ -1,6 +1,12 @@
 const Blacklist = require('../models/blacklist');
 
 exports.addBlacklist = async (req, res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, ['url'])) {
+        return res.status(400).json({ error: 'Only url field is allowed' });
+    }
+
     const url = req.body.url;
     if (!url) {
         return res.status(400).json({ error: 'URL is required' });
@@ -17,6 +23,12 @@ exports.addBlacklist = async (req, res) => {
 };
 
 exports.deleteBlacklist = async (req, res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, [])) {
+        return res.status(400).json({ error: 'No extra fields allowed' });
+    }
+
     const url = req.params.id;
     if (!url) {
         return res.status(400).json({ error: 'ID is required' });
@@ -35,6 +47,12 @@ exports.deleteBlacklist = async (req, res) => {
 };
 
 exports.searchBlacklist = async (req, res) => {
+
+    // Check for extra fields in the request body
+    if (isThereExtraFields(req, ['url'])) {
+        return res.status(400).json({ error: 'Only url field is allowed' });
+    }
+
     const url = req.body.url;
     if (!url) {
         return res.status(400).json({ error: 'URL is required' });
@@ -60,3 +78,16 @@ exports.searchBlacklist = async (req, res) => {
         return res.status(400).json({ error: "Invalid URL or request" });
     }
 };
+
+// Check for extra fields in the request body
+function isThereExtraFields(req, expectedKeys) {
+
+  if (!req.body || typeof req.body !== 'object') {
+    return false; // No body or not an object, no extra fields to check
+  }
+
+  const receivedKeys = Object.keys(req.body);
+  const extraKeys = receivedKeys.filter(key => !expectedKeys.includes(key));
+
+  return extraKeys.length > 0 ? true : false
+}
