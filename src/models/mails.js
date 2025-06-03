@@ -87,15 +87,17 @@ const updateMail = (userId, mailId, updates) => {
   }
 
   // Update timestamp to reflect the update
-  mail.timestamp = new Date().getTime();
-  mail.formattedTime = new Date(mail.timestamp).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
+  if( mail.mailStatus === 'Draft') {
+    mail.timestamp = new Date().getTime();
+    mail.formattedTime = new Date(mail.timestamp).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  }
 
   // If label is being changed (e.g., sending), process accordingly
   if (updates.labelId !== undefined) {
