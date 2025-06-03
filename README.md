@@ -29,12 +29,6 @@ Milestone 2 branch:
 GPDTH-165-branch-for-milestone-2
 ```
 
-Milestone 3 branch:
-
-```sh
-GPDTH-218-branch-for-milestone-3
-```
-
 ## Building with Docker
 
 This project is designed to build and run inside Docker containers using GCC, CMake, Python3, Node.js, and npm.
@@ -270,7 +264,7 @@ Below are example `curl` commands for common operations:
   -H "Content-Type: application/json" -H "user-id: 1" \
   -d '{"name": "Work"}'
   ```
-> **Note:** Reserved labels: id = 0,1,2 (Draft, Sent, Received).  
+  > **Note:** Reserved labels: id = 0,1,2 (Draft, Sent, Received).  
 > You cannot create or modify labels with these IDs.
 
 - **Get - get label by id:**
