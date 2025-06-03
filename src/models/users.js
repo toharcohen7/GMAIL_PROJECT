@@ -1,4 +1,6 @@
 const Labels = require('../models/labels')
+const Mails = require('../models/mails')
+
 
 let idCounter = 0;
 const users = [];
@@ -32,6 +34,8 @@ const createUser = (userName, password,firstName,lastName,gender,birthDate) => {
     const newUser = {id: ++idCounter, userName, password, firstName, lastName, gender, birthDate};
     users.push(newUser);
     Labels.initLabelsForUser(newUser.id);
+    Mails.initMailsForUser(newUser.id);
+
     return newUser;
 };
 /**

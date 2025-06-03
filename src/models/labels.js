@@ -46,10 +46,12 @@ const updateLabel = (userId, labelId, updates) => {
 };
 /**
  * Initializes the label structure for a new user.
- * Automatically includes a default label with ID 0 named 'unlabeled'.
  */
 const initLabelsForUser = (userId) => {
-  labels.set(userId, {labelCounter: 2, data: [{ id: 0, name: 'Sent' }, { id: 1, name: 'Inbox' }]});
+  labels.set(userId, {labelCounter: 3, data: [{ id: 0, name: 'Draft' },
+                                              { id: 1, name: 'Sent' },
+                                              { id: 2, name: 'Received' }]
+                                            });
 };
 
 module.exports = {
