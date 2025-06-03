@@ -73,6 +73,7 @@ exports.getMailById = (req, res) => {
     return res; // Error response already sent in helper function
   }
 
+  const mail = Mails.getMailById(userId, mailId);
   const { id, mailStatus, senderId, receiversId, subject, content, formattedTime } = mail;
   let labelName = Labels.getLabelById(userId, mail.labelId).name;
 

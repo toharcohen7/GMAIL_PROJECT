@@ -177,6 +177,22 @@ const sendMail = (receiversId, mail) => {
   }
 };
 
+function removeMailsFromLable(userId, labelId) {
+  // Remove all mails with the specified labelId from the user's mail list
+  const mails = userMails.get(userId);
+  
+  for ( const mail of mails) {
+    if (mail.labelId !== labelId) 
+      continue; // Skip mails that do not have the specified label
+
+    if (mail.mailStatus === 'Sent') 
+      mail.labelId = 1; // Change label to "Sent" if it was sent
+    
+    if (mail.mailStatus === 'Received') 
+      mail.labelId = 2; // Change label to "Received" if it was received   
+  }
+}
+
 // Export all controller functions for external use
 module.exports = {
   getLast50Mails,
@@ -187,5 +203,6 @@ module.exports = {
   searchQueryInMails,
   initMailsForUser,
   getMailStatus,
-  getRecivers
+  getRecivers,
+  removeMailsFromLable
 };
