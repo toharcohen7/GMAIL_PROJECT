@@ -272,7 +272,7 @@ Below are example `curl` commands for common operations:
 
 - **Patch - update a label name:**
   ```sh
-  curl -i -X PATCH http://localhost:12345/api/labels/2 \
+  curl -i -X PATCH http://localhost:12345/api/labels/3 \
   -H "Content-Type: application/json" \
   -H "user-id: 1" \
   -d '{"name": "UpdatedLabel"}'
@@ -280,29 +280,25 @@ Below are example `curl` commands for common operations:
 
 - **Delete - delete a label by a specific id:**
   ```sh
-  curl -i -X DELETE http://localhost:12345/api/labels/2 -H "user-id: 1"
+  curl -i -X DELETE http://localhost:12345/api/labels/3 -H "user-id: 1"
   ```
 
 ### MAILS
 
 - **Get - get last 50 mails:**
   ```sh
-  curl -i -X GET http://localhost:12345/api/mails -H "user-id: 2"
+  curl -i -X GET http://localhost:12345/api/mails -H "user-id: 1"
   ```
 
 - **Post - create a mail:**
   ```sh
   curl -i -X POST http://localhost:12345/api/mails \
-  -H "Content-Type: application/json" -H "user-id: 1" \
-  -d '{ "receiverId":"2",
-    "subject": "Hello mate",
-    "content": "Check this out2!"
-  }'
+  -H "Content-Type: application/json" -H "user-id: 1"
   ```
 
 - **Get - search string in all mails:**
   ```sh
-  curl -i -X GET http://localhost:12345/api/mails/Hello -H "user-id: 2"
+  curl -i -X GET http://localhost:12345/api/mails/search/Hello -H "user-id: 1"
   ```
 
 - **Get - get a mail by id:**
@@ -314,7 +310,12 @@ Below are example `curl` commands for common operations:
   ```sh
   curl -i -X PATCH http://localhost:12345/api/mails/1 \
   -H "Content-Type: application/json" -H "user-id: 1" \
-  -d '{ "content": "Check this out: www.example.com" }'
+  -d '{
+    "receiversId": [1, 2],
+    "labelId": 1,
+    "subject": "Hello mate",
+    "content": "Check this out2!"
+  }'
   ```
 
 - **Delete - delete a mail by a specific id:**
@@ -335,7 +336,9 @@ Below are example `curl` commands for common operations:
   ```sh
   curl -i -X DELETE http://localhost:12345/api/blacklist/www.example.com
   ```
-
+  
+> **Note:** The server validates the JSON body of each `curl` request for required fields and correct data types.  
+> Make sure your request body matches the expected format, otherwise the server will respond with an error.
 
 > Replace IDs and data as needed for your use case.  
 > All endpoints are available once both containers are running.
@@ -382,6 +385,9 @@ on port **12345**.
 
 **Sample API interaction (creating a user):**  
 ![Sample API Call](images/api_call.jpeg)
+
+**Secound sample API interaction (creating a mail):**  
+![Sample API 2 Call](images/send_mail.jpeg)
 
 ---
 
