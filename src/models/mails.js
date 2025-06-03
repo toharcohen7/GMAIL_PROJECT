@@ -23,7 +23,8 @@ const createMail = (senderId) => {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
+    hour12: false,
+    timeZone: 'Asia/Jerusalem'
   });
 
   // Mail object for the sender
@@ -95,7 +96,8 @@ const updateMail = (userId, mailId, updates) => {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: false
+      hour12: false,
+      timeZone: 'Asia/Jerusalem'
     });
   }
 

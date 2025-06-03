@@ -264,6 +264,8 @@ Below are example `curl` commands for common operations:
   -H "Content-Type: application/json" -H "user-id: 1" \
   -d '{"name": "Work"}'
   ```
+  > **Note:** Reserved labels: id = 0,1,2 (Draft, Sent, Received).  
+> You cannot create or modify labels with these IDs.
 
 - **Get - get label by id:**
   ```sh
@@ -283,6 +285,8 @@ Below are example `curl` commands for common operations:
   curl -i -X DELETE http://localhost:12345/api/labels/3 -H "user-id: 1"
   ```
 
+> **Note:** When a label is deleted, all mails associated with that label will automatically revert to their original status (either "sent" or "received") based on each mail's status.
+
 ### MAILS
 
 - **Get - get last 50 mails:**
@@ -290,11 +294,16 @@ Below are example `curl` commands for common operations:
   curl -i -X GET http://localhost:12345/api/mails -H "user-id: 1"
   ```
 
+> **Note:**  exclude Draft mails.
+
 - **Post - create a mail:**
   ```sh
   curl -i -X POST http://localhost:12345/api/mails \
   -H "Content-Type: application/json" -H "user-id: 1"
   ```
+
+> **Note:** Creating a mail will create an empty draft mail.  
+> To actually send the mail, you must update it using the PATCH endpoint with the required fields (must field: labelId = 1 (sent), at least one valid receiver).
 
 - **Get - search string in all mails:**
   ```sh
@@ -306,17 +315,19 @@ Below are example `curl` commands for common operations:
   curl -i -X GET http://localhost:12345/api/mails/1 -H "user-id: 1"
   ```
 
-- **Patch - update a mail (subject/content):**
+- **Patch - update a mail (subject/content/labelId/receiversId):**
   ```sh
   curl -i -X PATCH http://localhost:12345/api/mails/1 \
   -H "Content-Type: application/json" -H "user-id: 1" \
   -d '{
-    "receiversId": [1, 2],
+    "receiversId": [1],
     "labelId": 1,
     "subject": "Hello mate",
     "content": "Check this out2!"
   }'
   ```
+
+> **Note:** For mails that have already been sent, only the label can be updated.
 
 - **Delete - delete a mail by a specific id:**
   ```sh
