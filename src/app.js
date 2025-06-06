@@ -1,5 +1,6 @@
 const express = require ('express');
 const Config = require('./models/config');
+const cors = require('cors');
 const app = express();
 
 const usersRoutes = require('./routes/users');
@@ -9,6 +10,7 @@ const labelsRoutes = require('./routes/labels');
 const blacklistRoutes = require('./routes/blacklist');
 
 app.use(express.json())
+app.use(cors());
 
 app.use('/api/users', usersRoutes);
 app.use('/api/mails', mailsRoutes);
