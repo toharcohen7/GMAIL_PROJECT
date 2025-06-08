@@ -1,0 +1,126 @@
+body {
+  background: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.top-bar {
+  background: #fff;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 1.5px 6px rgba(0, 0, 0, 0.08);
+  border-radius: 0 0 16px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.welcome-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 60px 5vw;
+  gap: 4vw;
+  flex-wrap: nowrap;
+}
+
+.welcome-text {
+  max-width: 50vw;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-left: 0;
+  padding-top: 0;
+}
+
+.inbox-image {
+  width: 36vw;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  transform: translate(-60px, 160px);
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 4px;
+  background: #1a73e8;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(26, 115, 232, 0.08);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.1s ease;
+}
+
+button:hover {
+  background: #1765c1;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.sign-in-btn {
+  background: #fff;
+  color: #1a73e8;
+  border: 2px solid #1a73e8;
+}
+
+.sign-in-btn:hover {
+  background: #e0e0e0;
+  color: #1765c1;
+  border-color: #1765c1;
+  box-shadow: 0 2px 8px rgba(60, 60, 60, 0.18);
+}
+
+.sign-in-btn:active {
+  transform: scale(0.96);
+}
+
+.logo {
+  height: 300%;
+  margin-left: -40px;
+}
+
+.welcome-text h1 {
+  font-size: 3rem;
+  color: #1a1a1a;
+  margin-bottom: 1px;
+  line-height: 1.2;
+}
+
+.welcome-text p {
+  font-size: 1.5rem;
+  color: #555;
+  max-width: 500px;
+  margin-bottom: 1px;
+}
+
+.welcome-text button {
+  margin-top: 24px;
+}
