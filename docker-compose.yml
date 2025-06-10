@@ -1,7 +1,11 @@
-
 services:
+  base:
+    build:
+      context: .
+    image: gmail_project
+    command: sleep infinity
+
   server:
-    build: .
     image: gmail_project
     container_name: gmail_server
     command: /usr/src/mytest/build/runServer ${SERVER_PORT} ${BF_SIZE} ${HASH_COUNTS}
@@ -11,9 +15,10 @@ services:
       - SERVER_PORT=${SERVER_PORT}
       - BF_SIZE=${BF_SIZE}
       - HASH_COUNTS=${HASH_COUNTS}
+    depends_on:
+      - base
 
   node:
-    build: .
     image: gmail_project
     container_name: gmail_node
     command: node /usr/src/mytest/src/app.js ${NODE_PORT} ${SERVER_PORT} ${SERVER_HOST}
