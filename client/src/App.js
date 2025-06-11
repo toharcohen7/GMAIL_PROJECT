@@ -1,13 +1,34 @@
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import WelcomePage from "./pages/WelcomePage";
+import SignIn from "./pages/SignIn";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import SignIn from './SignIn/SignIn';
+function WelcomeWrapper() {
+  const navigate = useNavigate();
+
+  const handleCreateUser = () => {
+    navigate("/signup");
+  };
+
+  const handleSignIn = () => {
+    navigate("/signin");
+  };
+
+  return (
+    <WelcomePage
+      onCreateUser={handleCreateUser}
+      onSignIn={handleSignIn}
+    />
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <SignIn />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<WelcomeWrapper />} />
+        <Route path="/SignIn" element={<SignIn />} />
+      </Routes>
+    </Router>
   );
 }
 
