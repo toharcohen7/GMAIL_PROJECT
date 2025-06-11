@@ -53,9 +53,9 @@ if (isLoggedIn) {
         <h1 className="text-center mb-4 fw-bold text-primary">Sign In</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">Username</label>
+            <label htmlFor="username" className="form-label">User Name</label>
             <input
-              className="form-control"
+              className="form-control input-hover-effect"
               type="text"
               id="username"
               name="username"
@@ -67,7 +67,7 @@ if (isLoggedIn) {
           <div className="mb-3">
             <label htmlFor="password" className="form-label">Password</label>
             <input
-              className="form-control"
+              className="form-control input-hover-effect"
               type="password"
               id="password"
               name="password"

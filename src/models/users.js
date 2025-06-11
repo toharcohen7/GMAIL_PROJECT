@@ -27,15 +27,15 @@ const getUser = (userId) => {
  * Also initializes default labels (like "unlabeled") for the new user.
  * Returns the created user object or undefined if username exists.
  */
-const createUser = (userName, password,firstName,lastName,gender,birthDate) => {
+const createUser = (userName, password,firstName,lastName,gender,birthDate, image) => {
     if (users.find(u => u.userName === userName)) {
         return undefined; // Username already exists
     }
-    const newUser = {id: ++idCounter, userName, password, firstName, lastName, gender, birthDate};
+    const newUser = {id: ++idCounter, userName, password, firstName, lastName, gender, birthDate, image};
     users.push(newUser);
     Labels.initLabelsForUser(newUser.id);
     Mails.initMailsForUser(newUser.id);
-
+    console.log("Current users array:", users);
     return newUser;
 };
 /**

@@ -1,6 +1,9 @@
+import './App.css';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import WelcomePage from "./pages/WelcomePage";
 import SignIn from "./pages/SignIn";
+import SignUp from './SignUp/SignUp';
 
 function WelcomeWrapper() {
   const navigate = useNavigate();

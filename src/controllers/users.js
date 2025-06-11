@@ -19,11 +19,11 @@ exports.getUserById= (req, res) => {
  */
 exports.createUser = (req, res) => {
 
-    const requiredFields = ['userName', 'password', 'firstName', 'lastName', 'gender', 'birthDate'];
+    const requiredFields = ['userName', 'password', 'confirmPassword', 'firstName', 'lastName', 'gender', 'birthDate', 'image'];
 
     // Check for extra fields in the request body
     if (isThereExtraFields(req, requiredFields)) {
-    return res.status(400).json({ error: 'Only userName, password, firstName, lastName, gender, and birthDate are allowed' });
+    return res.status(400).json({ error: 'Only userName, confirmPassword, password, firstName, lastName, gender, birthDate and image are allowed' });
     }
 
     for (const field of requiredFields) {
@@ -42,16 +42,17 @@ exports.createUser = (req, res) => {
     }
 
      if(!isValidDate(req.body.birthDate)){
-        return res.status(400).json({error:'birthDate must be in a date format'});
+        return res.status(400).json({error:'birthDate must be a valid date'});
     }
 
-    const { userName, password, firstName, lastName, gender, birthDate } = req.body;
-    const newUser = Users.createUser(userName, password, firstName, lastName, gender, birthDate);
+    const { userName, password, firstName, lastName, gender, birthDate , image} = req.body;
+
+    const newUser = Users.createUser(userName, password, firstName, lastName, gender, birthDate, image);
     if (!newUser) {
-        return res.status(409).json({ error: 'User already exists' });
+        return res.status(400).json({ error: 'userName already exists' });
     }
     
-    res.status(201).location(`/api/users/${newUser.id}`).end();
+    res.status(201).location(`/api/users/${newUser.id}`).json(newUser);
 };
 //
 // ─── Helper Functions ───────────────────────────────────────────────────────────
@@ -66,8 +67,27 @@ function isValidGender(gender) {
 }
 
 function isValidDate(birthDate) {
-    return /^\d{4}-\d{2}-\d{2}$/.test(birthDate);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) return false;
+
+  const [year, month, day] = birthDate.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return false;
+  }
+
+  const now = new Date();
+  if (date > now) {
+    return false;
+  }
+
+  return true;
 }
+
 
 function isThereExtraFields(req, expectedKeys) {
 
