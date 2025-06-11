@@ -1,7 +1,7 @@
 import React from "react";
 import './WelcomePage.css';
-import logo from '../images/logo.png';
-import inboxIcon from '../images/inboxIcon.png';
+import logo from '../../images/logo.png';
+import inboxIcon from '../../images/inboxIcon.png';
 
 const WelcomePage = ({ onCreateUser, onSignIn }) => (
   <div className="page-container">
