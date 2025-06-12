@@ -1,7 +1,7 @@
-
 // import "./signIn.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from "react";
+import logo from '../../images/logo.png';
 
 
 function SignIn() {
@@ -31,7 +31,6 @@ function SignIn() {
       .then((data) => {
         console.log("Token received:", data);
         setIsLoggedIn(true);
-        // Handle successful sign-in, e.g., store token, redirect, etc.
       })
       .catch((error) => {
         console.error("Error signing in:", error);
@@ -48,36 +47,41 @@ if (isLoggedIn) {
   }
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="col-md-6 col-lg-4 p-4 border rounded shadow-sm bg-light">
-        <h1 className="text-center mb-4 fw-bold text-primary">Sign In</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label">User Name</label>
-            <input
-              className="form-control input-hover-effect"
-              type="text"
-              id="username"
-              name="username"
-              required
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password</label>
-            <input
-              className="form-control input-hover-effect"
-              type="password"
-              id="password"
-              name="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="btn btn-primary w-100">Sign In</button>
-        </form>
+    <div className="signin-fullscreen-wrapper">
+      <div className="top-bar">
+        <img src={logo} alt="Logo" className="logo" />
+      </div>
+      <div className="container d-flex justify-content-center align-items-center vh-100">
+        <div className="col-md-6 col-lg-4 p-4 border rounded shadow-sm bg-light">
+          <h1 className="text-center mb-4 fw-bold text-primary">Sign In</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="username" className="form-label">User Name</label>
+              <input
+                className="form-control input-hover-effect"
+                type="text"
+                id="username"
+                name="username"
+                required
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">Password</label>
+              <input
+                className="form-control input-hover-effect"
+                type="password"
+                id="password"
+                name="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="btn btn-primary w-100">Sign In</button>
+          </form>
+        </div>
       </div>
     </div>
   );
