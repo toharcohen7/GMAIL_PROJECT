@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import SignIn from "./pages/SignIn/SignIn";
 import SignUp from './pages/SignUp/SignUp';
+import SideBar from './pages/SideBar/SideBar';
 
 function WelcomeWrapper() {
   const navigate = useNavigate();
@@ -31,6 +32,8 @@ function App() {
         <Route path="/" element={<WelcomeWrapper />} />
         <Route path="/SignIn" element={<SignIn />} />
         <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/SideBar" element={<SideBar />} />
+
       </Routes>
     </Router>
   );
