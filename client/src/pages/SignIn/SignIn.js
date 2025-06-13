@@ -29,7 +29,7 @@ function SignIn() {
         return response.json();
       })
       .then((data) => {
-        console.log("Token received:", data);
+        localStorage.setItem("token", data.token);
         setIsLoggedIn(true);
       })
       .catch((error) => {
