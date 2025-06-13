@@ -1,4 +1,19 @@
 const Users = require('../models/users')
+const Tokens = require('../models/tokens');
+
+exports.getCurrentUser = (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.sendStatus(401);
+
+  const token = authHeader.split(' ')[1];
+  const decoded = tokens.verifyToken(token);
+  if (!decoded) return res.sendStatus(403);
+
+  const user = Users.getUserById(decoded.id);
+  if (!user) return res.sendStatus(404);
+
+  res.json(user);
+};
 
 exports.getUserById= (req, res) => {
 
