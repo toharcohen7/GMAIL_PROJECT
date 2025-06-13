@@ -1,0 +1,15 @@
+
+.user-card {
+  position: absolute;
+  top: 100%;               /* בדיוק מתחת לכפתור */
+  margin-top: 17px;        /* רווח אנכי נוסף */
+  transform: translateX(-200px);
+  border-radius: 12px;
+  z-index: 999;
+}
+
+
+.card-style {
+    width: 20rem;
+    border-radius: 25px;
+}
