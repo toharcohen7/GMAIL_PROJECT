@@ -19,7 +19,8 @@ const getUser = (userId) => {
         firstName: user.firstName,
         lastName: user.lastName,
         gender: user.gender,
-        birthDate: user.birthDate
+        birthDate: user.birthDate,
+        image: user.image
   };
 };
 /**

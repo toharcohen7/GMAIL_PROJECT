@@ -6,10 +6,10 @@ exports.getCurrentUser = (req, res) => {
   if (!authHeader) return res.sendStatus(401);
 
   const token = authHeader.split(' ')[1];
-  const decoded = tokens.verifyToken(token);
+  const decoded = Tokens.verifyToken(token);
   if (!decoded) return res.sendStatus(403);
 
-  const user = Users.getUserById(decoded.id);
+  const user = Users.getUser(decoded.id);
   if (!user) return res.sendStatus(404);
 
   res.json(user);

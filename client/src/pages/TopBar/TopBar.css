@@ -1,0 +1,88 @@
+
+.bg-TopBar{
+    background-color: rgb(242, 240, 240);    
+}
+.custom-navbar {
+  height: 80px;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  max-height: 200px;
+  height: auto;
+}
+
+.btn-outline-secondary {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(205, 202, 202); 
+  transition: background-color 0.2s ease;
+}
+
+.btn-outline-secondary i {
+  font-size: 2rem;
+}
+
+.search-form { 
+  flex-grow: 1;
+  max-width: 600px; /* גבול עליון - אופציונלי */
+  min-width: 200px;
+  transition: width 0.3s ease;
+}
+
+.search-icon-inside {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: gray;
+  pointer-events: none;
+}
+
+.search-input-with-icon {
+  padding-left: 2rem;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  border-radius: 999px;
+  min-height: 48px; /* גובה מינימלי לשדה */
+  background-color:rgb(234, 234, 234);
+}
+
+.btn-profile{
+    margin: 3vh;
+}
+
+/* ברירת מחדל: מצב בהיר */
+body {
+  background-color: #fff;
+  color: #000;
+}
+
+/* מצב כהה */
+body.dark-mode {
+  background-color: #121212;
+  color: #eee;
+}
+
+body.dark-mode .card {
+  background-color: #1e1e1e;
+  color: #f5f5f5;
+}
+
+.top-bar-img{
+    width: 43px;
+    height: 43px;
+}
+
+
+
+
+
