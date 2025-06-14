@@ -3,13 +3,20 @@
   position: absolute;
   top: 100%;               /* בדיוק מתחת לכפתור */
   margin-top: 17px;        /* רווח אנכי נוסף */
-  transform: translateX(-200px);
+  transform: translateX(-270px);
   border-radius: 12px;
   z-index: 999;
 }
 
 
 .card-style {
-    width: 20rem;
-    border-radius: 25px;
+  width: 20rem;
+  border-radius: 25px;
+}
+
+.circile-adg{
+  width: 140px;
+  height: 140px;
+  margin: 1rem auto;
+  display: block;
 }
