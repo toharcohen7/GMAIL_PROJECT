@@ -1,4 +1,3 @@
-
 .bg-TopBar{
     background-color: rgb(242, 240, 240);    
 }
@@ -32,7 +31,7 @@
 
 .search-form { 
   flex-grow: 1;
-  max-width: 600px; /* גבול עליון - אופציונלי */
+  max-width: 600px; 
   min-width: 200px;
   transition: width 0.3s ease;
 }
@@ -52,7 +51,7 @@
   padding-top: 0.6rem;
   padding-bottom: 0.6rem;
   border-radius: 999px;
-  min-height: 48px; /* גובה מינימלי לשדה */
+  min-height: 48px; 
   background-color:rgb(234, 234, 234);
 }
 
@@ -60,13 +59,11 @@
     margin: 3vh;
 }
 
-/* ברירת מחדל: מצב בהיר */
 body {
   background-color: #fff;
   color: #000;
 }
 
-/* מצב כהה */
 body.dark-mode {
   background-color: #121212;
   color: #eee;

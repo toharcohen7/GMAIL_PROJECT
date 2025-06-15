@@ -7,7 +7,6 @@ function DarkMode(){
     const toggleDarkMode = () => {
         setIsDarkMode(prev => !prev);
     
-        // הוספה או הסרה של מחלקה על body (או אלמנט אחר)
         document.body.classList.toggle('dark-mode');
     };
 

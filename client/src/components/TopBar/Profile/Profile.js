@@ -40,7 +40,6 @@ function Profile(){
                 <img src={user.image} className="rounded-circle object-fit-cover top-bar-img" alt="profile image"></img>
             </button>
 
-            {/* הכרטיס */}
             {showCard && (
                 <div className="card user-card">
                     <UserCard user={user} />

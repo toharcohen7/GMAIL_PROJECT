@@ -308,7 +308,7 @@ function Inbox() {
   }
 
   return (
-    <div className="inbox-container card shadow-sm mt-4 dark-mode">
+    <div className="inbox-container card shadow-sm mt-4">
       <InboxHeader
         messages={messages}
         selectedMessages={selectedMessages}

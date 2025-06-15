@@ -1,3 +1,4 @@
+
 body {
   height: 100%;
   margin: 0;
@@ -43,7 +44,7 @@ body {
 }
 
 .signup-container {
-  width: clamp(320px, 55vw, 520px);
+  width: clamp(320px, 65vw, 720px);
   max-height: calc(100vh - 50px);
   background: #fff;
   border-radius: 12px;
@@ -55,6 +56,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.signup-col-left {
+  padding-right: 32px;
+}
+
+.signup-col-right {
+  padding-left: 32px;
 }
 
 .form-label {
@@ -69,7 +78,6 @@ body {
 .signup-fields-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 64px;
   width: 100%;
 }
 
@@ -91,7 +99,11 @@ body {
 @media (max-width: 900px) {
   .signup-fields-grid {
     grid-template-columns: 1fr;
-    gap: 0;
+  }
+
+  .signup-col-left,
+  .signup-col-right {
+    padding: 0 !important;
   }
 }
 
@@ -144,18 +156,16 @@ button,
   background: #1a73e8;
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(26, 115, 232, 0.08);
-  transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.1s;
+  transition: background 0.3s, transform 0.1s;
   font-weight: 500;
+  width: 100%;
 }
 
-button:hover,
-.btn-primary:hover {
+button:hover {
   background: #1765c1;
 }
 
-button:active,
-.btn-primary:active {
+button:active {
   transform: scale(0.96);
 }
 

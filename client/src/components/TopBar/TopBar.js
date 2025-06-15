@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './TopBar.css';
 import React, { useState } from "react";
-import Search from '../Search/Search';
-import TopLeftLogo from '../TopLeftLogo/TopLeftLogo';
-import Theme_Profile from '../Theme_Profile/Theme_Profile';
+import Search from './Search/Search';
+import TopLeftLogo from './TopLeftLogo/TopLeftLogo';
+import Theme_Profile from './Theme_Profile/Theme_Profile';
 
 function TopBar() {
     const actualUserId = localStorage.getItem("user-id");

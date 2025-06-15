@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormField from '../FormField/FormField';
-import ProfileImageUpload from '../ProfileImageUpload/ProfileImageUpload';
+import FormField from '../../components/SignUp/FormField/FormField';
+import ProfileImageUpload from '../../components/SignUp/ProfileImageUpload/ProfileImageUpload';
 import './SignUp.css';
 import logo from '../../images/logo.png';
 
@@ -63,7 +63,6 @@ function SignUp() {
 
       console.log("User registered:", result);
       setIsRegistered(true);
-
     } catch (error) {
       console.error("Error registering:", error);
       setErrors({ general: "Something went wrong. Please try again." });
@@ -96,28 +95,52 @@ function SignUp() {
 
   return (
     <>
-    <div className="top-bar">
-      <img src={logo} alt="Logo" className="logo" />
-    </div>
-    <div className="full-screen-wrapper d-flex justify-content-center align-items-center">
-      <div className="signup-container p-4 border rounded shadow-sm bg-light">
-        <h1 className="text-center mb-4 fw-bold text-primary">Create an account</h1>
-        {errors.general && <div className="alert alert-danger text-center">{errors.general}</div>}
-        <form onSubmit={handleSubmit} noValidate>
-          <FormField label="User Name" name="userName" value={formData.userName} onChange={handleChange} error={errors.userName} required />
-          <FormField label="Password" type="password" name="password" value={formData.password} onChange={handleChange} error={errors.password} required />
-          <FormField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} required />
-          <FormField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} error={errors.firstName} required />
-          <FormField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} error={errors.lastName} required />
-          <FormField label="Gender" name="gender" type="select" value={formData.gender} onChange={handleChange} error={errors.gender} options={["Male", "Female", "Other"]} required />
-          <FormField label="Birth Date" type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} error={errors.birthDate} required />
-          
-          <ProfileImageUpload previewImage={previewImage} onImageSelect={handleImageUpload} />
-
-          <button type="submit" className="btn btn-primary w-100">Sign Up</button>
-        </form>
+      <div className="top-bar">
+        <img src={logo} alt="Logo" className="logo" />
       </div>
-    </div>
+
+      <div className="full-screen-wrapper">
+        <div className="signup-container">
+          <h1 className="text-center mb-4 fw-bold text-primary">Create an account</h1>
+          {errors.general && <div className="alert alert-danger text-center">{errors.general}</div>}
+
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="signup-fields-grid">
+              <div className="signup-col-left">
+                <div className="mb-3">
+                  <FormField label="User Name" name="userName" value={formData.userName} onChange={handleChange} error={errors.userName} required />
+                </div>
+                <div className="mb-3">
+                  <FormField label="Password" type="password" name="password" value={formData.password} onChange={handleChange} error={errors.password} required />
+                </div>
+                <div className="mb-3">
+                  <FormField label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} required />
+                </div>
+                <div className="mb-3">
+                  <FormField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} error={errors.firstName} required />
+                </div>
+                <div className="mb-3">
+                  <FormField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} error={errors.lastName} required />
+                </div>
+              </div>
+
+              <div className="signup-col-right">
+                <div className="mb-3">
+                  <FormField label="Gender" name="gender" type="select" value={formData.gender} onChange={handleChange} error={errors.gender} options={["Male", "Female", "Other"]} required />
+                </div>
+                <div className="mb-3">
+                  <FormField label="Birth Date" type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} error={errors.birthDate} required />
+                </div>
+                <div className="mb-4 text-center">
+                  <ProfileImageUpload previewImage={previewImage} onImageSelect={handleImageUpload} />
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" className="btn btn-primary mt-3">Sign Up</button>
+          </form>
+        </div>
+      </div>
     </>
   );
 }

@@ -5,9 +5,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import SignIn from "./pages/SignIn/SignIn";
 import SignUp from './pages/SignUp/SignUp';
-import Inbox from './pages/Inbox/MainInbox';
-import TopBar from './pages/TopBar/TopBar';
-import './pages/Styles/Theme.css';
+import './components/Styles/Theme.css';
+import MainPage from './pages/MainPage/MainPage';
 
 
 function WelcomeWrapper() {
@@ -34,10 +33,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<WelcomeWrapper />} />
-        <Route path="/SignIn" element={<SignIn />} />
-        <Route path="/SignUp" element={<SignUp />} />
-        <Route path="/Inbox" element={<Inbox />} />
-        <Route path="/TopBar" element={<TopBar />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/mainpage" element={<MainPage />} />
       </Routes>
     </Router>
   );
