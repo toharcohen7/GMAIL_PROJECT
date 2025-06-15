@@ -5,7 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import SignIn from "./pages/SignIn/SignIn";
 import SignUp from './pages/SignUp/SignUp';
-import Inbox from './pages/Inbox/inbox-component';
+import Inbox from './pages/Inbox/MainInbox';
 import TopBar from './pages/TopBar/TopBar';
 import './pages/Styles/Theme.css';
 
