@@ -7,7 +7,7 @@ router.route('/')
         .post(controller.createLabel)
 
 router.route('/:id')
-        .get(controller.getLabelById)
+        .get(controller.getLabelByName)
         .patch(controller.updateLabel)
         .delete(controller.deleteLabel)
 

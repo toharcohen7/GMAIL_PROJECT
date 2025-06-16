@@ -19,8 +19,11 @@ exports.getLabels = (req, res) => {
     }
 
     const labels = Labels.getLabels(userId);
-    const labelNames = labels.map(label => label.name);
-    res.json(labelNames);
+    const labelData = labels.map(label => ({
+      name: label.name,
+      iconClass: label.iconClass
+    }));
+    res.json(labelData);
 }
 /**
  * Creates a new label for the current user.
@@ -29,8 +32,8 @@ exports.getLabels = (req, res) => {
 exports.createLabel = (req, res) => {
 
     // Check for extra fields in the request body
-    if (isThereExtraFields(req, ['name'])) {
-        return res.status(400).json({ error: 'Only name field is allowed' });
+    if (isThereExtraFields(req, ['name', 'iconClass'])) {
+        return res.status(400).json({ error: 'Only name and iconClass field is allowed' });
     }
 
     const userId = getUserIdFromHeaders(req, res);
@@ -38,23 +41,28 @@ exports.createLabel = (req, res) => {
       return res; // Error response already sent in helper function
     }
 
-    const { name } = req.body;
-    if (!name){
-         return res.status(400).json({ error: 'Label name is required' });
+    const { name, iconClass } = req.body;
+    if (!name || !iconClass) {
+      return res.status(400).json({ error: 'Label name and icon is required' });
     }
 
     if (labelNameExists(userId, name)) {
-      return res.status(409).json({ error: 'Another label with this name already exists' });
+      return res.status(400).json({ error: 'Another label with this name already exists' });
     }
 
-    const newLabel = Labels.createLabel(userId,name);
-    res.status(201).location(`/api/labels/${newLabel.id}`).end();
+    const newLabel = Labels.createLabel(userId, name, iconClass);
+    return res.status(201).json({
+        id: newLabel.id,
+        name: newLabel.name,
+        iconClass: newLabel.iconClass
+    }).end();
 }
+
 /**
  * Retrieves a specific label by ID for the current user.
  * Returns only the label name.
  */
-exports.getLabelById = (req, res) => {
+exports.getLabelByName = (req, res) => {
 
     // Check for extra fields in the request body
     if (isThereExtraFields(req, [])) {
@@ -66,12 +74,12 @@ exports.getLabelById = (req, res) => {
       return res; // Error response already sent in helper function
     }
 
-    const labelId = getLabelFromParams(req, res, userId);
-    if (labelId === undefined) {
+    const labelName = getLabelFromParams(req, res, userId);
+    if (labelName === undefined) {
       return res; // Error response already sent in helper function
     }
 
-    res.json(Labels.getLabelById(userId, labelId).name);
+    res.json(Labels.getLabelByName(userId, labelName).name);
 }
 /**
  * Deletes a label by its ID for the current user.
@@ -89,17 +97,17 @@ exports.deleteLabel = (req,res) => {
       return res; // Error response already sent in helper function
     }
 
-    const labelId = getLabelFromParams(req, res, userId);
-    if (labelId === undefined) {
+    const labelName = getLabelFromParams(req, res, userId);
+    if (labelName === undefined) {
       return res; // Error response already sent in helper function
     }
 
-    if (isProtectedLabel(labelId)) {
+    if (isProtectedLabel(labelName)) {
         return res.status(400).json({ error: 'Cannot delete protected label' });
     }
 
-    Mails.removeMailsFromLable(userId, labelId); // Remove label from all mails
-    Labels.deleteLabel(userId,labelId);
+    Mails.removeMailsFromLable(userId, labelName); // Remove label from all mails
+    Labels.deleteLabel(userId, labelName);
     return res.status(204).end();
 }
 /**
@@ -118,8 +126,8 @@ exports.updateLabel = (req, res) => {
       return res; // Error response already sent in helper function
     }
 
-    const labelId = getLabelFromParams(req, res, userId);
-    if (labelId === undefined) {
+    const labelName = getLabelFromParams(req, res, userId);
+    if (labelName === undefined) {
       return res; // Error response already sent in helper function
     }
 
@@ -130,7 +138,7 @@ exports.updateLabel = (req, res) => {
     }
 
     // Check if the label is protected (Sent, Inbox, Draft)
-    if (isProtectedLabel(labelId)) {
+    if (isProtectedLabel(labelName)) {
       return res.status(400).json({ error: 'Cannot update protected label' });
     }  
 
@@ -139,7 +147,7 @@ exports.updateLabel = (req, res) => {
       return res.status(409).json({ error: 'Another label with this name already exists' });
     }
 
-    Labels.updateLabel(userId, labelId, { name });
+    Labels.updateLabel(userId, labelName, { name });
     return res.status(204).end();
 }
 //
@@ -163,23 +171,23 @@ function getUserIdFromHeaders(req, res) {
 }
 
 function getLabelFromParams(req, res, userId) {
-  const labelId = parseInt(req.params.id);
-  if (isNaN(labelId)) {
-    res.status(400).json({ error: 'Invalid label ID' });
+  const labelName = req.params.id;
+  if (!labelName || typeof labelName !== 'string') {
+    res.status(400).json({ error: 'Invalid label name' });
     return undefined;
   }
 
-  if (Labels.getLabelById(userId, labelId) === null) {
+  if (!Labels.getLabelByName(userId, labelName)) {
     res.status(404).json({ error: 'Label not found' });
     return undefined;
   }
 
-  return labelId;
+  return labelName;
 }
 
 // Check if label is system-protected (Sent or Inbox)
-const isProtectedLabel = (labelId) => {
-  return labelId === 0 || labelId === 1 || labelId === 2;
+const isProtectedLabel = (labelName) => {
+  return labelName === 'Draft' || labelName === 'Sent' || labelName === 'Received';
 };
 
 // Check if label name already exists
