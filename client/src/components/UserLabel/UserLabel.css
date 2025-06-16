@@ -1,0 +1,29 @@
+.hover-label-item {
+    border: none;
+    font-size: small;
+    background-color: rgb(242, 240, 240);
+    box-shadow: none;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.hover-label-item .label-text-wrapper {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hover-label-action {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    margin-left: 8px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

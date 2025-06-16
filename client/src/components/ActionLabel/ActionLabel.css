@@ -1,0 +1,33 @@
+.badge {
+    color: black;
+    font-size: 12px;
+}
+
+.user-label-actions {
+    width: 30px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.badge-label {
+    position: absolute;
+    top: 50%;
+    left: 72%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.action-btn {
+    position: absolute;
+    top: 50%;
+    left: 72%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+}

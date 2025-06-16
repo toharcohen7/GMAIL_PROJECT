@@ -18,7 +18,7 @@ function InboxHeader({
   onAddToLabel
 }) {
   const selectableLabels = labels.filter(label => {
-    const lowerLabel = label.toLowerCase();
+    const lowerLabel = label.name.toLowerCase();
     return lowerLabel !== 'sent' && lowerLabel !== 'draft';
   });
 
