@@ -28,15 +28,18 @@ body {
 
 .inbox-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 /* Main Inbox Container */
 .inbox-container {
-  margin: 1rem 2rem 1rem auto;
-  max-width: 1600px;
+  margin: 0;
+  max-width: 100%;
   width: 100%;
-  min-height: 770px;
+  min-height: auto;
   border-radius: 16px;
   background: var(--white);
   box-shadow: 0 4px 24px rgba(13, 110, 253, 0.08), 0 1.5px 4px rgba(0, 0, 0, 0.03);

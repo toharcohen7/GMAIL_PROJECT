@@ -1,19 +1,20 @@
-import Inbox from '../../components/Inbox/MainInbox';
+import React from 'react';
+import TopBar from '../../components/TopBar/TopBar';
 import SideBar from '../../components/SideBar/SideBar';
-import TopBar from "../../components/TopBar/TopBar";
+import MainInbox from '../../components/Inbox/MainInbox';
+import './MainPage.css';
 
 function MainPage() {
   return (
-    <div className="bg-MainPage main-page-container">
+    <div className="main-page-container">
       <TopBar />
       <div className="content-container">
         <SideBar />
-        <Inbox />
+        <MainInbox />
       </div>
     </div>
   );
 }
-
 
 export default MainPage;
 
