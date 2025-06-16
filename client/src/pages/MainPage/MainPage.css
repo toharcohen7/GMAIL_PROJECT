@@ -12,4 +12,33 @@
   flex-direction: row;
   flex: 1;
   overflow: hidden;
+  width: 100%; /* Ensure the container takes full width */
+}
+
+.sidebar-wrapper {
+  width: 250px;
+  min-width: 250px; /* Add min-width to prevent shrinking */
+  transition: width 0.3s ease, min-width 0.3s ease; /* Transition both width and min-width */
+  overflow: hidden;
+  flex-shrink: 0; /* Prevent the sidebar from shrinking */
+  position: relative; /* Add this */
+}
+
+.sidebar-closed {
+  width: 0;
+  min-width: 0; /* Important: also set min-width to 0 when closed */
+}
+
+/* Add this class to make the inbox container responsive */
+.inbox-responsive-wrapper {
+  flex: 1;
+  overflow: hidden; /* Prevent overflow */
+  display: flex; /* Enable flexbox */
+  width: 100%; /* Take full available width */
+}
+
+/* Add this global style to ensure dropdowns can appear */
+body {
+  position: relative;
+  overflow-x: hidden;
 }

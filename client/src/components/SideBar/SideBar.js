@@ -171,14 +171,14 @@ function SideBar() {
             <div className="label-divider d-flex justify-content-between align-items-center px-2">
                 <span className="label-divider-text">Labels</span>
                 <button
-                    className="btn btn-sm rounded-circle d-flex justify-content-center"
+                    className="btn btn-sm add-label-btn d-flex justify-content-center align-items-center"
                     title="Create New Label"
                     onClick={() => {
                         setEditLabelData(null);
                         setShowModal(true);
                     }}
                 >
-                    <i className="bi bi-plus fw-bold"></i>
+                    <i className="bi bi-plus-lg me-1"></i>
                 </button>
             </div>
             <ol className="list-group mb-0">
