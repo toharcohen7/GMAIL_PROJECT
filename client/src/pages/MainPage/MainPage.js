@@ -4,7 +4,7 @@ import TopBar from "../../components/TopBar/TopBar";
 
 function MainPage(){
     return(
-        <div className="bg-MainPage">
+        <div>
         <TopBar />
         <Inbox />
         </div>

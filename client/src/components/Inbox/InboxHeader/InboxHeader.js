@@ -11,7 +11,6 @@ function InboxHeader({
   onMarkAllRead,
   onDeleteSelected,
   onMarkAsSpam,
-  onLogout,
   labels,
   showLabelDropdown,
   setShowLabelDropdown,
@@ -92,16 +91,6 @@ function InboxHeader({
             </>
           )}
         </div>
-      </div>
-
-      <div className="d-flex align-items-center">
-        <button
-          className="btn btn-outline-secondary btn-sm"
-          onClick={onLogout}
-          title="Sign out"
-        >
-          <i className="bi bi-box-arrow-right"></i>
-        </button>
       </div>
     </div>
   );

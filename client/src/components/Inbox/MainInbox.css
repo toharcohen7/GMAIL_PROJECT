@@ -26,23 +26,28 @@ body {
   height: 100vh;
 }
 
+.inbox-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 /* Main Inbox Container */
 .inbox-container {
+  margin: 1rem 2rem 1rem auto;
+  max-width: 1600px;
   width: 100%;
-  max-width: calc(1400px - var(--left-bar-width));
-  min-width: 320px;
-  min-height: 500px;
-  height: calc(100vh - var(--top-bar-height) - 1.5rem);
-  margin: calc(var(--top-bar-height) + 1rem) 2rem 1rem auto;
-  background: var(--white);
+  min-height: 770px;
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(13, 110, 253, 0.08), 0 1.5px 4px rgba(0,0,0,0.03);
-  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 4px 24px rgba(13, 110, 253, 0.08), 0 1.5px 4px rgba(0, 0, 0, 0.03);
   border: 1px solid var(--light-blue);
   display: flex;
   flex-direction: column;
-  position: relative;
+  overflow: hidden;
 }
+
+
+
 
 /* Header Section */
 .inbox-header {

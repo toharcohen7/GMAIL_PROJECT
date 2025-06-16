@@ -153,17 +153,6 @@ function Inbox() {
     }
   }, [currentUser, loadMessages, loadLabels]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    setCurrentUser(null);
-    setMessages([]);
-    setSelectedMessages(new Set());
-    setLabels([]);
-    setSenderCache(new Map());
-    setError(null);
-    navigate('/signin');
-  };
-
   const selectAllMessages = () => {
     setSelectedMessages(new Set(messages.map(msg => msg.id)));
   };
@@ -308,7 +297,8 @@ function Inbox() {
   }
 
   return (
-    <div className="inbox-container card shadow-sm mt-4">
+  <div className="inbox-wrapper">
+    <div className="inbox-container card shadow-sm">
       <InboxHeader
         messages={messages}
         selectedMessages={selectedMessages}
@@ -319,7 +309,6 @@ function Inbox() {
         onMarkAllRead={handleMarkAllRead}
         onDeleteSelected={handleDeleteSelected}
         onMarkAsSpam={handleMarkAsSpam}
-        onLogout={handleLogout}
         labels={labels}
         showLabelDropdown={showLabelDropdown}
         setShowLabelDropdown={setShowLabelDropdown}
@@ -357,7 +346,9 @@ function Inbox() {
         />
       )}
     </div>
-  );
+  </div>
+);
+
 }
 
 export default Inbox;
