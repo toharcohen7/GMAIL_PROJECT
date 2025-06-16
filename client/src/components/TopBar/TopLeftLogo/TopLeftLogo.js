@@ -1,15 +1,18 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../../../images/logo.png';
 
-function TopLeftLogo(){
-    return(
-        <div className="d-flex align-items-center">
-            <button id="toggleSidebarBtn" className="btn btn-outline-secondary">
-                <i className="bi bi-list"></i>
-            </button>
-            <a className="navbar-brand" href="########## the main page path ##########">
-                <img src={logo} alt="Logo" className='logo-img' />
-            </a>
-        </div>
-    );
+function TopLeftLogo() {
+  return (
+    <div className="d-flex align-items-center">
+      <button id="toggleSidebarBtn" className="btn btn-outline-secondary">
+        <i className="bi bi-list"></i>
+      </button>
+      <Link className="navbar-brand" to="/mainpage">
+        <img src={logo} alt="logo" className="logo-img" />
+      </Link>
+    </div>
+  );
 }
+
 export default TopLeftLogo;

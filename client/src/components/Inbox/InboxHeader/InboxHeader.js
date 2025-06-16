@@ -11,14 +11,13 @@ function InboxHeader({
   onMarkAllRead,
   onDeleteSelected,
   onMarkAsSpam,
-  onLogout,
   labels,
   showLabelDropdown,
   setShowLabelDropdown,
   onAddToLabel
 }) {
   const selectableLabels = labels.filter(label => {
-    const lowerLabel = label.toLowerCase();
+    const lowerLabel = label.name.toLowerCase();
     return lowerLabel !== 'sent' && lowerLabel !== 'draft';
   });
 
@@ -46,7 +45,7 @@ function InboxHeader({
           {!hasSelectedMessages ? (
             <>
               <button
-                className="btn btn-circle btn-light"
+                className="btn btn-circle btn-light ml-3 mt-1"
                 aria-label="Refresh"
                 onClick={onRefresh}
                 title="Refresh"
@@ -92,16 +91,6 @@ function InboxHeader({
             </>
           )}
         </div>
-      </div>
-
-      <div className="d-flex align-items-center">
-        <button
-          className="btn btn-outline-secondary btn-sm"
-          onClick={onLogout}
-          title="Sign out"
-        >
-          <i className="bi bi-box-arrow-right"></i>
-        </button>
       </div>
     </div>
   );
