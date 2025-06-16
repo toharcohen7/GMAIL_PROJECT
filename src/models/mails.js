@@ -12,7 +12,7 @@ const getLast50Mails = (userId) => {
 
 /**
  * Creates a new draft mail for a sender.
- * Initializes with empty subject, content, no receivers, and labelId 0 (Draft).
+ * Initializes with empty subject, content, no receivers, and labelName as Draft.
  */
 const createMail = (senderId) => {
   const now = new Date();
@@ -35,7 +35,7 @@ const createMail = (senderId) => {
     receiversId: [],
     subject: '',       // Empty by default
     content: '',       // Empty by default
-    labelId: 0,        // Draft
+    labelName: 'Draft',        // Draft
     timestamp: timestamp,
     formattedTime: formattedTime
   };
@@ -102,12 +102,12 @@ const updateMail = (userId, mailId, updates) => {
   }
 
   // If label is being changed (e.g., sending), process accordingly
-  if (updates.labelId !== undefined) {
+  if (updates.labelName !== undefined) {
     // If changing from draft to sent, create mail copies for receivers
-    if (mail.labelId === 0 && updates.labelId === 1) {
+    if (mail.labelName === 'Draft' && updates.labelName === 'Sent') {
       sendMail(mail.receiversId, mail);
     }
-    mail.labelId = updates.labelId;
+    mail.labelName = updates.labelName;
   }
 
   return mail;
@@ -157,7 +157,7 @@ const getRecivers = (userId, mailId) => {
  */
 const sendMail = (receiversId, mail) => {
   mail.mailStatus = 'Sent';     // Mark as sent
-  mail.labelId = 1;             // Set label to "Sent"
+  mail.labelName = 'Sent';             // Set label to "Sent"
 
   // Create a mail copy for the receivers
   const newMailForReceivers = {
@@ -167,7 +167,7 @@ const sendMail = (receiversId, mail) => {
     receiversId: mail.receiversId,
     subject: mail.subject,
     content: mail.content,
-    labelId: 2, // Received
+    labelName: 'Received', // Received
     timestamp: mail.timestamp,
     formattedTime: mail.formattedTime
   };
@@ -181,19 +181,15 @@ const sendMail = (receiversId, mail) => {
   }
 };
 
-function removeMailsFromLable(userId, labelId) {
-  // Remove all mails with the specified labelId from the user's mail list
+function removeMailsFromLable(userId, labelName) {
+  // Remove all mails with the specified labelName from the user's mail list
   const mails = userMails.get(userId);
   
   for ( const mail of mails) {
-    if (mail.labelId !== labelId) 
+    if (mail.labelName !== labelName) 
       continue; // Skip mails that do not have the specified label
 
-    if (mail.mailStatus === 'Sent') 
-      mail.labelId = 1; // Change label to "Sent" if it was sent
-    
-    if (mail.mailStatus === 'Received') 
-      mail.labelId = 2; // Change label to "Received" if it was received   
+    mail.labelName = mail.mailStatus; // Reset label to mail status (Draft/Sent/Received)
   }
 }
 

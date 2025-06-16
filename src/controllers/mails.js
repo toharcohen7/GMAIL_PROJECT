@@ -24,7 +24,7 @@ exports.getLast50Mails = (req, res) => {
   // Map each mail to return only necessary fields
   const filtered = mails.map(mail => {
     const { id, mailStatus, senderId, receiversId, subject, content, formattedTime } = mail;
-    let labelName = Labels.getLabelById(userId, mail.labelId).name;
+    let labelName = Labels.getLabelByName(userId, mail.labelName).name;
 
     return { id, mailStatus, labelName, senderId, receiversId, subject, content, time: formattedTime };
   });
@@ -75,7 +75,7 @@ exports.getMailById = (req, res) => {
 
   const mail = Mails.getMailById(userId, mailId);
   const { id, mailStatus, senderId, receiversId, subject, content, formattedTime } = mail;
-  let labelName = Labels.getLabelById(userId, mail.labelId).name;
+  let labelName = Labels.getLabelByName(userId, mail.labelName).name;
 
   res.json({ id, mailStatus, labelName, senderId, receiversId, subject, content, time: formattedTime });
 }
@@ -139,31 +139,31 @@ exports.updateMail = async (req, res) => {
 function changeLabel(userId, mailId, updates, req, res) {
 
   // Validate no extra fields in request body
-  if(isThereExtraFields(req, ['labelId'])) {
+  if(isThereExtraFields(req, ['labelName'])) {
     return res.status(400).json({ error: 'Only the label can be changed in already sent mails' });
   } 
 
-  if (updates.labelId === undefined) {
-    return res.status(400).json({ error: 'labelId is required' });
+  if (updates.labelName === undefined) {
+    return res.status(400).json({ error: 'labelName is required' });
   }
 
-  if (!Labels.getLabelById(userId, updates.labelId)) {
+  if (!Labels.getLabelByName(userId, updates.labelName)) {
     return res.status(404).json({ error: 'Label not found' });
   }
 
-  if (0 === updates.labelId) {
+  if ('Draft' === updates.labelName) {
     return res.status(400).json({ error: 'Cannot change label to Draft' });
   }
 
-  if (1 === updates.labelId && Mails.getMailStatus(userId, mailId) !== 'Sent') {
+  if ('Sent' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Sent') {
     return res.status(400).json({ error: 'Cannot change the label of a received mail to Sent' });
   }
 
-  if (2 === updates.labelId && Mails.getMailStatus(userId, mailId) !== 'Received') {
+  if ('Received' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Received') {
     return res.status(400).json({ error: 'Cannot change the label of a sent mail to Received' });
   }
 
-  Mails.updateMail(userId, mailId, { labelId: updates.labelId });
+  Mails.updateMail(userId, mailId, { labelName: updates.labelName });
   return res.status(204).end();
 }
 
@@ -171,16 +171,16 @@ function changeLabel(userId, mailId, updates, req, res) {
 async function changeDraftMail(userId, mailId, updates, req, res) {
 
   // Validate no extra fields in request body
-  if(isThereExtraFields(req, ['subject', 'content', 'receiversId', 'labelId'])) {
-    return res.status(400).json({ error: 'Only subject, content, receiversId, and labelId can be changed' });
+  if(isThereExtraFields(req, ['subject', 'content', 'receiversId', 'labelName'])) {
+    return res.status(400).json({ error: 'Only subject, content, receiversId, and labelName can be changed' });
   } 
 
-  if (!updates.subject && !updates.content && !updates.receiversId && !updates.labelId) {
+  if (!updates.subject && !updates.content && !updates.receiversId && !updates.labelName) {
     return res.status(400).json({ error: 'At least one field must be provided' });
   }
 
   // Prevent changing label to non-Sent for drafts
-  if (updates.labelId !== undefined && updates.labelId !== 1) {
+  if (updates.labelName !== undefined && updates.labelName !== 'Sent') {
     return res.status(400).json({ error: 'Cannot change the label of an unsent mail' });
   }
 
@@ -200,7 +200,7 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
 
   // If sending, validate that there are receivers
   let recivers = (updates.receiversId !== undefined) ? updates.receiversId : Mails.getRecivers(userId, mailId);
-  if (recivers.length === 0 && updates.labelId === 1) {
+  if (recivers.length === 0 && updates.labelName === 'Sent') {
     return res.status(400).json({ error: 'Cannot send mail without a receiver' });
   }
 
