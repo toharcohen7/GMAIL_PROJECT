@@ -45,7 +45,7 @@ function InboxHeader({
           {!hasSelectedMessages ? (
             <>
               <button
-                className="btn btn-circle btn-light"
+                className="btn btn-circle btn-light ml-3 mt-1"
                 aria-label="Refresh"
                 onClick={onRefresh}
                 title="Refresh"

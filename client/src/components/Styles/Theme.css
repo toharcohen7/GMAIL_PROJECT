@@ -92,6 +92,14 @@ body.dark-mode .dropdown-menu {
   color: #eee;
   border-color: #444;
 }
+html, body, #root {
+  height: 100%;
+  background-color: var(--page-bg);
+}
+
+body {
+  margin: 0;
+}
 
 :root {
   --page-bg: rgb(242, 240, 240);
