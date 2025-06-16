@@ -1,0 +1,22 @@
+.main-page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.content-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden; /* מונע גלילה פנימית מיותרת */
+}
+
+.side-bar {
+  width: 250px; /* או כל רוחב שמתאים לך */
+  background-color: #f0f0f0; /* רקע לדוגמה */
+}
+
+.inbox-container {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #fff;
+}

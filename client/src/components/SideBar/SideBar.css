@@ -1,0 +1,62 @@
+.btn {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  transition: background-color 0.2s;
+  margin-right: 0.16rem;
+}
+
+.btn:hover {
+  background-color: rgba(60, 60, 60, 0.1);
+  cursor: pointer;
+}
+
+.btn:focus {
+  box-shadow: none;
+}
+
+.bi-plus {
+  font-size: 1.2rem;
+}
+
+.label-divider {
+  border: none;
+  font-size: bigger;
+  background-color: rgb(242, 240, 240);
+  margin: 0%;
+}
+
+.label-divider-text {
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+}
+
+.row {
+  background-color: #f1f3f4;
+}
+
+.list-group-item {
+  background-color: transparent;
+  border: none;
+  font-size: 0.9rem;
+  color: #202124;
+}
+
+.list-group-item:hover {
+  background-color: #e8f0fe;
+  cursor: pointer;
+}
+
+.user-label {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  width: 100%;
+}
+
+.hover-label-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
