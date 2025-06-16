@@ -1,134 +1,114 @@
-
-body {
-  --bs-body-bg: #ffffff;
-  --bs-body-color: #212529;
-  --bs-navbar-bg: #f8f9fa;
-  --bs-card-bg: #ffffff;
-  --bs-border-color: #dee2e6;
-  --bs-btn-bg: #ffffff;
-  --bs-btn-color: #212529;
-}
-
 body.dark-mode {
-  --bs-body-bg: #121212;
-  --bs-body-color: #f8f9fa;
-  --bs-navbar-bg: #1e1e1e;
-  --bs-card-bg: #1f1f1f;
-  --bs-border-color: #444;
-  --bs-btn-bg: #2c2c2c;
-  --bs-btn-color: #f8f9fa;
-}
-
-body {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-}
-
-.navbar {
-  background-color: var(--bs-navbar-bg) !important;
-}
-
-.card {
-  background-color: var(--bs-card-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
-}
-
-.list-group-item {
-  background-color: var(--bs-card-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
-}
-
-body.dark-mode .list-group-item {
-  background-color: #2a2a2a;
-}
-
-.btn {
-  background-color: var(--bs-btn-bg);
-  color: var(--bs-btn-color);
-  border-color: var(--bs-border-color);
-}
-
-input.form-control {
-  background-color: var(--bs-card-bg);
-  color: var(--bs-body-color);
-  border-color: var(--bs-border-color);
-}
-
-/* Dark Mode styling for Inbox component */
-
-body.dark-mode .inbox-container {
-  background-color: #1e1e1e;
+  background-color: #121212;
   color: #e0e0e0;
-  border-color: #333;
 }
 
-/* Dark mode for Inbox header */
+/* Inbox Container */
+body.dark-mode .inbox-container {
+  background-color: #1e1e1e !important;
+  color: #f5f5f5;
+  border-color: #2c2c2c;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* Inbox Header */
 body.dark-mode .inbox-header {
   background-color: #2a2a2a !important;
-  color: #f1f1f1;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #333;
 }
 
-/* Dark style for round icon buttons */
-body.dark-mode .inbox-header .btn-icon {
-  background-color: #3a3a3a;
-  color: #fff;
-  border: none;
-}
-
-body.dark-mode .inbox-header .btn-icon:hover {
-  background-color: #555;
-}
-
-/* Checkbox dark appearance */
-body.dark-mode .inbox-header input[type="checkbox"] {
-  accent-color: #888;
-}
-
+/* Message List Background */
+body.dark-mode .message-list,
 body.dark-mode .inbox-content {
-  background-color: #252525;
-  color: #ffffff;
+  background-color: #252525 !important;
 }
 
+/* Individual Messages */
 body.dark-mode .message-item {
-  background-color: #2a2a2a;
-  border-bottom: 1px solid #444;
-  color: #ddd;
+  background-color: #2f2f2f;
+  color: #ccc;
 }
 
-body.dark-mode .mail-detail {
-  background-color: #202020;
-  color: white;
-}
-
-body.dark-mode .inbox-container .btn {
-  background-color: #333;
+body.dark-mode .message-item.unread {
+  background-color: #37474f;
   color: #fff;
-  border-color: #444;
+  border-left-color: #90caf9;
 }
 
-body.dark-mode .inbox-container .btn:hover {
+body.dark-mode .message-item.active {
+  background-color: #424242;
+  border-left-color: #64b5f6;
+}
+
+body.dark-mode .message-item:hover {
+  background-color: #3c3c3c;
+}
+
+/* Empty / Error / Loading States */
+body.dark-mode .empty-state,
+body.dark-mode .loading-state,
+body.dark-mode .error-state {
+  background-color: #252525;
+  color: #aaa;
+}
+
+/* Buttons */
+body.dark-mode .btn-circle {
+  background-color: #333;
+  color: #f0f0f0;
+}
+
+body.dark-mode .btn-circle:hover {
   background-color: #444;
 }
 
-body.dark-mode .dropdown-menu {
-  background-color: #2d2d2d;
+body.dark-mode .btn-outline-secondary {
+  background-color: #333 !important;
+  color: #eee !important;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #555 !important;
+}
+
+/* TopBar */
+body.dark-mode .bg-TopBar {
+  background-color: #121212 !important;
+}
+
+/* Search Input */
+body.dark-mode .search-input-with-icon {
+  background-color: #2c2c2c;
   color: #fff;
+}
+
+body.dark-mode .search-input-with-icon::placeholder {
+  color: #aaa;
+}
+
+/* Dropdowns */
+body.dark-mode .dropdown-menu {
+  background-color: #2e2e2e;
+  color: #eee;
   border-color: #444;
 }
-
-body.dark-mode .empty-state,
-body.dark-mode .error-state,
-body.dark-mode .loading-state {
-  background-color: #2a2a2a;
-  color: #bbb;
+html, body, #root {
+  height: 100%;
+  background-color: var(--page-bg);
 }
 
-.inbox-container,
-.inbox-content,
-.message-item,
-.mail-detail {
-  transition: background-color 0.3s, color 0.3s;
+body {
+  margin: 0;
+}
+
+:root {
+  --page-bg: rgb(242, 240, 240);
+}
+
+body.dark-mode {
+  --page-bg: #121212;
+}
+
+html, body, #root {
+  background-color: var(--page-bg);
 }

@@ -1,5 +1,5 @@
-.bg-TopBar{
-    background-color: rgb(242, 240, 240);    
+.bg-TopBar {
+  background-color: rgb(242, 240, 240) !important;
 }
 .custom-navbar {
   height: 80px;
