@@ -192,15 +192,16 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
     }
 
     // Check if all provided receiversNames are valid users
-    for (const receiverName of updates.receiversNames) {
-      notFoundArr = ""
-      if (!isReceiversNameUser(receiverName)) {
-        notFoundArr.append(receiverName + " ");
-      }
+    let notFoundArr = [];
 
-      if (notFoundArr.length > 0) {
-        return res.status(404).json({ error: `Receiver(s) ${notFoundArr} not found` });
+    for (const receiverName of updates.receiversNames) {
+      if (!isReceiversNameUser(receiverName)) {
+        notFoundArr.push(receiverName);
       }
+    }
+
+    if (notFoundArr.length > 0) {
+      return res.status(404).json({ error: `Receiver(s) ${notFoundArr.join(" ")} not found` });
     }
   }
 

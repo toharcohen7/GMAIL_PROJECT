@@ -85,7 +85,7 @@ function SignUp() {
     if (isRegistered) {
       const timer = setTimeout(() => {
         navigate('/signin');
-      }, 5000);
+      }, 2500);
       return () => clearTimeout(timer);
     }
   }, [isRegistered, navigate]);
