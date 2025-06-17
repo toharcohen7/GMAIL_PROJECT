@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FormField from '../../components/SignUp/FormField/FormField';
 import ProfileImageUpload from '../../components/SignUp/ProfileImageUpload/ProfileImageUpload';
@@ -81,17 +81,14 @@ function SignUp() {
     await registerUser(formData);
   };
 
-  if (isRegistered) {
-    return (
-      <div className="container text-center mt-5">
-        <h2 className="text-success">Welcome, {formData.firstName} 🎉</h2>
-        <p>Your account has been successfully created.</p>
-        <button className="btn btn-primary mt-3" onClick={() => navigate('/signin')}>
-          Go to Sign In
-        </button>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (isRegistered) {
+      const timer = setTimeout(() => {
+        navigate('/signin');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [isRegistered, navigate]);
 
   return (
     <>
@@ -102,7 +99,16 @@ function SignUp() {
       <div className="full-screen-wrapper">
         <div className="signup-container">
           <h1 className="text-center mb-4 fw-bold text-primary">Create an account</h1>
-          {errors.general && <div className="alert alert-danger text-center">{errors.general}</div>}
+
+          {errors.general && (
+            <div className="alert alert-danger text-center">{errors.general}</div>
+          )}
+
+          {isRegistered && (
+            <div className="alert alert-success text-center">
+              Welcome, {formData.firstName}! Your account has been created. Redirecting to sign in...
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="signup-fields-grid">

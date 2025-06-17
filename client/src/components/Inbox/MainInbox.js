@@ -11,6 +11,7 @@ import MailDetail from './MailDetail';
 import LoadingState from './InboxStateComponentes/LoadingState';
 import ErrorState from './InboxStateComponentes/ErrorState';
 import EmptyState from './InboxStateComponentes/EmptyState';
+import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
 
 function Inbox() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -24,7 +25,6 @@ function Inbox() {
   const [senderCache, setSenderCache] = useState(new Map());
   const navigate = useNavigate();
 
-  // Check for existing authentication on component mount
   useEffect(() => {
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
@@ -41,15 +41,10 @@ function Inbox() {
     }
   }, [navigate]);
 
-  // Load sender names for all messages
   const loadSenderNames = useCallback(async (messages) => {
     const senderIds = [...new Set(messages.map(msg => msg.senderId).filter(id => id))];
-    
-    // Use functional update to avoid depending on senderCache
     setSenderCache(prevCache => {
       const newSenderCache = new Map(prevCache);
-      
-      // Create promises for all missing sender IDs
       const fetchPromises = senderIds
         .filter(senderId => !newSenderCache.has(senderId))
         .map(async (senderId) => {
@@ -66,8 +61,6 @@ function Inbox() {
             return [senderId, 'Unknown Sender'];
           }
         });
-      
-      // Execute all promises and update cache
       Promise.all(fetchPromises).then(results => {
         setSenderCache(currentCache => {
           const updatedCache = new Map(currentCache);
@@ -77,75 +70,40 @@ function Inbox() {
           return updatedCache;
         });
       });
-      
       return newSenderCache;
     });
-  }, []); // Remove senderCache dependency
+  }, []);
 
   const loadMessages = useCallback(async () => {
     if (!currentUser) return;
-    
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch('http://localhost:12345/api/mails', {
-        headers: {
-          'user-id': currentUser.id.toString()
-        }
-      });
+      const res = await FetchWithAuth('http://localhost:12345/api/mails');
       if (!res.ok) throw new Error('Failed to load messages');
       const data = await res.json();
-      console.log('Messages loaded:', data);
       setMessages(data);
       setSelectedMessages(new Set());
-      
-      // Load sender names for all messages
       loadSenderNames(data);
     } catch (e) {
       setError('Failed to load messages. Please try again.');
-      console.error('Load messages error:', e);
     }
     setIsLoading(false);
-  }, [currentUser, loadSenderNames]); // Add loadSenderNames to dependencies
+  }, [currentUser, loadSenderNames]);
 
   const loadLabels = useCallback(async () => {
     if (!currentUser) return;
-    
     try {
-      console.log('Loading labels for user:', currentUser.id);
-      const res = await fetch('http://localhost:12345/api/labels', {
-        headers: {
-          'user-id': currentUser.id.toString()
-        }
-      });
-      if (!res.ok) {
-        console.error('Labels API response not OK:', res.status, res.statusText);
-        throw new Error('Failed to load labels');
-      }
+      const res = await FetchWithAuth('http://localhost:12345/api/labels');
+      if (!res.ok) throw new Error('Failed to load labels');
       const data = await res.json();
-      console.log('Raw labels data:', data);
-      console.log('Labels array check:', Array.isArray(data));
-      
-      // More flexible data handling
-      let labelsArray = [];
-      if (Array.isArray(data)) {
-        labelsArray = data;
-      } else if (data && Array.isArray(data.labels)) {
-        labelsArray = data.labels;
-      } else if (data && typeof data === 'object') {
-        // If it's an object, try to extract label names
-        labelsArray = Object.values(data);
-      }
-      
-      console.log('Processed labels:', labelsArray);
+      let labelsArray = Array.isArray(data) ? data : (data.labels || Object.values(data));
       setLabels(labelsArray);
     } catch (e) {
-      console.error('Failed to load labels:', e);
       setLabels([]);
     }
   }, [currentUser]);
 
-  // Load messages only when user is authenticated
   useEffect(() => {
     if (currentUser) {
       loadMessages();
@@ -153,44 +111,26 @@ function Inbox() {
     }
   }, [currentUser, loadMessages, loadLabels]);
 
-  const selectAllMessages = () => {
-    setSelectedMessages(new Set(messages.map(msg => msg.id)));
-  };
-
-  const deselectAllMessages = () => {
-    setSelectedMessages(new Set());
-  };
-
+  const selectAllMessages = () => setSelectedMessages(new Set(messages.map(msg => msg.id)));
+  const deselectAllMessages = () => setSelectedMessages(new Set());
   const toggleSelectMessage = (id) => {
     setSelectedMessages(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(id)) newSet.delete(id);
-      else newSet.add(id);
+      newSet.has(id) ? newSet.delete(id) : newSet.add(id);
       return newSet;
     });
   };
 
   const handleRefresh = () => loadMessages();
   const handleRetry = () => loadMessages();
+  const handleMarkAllRead = () => setMessages(msgs => msgs.map(m => ({ ...m, read: true })));
 
-  const handleMarkAllRead = () => {
-    setMessages(msgs => msgs.map(m => ({ ...m, read: true })));
-  };
-
-  // Delete selected messages
   const handleDeleteSelected = async () => {
     if (!currentUser) return;
-    
     try {
-      const deletePromises = Array.from(selectedMessages).map(messageId =>
-        fetch(`http://localhost:12345/api/mails/${messageId}`, {
-          method: 'DELETE',
-          headers: {
-            'user-id': currentUser.id.toString()
-          }
-        })
+      const deletePromises = Array.from(selectedMessages).map(id =>
+        FetchWithAuth(`http://localhost:12345/api/mails/${id}`, { method: 'DELETE' })
       );
-      
       await Promise.all(deletePromises);
       await loadMessages();
     } catch (e) {
@@ -198,18 +138,10 @@ function Inbox() {
     }
   };
 
-  // Delete single message
-  const handleDeleteSingleMessage = async (messageId) => {
+  const handleDeleteSingleMessage = async (id) => {
     if (!currentUser) return;
-    
     try {
-      await fetch(`http://localhost:12345/api/mails/${messageId}`, {
-        method: 'DELETE',
-        headers: {
-          'user-id': currentUser.id.toString()
-        }
-      });
-      
+      await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, { method: 'DELETE' });
       await loadMessages();
       setSelectedMail(null);
     } catch (e) {
@@ -217,138 +149,101 @@ function Inbox() {
     }
   };
 
-  // Add selected messages to a label
   const handleAddToLabel = async (labelName, labelIndex) => {
     if (!currentUser) return;
-    
     try {
-      console.log(`Adding messages to label: ${labelName} (index: ${labelIndex})`);
-      
-      const updatePromises = Array.from(selectedMessages).map(messageId =>
-        fetch(`http://localhost:12345/api/mails/${messageId}`, {
+      const updatePromises = Array.from(selectedMessages).map(id =>
+        FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
           method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'user-id': currentUser.id.toString()
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ labelId: labelIndex })
         })
       );
-      
       await Promise.all(updatePromises);
       await loadMessages();
       setShowLabelDropdown(false);
-      
     } catch (e) {
       setError('Failed to add messages to label');
-      console.error('Add to label error:', e);
     }
   };
 
-  // Add URLs from selected messages to spam blacklist
   const handleMarkAsSpam = async () => {
     if (!currentUser) return;
-    
     try {
-      const selectedMessageData = messages.filter(msg => selectedMessages.has(msg.id));
-      
+      const selectedData = messages.filter(msg => selectedMessages.has(msg.id));
       const urlRegex = /https?:\/\/[^\s]+/gi;
       const urls = new Set();
-      
-      selectedMessageData.forEach(msg => {
-        const subjectUrls = (msg.subject || '').match(urlRegex) || [];
-        const contentUrls = (msg.content || '').match(urlRegex) || [];
-        [...subjectUrls, ...contentUrls].forEach(url => urls.add(url));
+      selectedData.forEach(msg => {
+        [...(msg.subject.match(urlRegex) || []), ...(msg.content.match(urlRegex) || [])].forEach(url => urls.add(url));
       });
-
       const blacklistPromises = Array.from(urls).map(url =>
-        fetch('http://localhost:12345/api/blacklist', {
+        FetchWithAuth('http://localhost:12345/api/blacklist', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url })
         })
       );
-      
       await Promise.all(blacklistPromises);
       await handleDeleteSelected();
-      
     } catch (e) {
       setError('Failed to mark messages as spam');
     }
   };
 
-  // Handle mail click
-  const handleMailClick = (message, e) => {
+  const handleMailClick = (msg, e) => {
     if (e.target.classList.contains('form-check-input')) return;
-    
-    if (!message.read) {
-      setMessages(msgs => msgs.map(m => m.id === message.id ? { ...m, read: true } : m));
-    }
-    
-    setSelectedMail(message);
+    if (!msg.read) setMessages(msgs => msgs.map(m => m.id === msg.id ? { ...m, read: true } : m));
+    setSelectedMail(msg);
   };
 
-  const hasSelectedMessages = selectedMessages.size > 0;
-
-  if (!currentUser) {
-    return null;
-  }
-
-  return (
-  <div className="inbox-wrapper">
-    <div className="inbox-container card shadow-sm">
-      <InboxHeader
-        messages={messages}
-        selectedMessages={selectedMessages}
-        hasSelectedMessages={hasSelectedMessages}
-        onSelectAll={selectAllMessages}
-        onDeselectAll={deselectAllMessages}
-        onRefresh={handleRefresh}
-        onMarkAllRead={handleMarkAllRead}
-        onDeleteSelected={handleDeleteSelected}
-        onMarkAsSpam={handleMarkAsSpam}
-        labels={labels}
-        showLabelDropdown={showLabelDropdown}
-        setShowLabelDropdown={setShowLabelDropdown}
-        onAddToLabel={handleAddToLabel}
-      />
-
-      {showLabelDropdown && (
-        <div 
-          className="position-fixed w-100 h-100"
-          style={{ top: 0, left: 0, zIndex: 999 }}
-          onClick={() => setShowLabelDropdown(false)}
+  return currentUser ? (
+    <div className="inbox-wrapper">
+      <div className="inbox-container card shadow-sm">
+        <InboxHeader
+          messages={messages}
+          selectedMessages={selectedMessages}
+          hasSelectedMessages={selectedMessages.size > 0}
+          onSelectAll={selectAllMessages}
+          onDeselectAll={deselectAllMessages}
+          onRefresh={handleRefresh}
+          onMarkAllRead={handleMarkAllRead}
+          onDeleteSelected={handleDeleteSelected}
+          onMarkAsSpam={handleMarkAsSpam}
+          labels={labels}
+          showLabelDropdown={showLabelDropdown}
+          setShowLabelDropdown={setShowLabelDropdown}
+          onAddToLabel={handleAddToLabel}
         />
-      )}
 
-      <div className="inbox-content card-body p-0">
-        {isLoading && <LoadingState />}
-        {error && <ErrorState error={error} onRetry={handleRetry} />}
-        {!isLoading && !error && messages.length === 0 && <EmptyState />}
-        {!isLoading && !error && messages.length > 0 && (
-          <MessageList
-            messages={messages}
-            selectedMessages={selectedMessages}
-            senderCache={senderCache}
-            onToggleSelect={toggleSelectMessage}
-            onMailClick={handleMailClick}
+        {showLabelDropdown && (
+          <div className="position-fixed w-100 h-100" style={{ top: 0, left: 0, zIndex: 999 }} onClick={() => setShowLabelDropdown(false)} />
+        )}
+
+        <div className="inbox-content card-body p-0">
+          {isLoading && <LoadingState />}
+          {error && <ErrorState error={error} onRetry={handleRetry} />}
+          {!isLoading && !error && messages.length === 0 && <EmptyState />}
+          {!isLoading && !error && messages.length > 0 && (
+            <MessageList
+              messages={messages}
+              selectedMessages={selectedMessages}
+              senderCache={senderCache}
+              onToggleSelect={toggleSelectMessage}
+              onMailClick={handleMailClick}
+            />
+          )}
+        </div>
+
+        {selectedMail && (
+          <MailDetail
+            message={selectedMail}
+            onClose={() => setSelectedMail(null)}
+            onDelete={handleDeleteSingleMessage}
           />
         )}
       </div>
-
-      {selectedMail && (
-        <MailDetail
-          message={selectedMail}
-          onClose={() => setSelectedMail(null)}
-          onDelete={handleDeleteSingleMessage}
-        />
-      )}
     </div>
-  </div>
-);
-
+  ) : null;
 }
 
 export default Inbox;
