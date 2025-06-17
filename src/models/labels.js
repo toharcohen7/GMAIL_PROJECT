@@ -53,9 +53,34 @@ const initLabelsForUser = (userId) => {
   labels.set(userId, {
     data: [{ name: 'Draft', countBadge: 0, iconClass: 'bi bi-inbox-fill' },
            { name: 'Sent', countBadge: 0, iconClass: 'bi bi-send' },
-           { name: 'Received', countBadge: 0, iconClass: 'bi bi-file-earmark' }]
+           { name: 'Received', countBadge: 0, iconClass: 'bi bi-file-earmark' },
+           { name: 'Spam', countBadge: 0, iconClass: 'bi bi-exclamation-octagon' }
+          ]
   });
 };
+
+function addLabelCountBadgeByOne(userId, labelName) {
+  const userLabels = labels.get(userId).data;
+  const label = userLabels.find(label => label.name === labelName);
+  if (label) {
+    ++label.countBadge;
+  }
+  else {
+    console.error(`Label ${labelName} not found for user ${userId}`);
+  }
+}
+
+function decreaseLabelCountBadgeByOne(userId, labelName) {
+  const userLabels = labels.get(userId).data;
+  const label = userLabels.find(label => label.name === labelName);
+  if (label) {
+    --label.countBadge;
+  }
+  else {
+    console.error(`Label ${labelName} not found for user ${userId}`);
+  }
+}
+
 
 module.exports = {
     getLabels,
@@ -63,5 +88,7 @@ module.exports = {
     getLabelByName,
     deleteLabel,
     initLabelsForUser,
-    updateLabel
+    updateLabel,
+    addLabelCountBadgeByOne,
+    decreaseLabelCountBadgeByOne
 };

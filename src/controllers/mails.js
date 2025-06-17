@@ -1,5 +1,4 @@
 const Mails = require('../models/mails')
-const Blacklist = require('../models/blacklist');
 const Users = require('../models/users');
 const Labels = require('../models/labels');
 
@@ -192,7 +191,7 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
 
     // Check if all provided receiversId are valid users
     for (const receiverId of updates.receiversId) {
-      if (!isreceiversIdUser(receiverId)) {
+      if (!isReceiversIdUser(receiverId)) {
         return res.status(404).json({ error: `Receiver with ID ${receiverId} not found` });
       }
     }
@@ -202,12 +201,6 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
   let recivers = (updates.receiversId !== undefined) ? updates.receiversId : Mails.getRecivers(userId, mailId);
   if (recivers.length === 0 && updates.labelName === 'Sent') {
     return res.status(400).json({ error: 'Cannot send mail without a receiver' });
-  }
-
-  // Check for blacklisted links
-  const blacklistedLink = await checkForBlacklistedLinks(updates.subject, updates.content);
-  if (blacklistedLink) {
-    return res.status(400).json({ error: `Update blocked due to blacklisted link: ${blacklistedLink}` });
   }
 
   // Update the draft mail
@@ -244,51 +237,8 @@ exports.searchQueryInMails = (req, res) => {
 
 // ─── Helper Functions ───────────────────────────────────────────────────────────
 
-/**
- * Scans one or more text fields for suspicious links.
- * Checks each link against the blacklist server.
- * Returns the first blacklisted link found, or null if safe.
- */
-async function checkForBlacklistedLinks(...texts) {
-  const suspiciousUrlRegex = /(?:^|\s)(?:(?:file:\/\/\/?|(?:[a-zA-Z][a-zA-Z0-9+.-]):\/\/)?(?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})(?::\d+)?(?:\/\S)?)(?=\s|$)/gi;
-  const extractLinks = (text) => {
-    if (!text) return [];
-    return [...text.matchAll(suspiciousUrlRegex)].map(match => match[0]);
-  };
-
-  const links = texts.flatMap(extractLinks);
-
-  for (const link of links) {
-    const blStatus = await isInBlacklist(link);
-    if (blStatus) {
-      return link;
-    }
-  }
-
-  return null;
-}
-
-/**
- * Checks a single URL against the blacklist server.
- * Returns true if blacklisted, false if not, undefined if invalid.
- */
-async function isInBlacklist(url) {
-  const serverResponse = await Blacklist.operationOnBlacklist('GET', url);
-
-  const resultLine = serverResponse.split('\n\n');
-  if (resultLine[0] === "200 Ok") {
-    if (resultLine[1] === "true true") {
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    return undefined; // Invalid URL or request
-  }
-}
-
 // Validates if a given receiver ID belongs to a user
-function isreceiversIdUser(receiversId) {
+function isReceiversIdUser(receiversId) {
   const id = Number(receiversId);
   return Users.getUser(id);
 }

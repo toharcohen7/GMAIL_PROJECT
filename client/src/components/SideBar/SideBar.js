@@ -68,8 +68,8 @@ function SideBar() {
         setShowModal(false);
     };
 
-    const systemLabels = labels.slice(0, 3);
-    const userLabels = labels.slice(3);
+    const systemLabels = labels.slice(0, 4);
+    const userLabels = labels.slice(4);
 
     return (
         <div className="container-fluid">
