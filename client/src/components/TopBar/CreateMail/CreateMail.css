@@ -1,0 +1,55 @@
+.create-mail-btn {
+  margin-left: 1px;
+  background-color: #0b57d0;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-mail-btn:hover {
+  background-color: #0846a0;
+}
+
+.mail-header {
+  position: relative;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+
+
+.send-button {
+  background-color: #1a73e8;
+  color: white;
+  width: 100%;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+.send-button:hover {
+  background-color: #1765c1;
+}
+
+.send-button:active {
+  transform: scale(0.96);
+}
+
+.input-hover-effect:hover,
+.input-hover-effect:focus {
+  box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.15);
+  border-color: #1a73e8;
+  transition: all 0.2s ease-in-out;
+}
+
+
+
