@@ -167,28 +167,65 @@ function Inbox() {
     }
   };
 
-  const handleMarkAsSpam = async () => {
-    if (!currentUser) return;
-    try {
-      const selectedData = messages.filter(msg => selectedMessages.has(msg.id));
-      const urlRegex = /https?:\/\/[^\s]+/gi;
-      const urls = new Set();
-      selectedData.forEach(msg => {
-        [...(msg.subject.match(urlRegex) || []), ...(msg.content.match(urlRegex) || [])].forEach(url => urls.add(url));
-      });
-      const blacklistPromises = Array.from(urls).map(url =>
-        FetchWithAuth('http://localhost:12345/api/blacklist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url })
-        })
-      );
-      await Promise.all(blacklistPromises);
-      await handleDeleteSelected();
-    } catch (e) {
-      setError('Failed to mark messages as spam');
+const handleMarkAsSpam = async () => {
+  if (!currentUser) return;
+  try {
+    // Get the full message objects for selected messages
+    const selectedData = messages.filter(msg => selectedMessages.has(msg.id));
+    console.log("Selected messages for spam:", selectedData);
+    
+    // Improved regex that matches URLs with or without http/https prefix
+    const urlRegex = /(https?:\/\/)?([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}/gi;
+    const urls = new Set();
+    
+    // Extract URLs from both subject and content fields
+    selectedData.forEach(msg => {
+      const subjectMatches = msg.subject ? String(msg.subject).match(urlRegex) || [] : [];
+      const contentMatches = msg.content ? String(msg.content).match(urlRegex) || [] : [];
+      
+      subjectMatches.forEach(url => urls.add(url));
+      contentMatches.forEach(url => urls.add(url));
+    });
+    
+    console.log("URLs found to blacklist:", Array.from(urls));
+
+    // Add URLs to blacklist
+    if (urls.size > 0) {
+      for (const url of urls) {
+        try {
+          const response = await FetchWithAuth('http://localhost:12345/api/blacklist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url })
+          });
+          console.log(`URL ${url} blacklist result:`, response);
+        } catch (error) {
+          console.error(`Error blacklisting URL ${url}:`, error);
+        }
+      }
     }
-  };
+
+    // Mark messages as spam
+    for (const id of selectedMessages) {
+      try {
+        await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ labelName: 'Spam' })
+        });
+      } catch (error) {
+        console.error(`Error marking message ${id} as spam:`, error);
+      }
+    }
+
+    await loadMessages();
+    setSelectedMessages(new Set());
+    
+  } catch (e) {
+    setError('Failed to mark messages as spam');
+    console.error('Error in handleMarkAsSpam:', e);
+  }
+};
 
   const handleMailClick = (msg, e) => {
     if (e.target.classList.contains('form-check-input')) return;
