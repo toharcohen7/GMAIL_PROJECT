@@ -15,6 +15,7 @@ function CreateMail() {
   const closeCard = async () => {
     if (!to && !subject && !body) {
       setShowCard(false);
+      setError('');
       return;
     }
 

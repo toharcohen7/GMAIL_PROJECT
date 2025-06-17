@@ -1,6 +1,5 @@
 import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
 
-
 export const getUserDetails = async (userId) => {
   try {
     const res = await FetchWithAuth('http://localhost:12345/api/users/me');

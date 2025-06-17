@@ -27,7 +27,8 @@ function Profile() {
   return (
     <div className="position-relative mx-1">
       <button onClick={() => setShowCard(prev => !prev)} className="btn btn-outline-secondary">
-        <img src={user.image} className="rounded-circle object-fit-cover top-bar-img" alt="profile image" />
+        <img src={user.image} className="rounded-circle object-fit-cover top-bar-img" alt="" aria-hidden="true" />
+
       </button>
 
       {showCard && (
