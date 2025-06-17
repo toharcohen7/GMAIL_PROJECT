@@ -21,7 +21,8 @@ exports.getLabels = (req, res) => {
     const labels = Labels.getLabels(userId);
     const labelData = labels.map(label => ({
       name: label.name,
-      iconClass: label.iconClass
+      iconClass: label.iconClass,
+      countBadge: label.countBadge
     }));
     res.json(labelData);
 }
@@ -187,7 +188,7 @@ function getLabelFromParams(req, res, userId) {
 
 // Check if label is system-protected (Sent or Inbox)
 const isProtectedLabel = (labelName) => {
-  return labelName === 'Draft' || labelName === 'Sent' || labelName === 'Received';
+  return labelName === 'Draft' || labelName === 'Sent' || labelName === 'Received' || labelName === 'Spam';
 };
 
 // Check if label name already exists

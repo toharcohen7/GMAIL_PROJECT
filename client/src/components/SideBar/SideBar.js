@@ -152,10 +152,9 @@ function SideBar() {
         }
     };
 
-    // Use system labels for the first 3 items, and user labels for the rest
-    const systemLabels = labels.slice(0, 3);
-    const userLabels = labels.slice(3);
-
+    const systemLabels = labels.slice(0, 4);
+    const userLabels = labels.slice(4);
+  
     return (
         <div className="sidebar">
             <ol className="list-group mb-0">
