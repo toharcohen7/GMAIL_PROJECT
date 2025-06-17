@@ -207,7 +207,7 @@ const sendMail = async (receiversId, mail) => {
       throw new Error(`Receiver with ID ${receiverId} does not exist`);
     }
     userMails.get(receiverId).push(newMailForReceivers);
-    Labels.addLabelCountBadgeByOne(receiverId, 'Received'); // Increment Received label count
+    Labels.addLabelCountBadgeByOne(receiverId, receiverMailLabel); // Increment Received label count
   }
 };
 
