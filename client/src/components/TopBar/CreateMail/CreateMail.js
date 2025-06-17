@@ -135,7 +135,7 @@ function CreateMail() {
             </button>
 
             {showCard && (
-                <div className="card compose-card position-absolute mt-3" style={{ width: '25rem', zIndex: 100 }}>
+                <div className="card compose-card custom-compose-card position-absolute mt-2 start-0 top-100" style={{ width: '25rem', zIndex: 100 }}>
                     <div className="card-header d-flex justify-content-between align-items-center mail-header">
                         <span className="fs-5 fw-bold">New Mail</span>
                         <button className="btn btn-secondery" onClick={closeCard}>
