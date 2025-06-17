@@ -4,19 +4,15 @@ import './SideBar.css';
 import SystemLabel from '../SystemLabel/SystemLabel.js';
 import AddLabel from '../AddLabel/AddLabel.js';
 import UserLabel from '../UserLabel/UserLabel.js';
+import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
 
-// Custom hook to fetch and manage labels
 const useLabels = () => {
     const [labels, setLabels] = useState([]);
 
     useEffect(() => {
         async function fetchLabels() {
             try {
-                const response = await fetch('http://localhost:12345/api/labels', {
-                    headers: {
-                        "user-id": "1" // Need to fix this to get user ID from authentication
-                    }
-                });
+                const response = await FetchWithAuth('http://localhost:12345/api/labels');
                 if (response.ok) {
                     const data = await response.json();
                     setLabels(data);
@@ -38,21 +34,17 @@ function SideBar() {
     const { labels, setLabels } = useLabels();
     const [showModal, setShowModal] = useState(false);
     const [editLabelData, setEditLabelData] = useState(null);
-    
+
     const handleCreateNewLabel = async (labelName) => {
         try {
-            const response = await fetch('http://localhost:12345/api/labels', {
+            const response = await FetchWithAuth('http://localhost:12345/api/labels', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'user-id': '1' // Need to fix this to get user ID from authentication
-                },
                 body: JSON.stringify({ 
                     name: labelName,
-                    iconClass: 'bi bi-tag' // Default icon for all user-created labels
+                    iconClass: 'bi bi-tag'
                 })
             });
-            
+
             if (response.status === 201) {
                 const newLabel = await response.json();
                 setLabels([...labels, newLabel]);
@@ -77,12 +69,10 @@ function SideBar() {
     const handleLabelAction = async (action, labelName) => {
         try {
             if (action === "delete") {
-                // Confirm before deleting
                 if (window.confirm(`Are you sure you want to delete label "${labelName}"?`)) {
                     await deleteLabel(labelName);
                 }
             } else if (action === "edit") {
-                // Set the label to edit and show modal
                 const labelToEdit = labels.find(label => label.name === labelName);
                 setEditLabelData(labelToEdit);
                 setShowModal(true);
@@ -91,18 +81,14 @@ function SideBar() {
             console.error(`Error during ${action} action:`, error);
         }
     };
-    
+
     const deleteLabel = async (labelName) => {
         try {
-            const response = await fetch(`http://localhost:12345/api/labels/${encodeURIComponent(labelName)}`, {
-                method: "DELETE",
-                headers: {
-                    "user-id": "1"  // Need to fix this to get user ID from authentication
-                }
+            const response = await FetchWithAuth(`http://localhost:12345/api/labels/${encodeURIComponent(labelName)}`, {
+                method: "DELETE"
             });
-            
+
             if (response.status === 204) {
-                // Update the labels state by removing the deleted label
                 setLabels(labels.filter(label => label.name !== labelName));
             } else {
                 const errorData = await response.json();
@@ -112,24 +98,16 @@ function SideBar() {
             console.error("Error deleting label:", error);
         }
     };
-    
+
     const handleSaveLabel = async (newLabelName) => {
         if (editLabelData) {
-            // Update existing label
             try {
-                const response = await fetch(`http://localhost:12345/api/labels/${encodeURIComponent(editLabelData.name)}`, {
+                const response = await FetchWithAuth(`http://localhost:12345/api/labels/${encodeURIComponent(editLabelData.name)}`, {
                     method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "user-id": "1"  // Need to fix this to get user ID from authentication
-                    },
-                    body: JSON.stringify({ 
-                        name: newLabelName
-                    })
+                    body: JSON.stringify({ name: newLabelName })
                 });
-                
+
                 if (response.status === 204) {
-                    // Update the labels state
                     setLabels(labels.map(label => 
                         label.name === editLabelData.name 
                             ? {...label, name: newLabelName} 
@@ -147,14 +125,13 @@ function SideBar() {
                 console.error("Error updating label:", error);
             }
         } else {
-            // Create new label (still needs both name and iconClass)
             await handleCreateNewLabel(newLabelName);
         }
     };
 
     const systemLabels = labels.slice(0, 4);
     const userLabels = labels.slice(4);
-  
+
     return (
         <div className="sidebar">
             <ol className="list-group mb-0">
@@ -191,7 +168,6 @@ function SideBar() {
                     />
                 ))}
             </ol>
-            
             {showModal && (
                 <AddLabel
                     onSave={handleSaveLabel}

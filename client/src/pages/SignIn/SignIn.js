@@ -1,20 +1,20 @@
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate } from "react-router-dom";
 import logo from '../../images/logo.png';
+import { FetchWithAuth } from '../../components/FetchWithAuth/FetchWithAuth';
 
 function SignIn() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Add error state
-  const navigate = useNavigate(); // Add navigation hook
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
     await getToken(userName, password);
-  }
+  };
 
   async function getToken(userName, password) {
     try {
@@ -32,23 +32,17 @@ function SignIn() {
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
-      
-      // Fetch user data and store it
-      const userResponse = await fetch("http://localhost:12345/api/users/me", {
-        headers: {
-          Authorization: `Bearer ${data.token}`,
-        },
-      });
-      
-      if (userResponse.ok) {
+
+      // Fetch user data with FetchWithAuth
+      const userResponse = await FetchWithAuth("http://localhost:12345/api/users/me");
+
+      if (userResponse && userResponse.ok) {
         const userData = await userResponse.json();
         localStorage.setItem("currentUser", JSON.stringify(userData));
-        localStorage.setItem("user-id", userData.id);
       }
-      
-      // Redirect to inbox after successful login
+
       navigate("/mainpage");
-      
+
     } catch (error) {
       console.error("Error signing in:", error);
       setError(error.message);
