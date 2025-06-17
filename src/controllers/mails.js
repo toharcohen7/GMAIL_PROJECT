@@ -48,9 +48,11 @@ exports.createMail = (req, res) => {
   }
 
   // Create new draft mail for the user
-  const newMail = Mails.createMail(userId);   
+  const newMail = Mails.createMail(userId);  
+  
+  console.log(`✉️  Draft created for user ${userId}:`, newMail); /////////////////////////////////////////////////////////////////
 
-  res.status(201).location(`/api/mails/${newMail.id}`).end();
+  res.status(201).json(newMail).end();
 }
 
 /**
@@ -216,7 +218,13 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
     return res.status(404).json({ error: 'Unable to update Mail' });
   }
 
-  return res.status(204).end();
+  console.log(`📝 Updating mail ${mailId} for user ${userId}`, updates); ////////////////////////////////////////////////////
+
+  if (updates.labelName === 'Sent') {
+  console.log(`📤 Mail ${mailId} sent by user ${userId}`);
+
+  return res.status(200).end();
+}
 }
 
 /**
