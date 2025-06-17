@@ -1,19 +1,30 @@
-import Inbox from '../../components/Inbox/MainInbox';
+import React, { useState } from 'react';
+import TopBar from '../../components/TopBar/TopBar';
 import SideBar from '../../components/SideBar/SideBar';
-import TopBar from "../../components/TopBar/TopBar";
+import MainInbox from '../../components/Inbox/MainInbox';
+import './MainPage.css';
 
 function MainPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(prev => !prev);
+  };
+
   return (
-    <div className="bg-MainPage main-page-container">
-      <TopBar />
+    <div className="main-page-container">
+      <TopBar toggleSidebar={toggleSidebar} />
       <div className="content-container">
-        <SideBar />
-        <Inbox />
+        <div className={`sidebar-wrapper ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
+          <SideBar />
+        </div>
+        <div className="inbox-responsive-wrapper">
+          <MainInbox />
+        </div>
       </div>
     </div>
   );
 }
-
 
 export default MainPage;
 

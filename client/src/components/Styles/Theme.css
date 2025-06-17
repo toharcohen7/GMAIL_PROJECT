@@ -1,114 +1,690 @@
-body.dark-mode {
-  background-color: #121212;
-  color: #e0e0e0;
+:root {
+  /* Material dark theme color tokens */
+  --md-surface: #121212;
+  --md-surface-variant: #1e1e1e;
+  --md-surface-variant-2: #2c2c2c;
+  --md-surface-variant-3: #333333;
+
+  --md-primary: #bb86fc;
+  --md-secondary: #03dac6;
+
+  --md-on-surface: #e0e0e0;
+  --md-on-surface-variant: #b0b0b0;
+  --md-border: #444;
+  --md-error: #cf6679;
+
+  --md-elevation-1: rgba(255, 255, 255, 0.05);
+  --md-elevation-2: rgba(255, 255, 255, 0.07);
+  --md-elevation-3: rgba(255, 255, 255, 0.08);
 }
 
-/* Inbox Container */
+/* Global */
+body.dark-mode {
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  --page-bg: var(--md-surface);
+}
+
+/* Containers */
+body.dark-mode .content-container,
+body.dark-mode .main-page-container,
+body.dark-mode .inbox-wrapper,
+body.dark-mode .inbox-responsive-wrapper,
 body.dark-mode .inbox-container {
-  background-color: #1e1e1e !important;
-  color: #f5f5f5;
-  border-color: #2c2c2c;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface);
+  box-shadow: 0 2px 5px var(--md-elevation-2);
 }
 
 /* Inbox Header */
 body.dark-mode .inbox-header {
-  background-color: #2a2a2a !important;
-  border-bottom: 1px solid #333;
+  background-color: var(--md-surface-variant-2);
+  border-bottom: 1px solid var(--md-border);
 }
 
-/* Message List Background */
+/* Message List */
 body.dark-mode .message-list,
 body.dark-mode .inbox-content {
-  background-color: #252525 !important;
+  background-color: var(--md-surface-variant-2);
 }
 
-/* Individual Messages */
 body.dark-mode .message-item {
-  background-color: #2f2f2f;
-  color: #ccc;
+  background-color: var(--md-surface-variant-2);
+  color: var(--md-on-surface-variant);
+  border-left: 4px solid transparent;
+  transition: background-color 0.2s ease;
 }
 
 body.dark-mode .message-item.unread {
-  background-color: #37474f;
-  color: #fff;
-  border-left-color: #90caf9;
+  background-color: #1f2933;
+  color: var(--md-on-surface);
+  border-left-color: var(--md-primary);
 }
 
 body.dark-mode .message-item.active {
-  background-color: #424242;
+  background-color: var(--md-surface-variant-3);
   border-left-color: #64b5f6;
 }
 
 body.dark-mode .message-item:hover {
-  background-color: #3c3c3c;
+  background-color: var(--md-elevation-1);
 }
 
-/* Empty / Error / Loading States */
+/* States */
 body.dark-mode .empty-state,
 body.dark-mode .loading-state,
 body.dark-mode .error-state {
-  background-color: #252525;
-  color: #aaa;
+  background-color: var(--md-surface-variant-2);
+  color: var(--md-on-surface-variant);
 }
 
 /* Buttons */
-body.dark-mode .btn-circle {
-  background-color: #333;
-  color: #f0f0f0;
+body.dark-mode .btn-circle,
+body.dark-mode .btn-outline-secondary,
+body.dark-mode .btn-light {
+  background-color: var(--md-surface-variant-2);
+  color: var(--md-on-surface);
+  border-color: var(--md-border);
 }
 
-body.dark-mode .btn-circle:hover {
-  background-color: #444;
-}
-
-body.dark-mode .btn-outline-secondary {
-  background-color: #333 !important;
-  color: #eee !important;
-}
-
-body.dark-mode .btn-outline-secondary:hover {
-  background-color: #555 !important;
+body.dark-mode .btn-circle:hover,
+body.dark-mode .btn-outline-secondary:hover,
+body.dark-mode .btn-light:hover {
+  background-color: var(--md-surface-variant-3);
 }
 
 /* TopBar */
 body.dark-mode .bg-TopBar {
-  background-color: #121212 !important;
+  background-color: var(--md-surface);
 }
 
 /* Search Input */
 body.dark-mode .search-input-with-icon {
-  background-color: #2c2c2c;
-  color: #fff;
+  background-color: var(--md-surface-variant-2);
+  color: var(--md-on-surface);
 }
 
 body.dark-mode .search-input-with-icon::placeholder {
-  color: #aaa;
+  color: var(--md-on-surface-variant);
 }
 
-/* Dropdowns */
-body.dark-mode .dropdown-menu {
-  background-color: #2e2e2e;
-  color: #eee;
-  border-color: #444;
-}
-html, body, #root {
-  height: 100%;
-  background-color: var(--page-bg);
+/* Dropdown Menu */
+body.dark-mode .dropdown-menu,
+body.dark-mode .label-dropdown-menu {
+  background-color: var(--md-surface-variant-2);
+  color: var(--md-on-surface);
+  border-color: var(--md-border);
+  box-shadow: 0 0 10px var(--md-elevation-3);
 }
 
-body {
-  margin: 0;
+body.dark-mode .dropdown-item,
+body.dark-mode .label-dropdown-menu .dropdown-item {
+  color: var(--md-on-surface);
 }
 
-:root {
-  --page-bg: rgb(242, 240, 240);
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .label-dropdown-menu .dropdown-item:hover {
+  background-color: var(--md-surface-variant-3);
 }
 
-body.dark-mode {
-  --page-bg: #121212;
+/* Sidebar */
+body.dark-mode .sidebar,
+body.dark-mode .list-group-item,
+body.dark-mode .label-divider {
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface);
+  border-color: var(--md-border);
 }
 
-html, body, #root {
-  background-color: var(--page-bg);
+body.dark-mode .list-group-item:hover {
+  background-color: var(--md-surface-variant-3);
+}
+
+body.dark-mode .label-divider-text,
+body.dark-mode .add-label-btn {
+  color: var(--md-on-surface-variant);
+}
+
+body.dark-mode .add-label-btn:hover {
+  background-color: var(--md-surface-variant-3);
+}
+
+/* Hover Badge */
+body.dark-mode .hover-badge {
+  background-color: var(--md-surface-variant-2);
+  color: var(--md-on-surface);
+}
+
+/* Mail Cards */
+body.dark-mode .mailCard {
+  background-color: var(--md-surface-variant-2);
+  color: var(--md-on-surface);
+  border-color: var(--md-border);
+}
+
+body.dark-mode .mailCard:hover {
+  background-color: var(--md-surface-variant-3);
+}
+
+body.dark-mode .mail-subject {
+  color: var(--md-on-surface);
+}
+
+body.dark-mode .preview-text,
+body.dark-mode .date-text {
+  color: var(--md-on-surface-variant);
+}
+
+/* Inbox Controls */
+body.dark-mode .inbox-controls {
+  background-color: var(--md-surface-variant);
+  border-color: var(--md-border);
+}
+
+body.dark-mode .inbox-controls .btn {
+  background-color: transparent;
+}
+
+body.dark-mode .inbox-controls .btn:hover {
+  background-color: var(--md-surface-variant-3);
+}
+
+/* Checkboxes */
+body.dark-mode .form-check-input {
+  background-color: var(--md-surface-variant-2);
+  border-color: var(--md-border);
+}
+
+body.dark-mode .form-check-input:checked {
+  background-color: var(--md-primary);
+  border-color: var(--md-primary);
+}
+
+body.dark-mode .form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(187, 134, 252, 0.25);
+  border-color: var(--md-primary);
+}
+
+/* ================================================
+   TopBar Header Specific Fixes
+   ================================================ */
+body.dark-mode .custom-navbar,
+body.dark-mode .navbar,
+body.dark-mode .bg-TopBar {
+  background-color: var(--bs-dark-bg) !important;
+  border-color: var(--bs-dark-border) !important;
+}
+
+/* Fix Gmail logo container */
+body.dark-mode .navbar-brand {
+  background-color: transparent !important;
+}
+
+/* Fix search box */
+body.dark-mode .search-wrapper,
+body.dark-mode .search-wrapper input {
+  background-color: var(--bs-dark-bg-subtle) !important;
+  color: var(--bs-dark-text) !important;
+  border-color: var(--bs-dark-border) !important;
+}
+
+body.dark-mode .search-wrapper .search-icon {
+  color: var(--bs-dark-text-secondary) !important;
+}
+
+/* Fix top bar buttons */
+body.dark-mode .navbar .btn {
+  background-color: transparent !important;
+}
+
+/* ================================================
+   Inbox Header Specific Fixes
+   ================================================ */
+body.dark-mode .inbox-controls,
+body.dark-mode .inbox-header {
+  background-color: var(--bs-dark-bg) !important;
+  border-color: var(--bs-dark-border) !important;
+}
+
+/* Fix inbox control buttons */
+body.dark-mode .inbox-controls .btn,
+body.dark-mode .inbox-header .btn {
+  background-color: transparent !important;
+  color: var(--bs-dark-text) !important;
+  border-color: transparent !important;
+}
+
+body.dark-mode .inbox-controls .btn:hover,
+body.dark-mode .inbox-header .btn:hover {
+  background-color: var(--bs-dark-bg-hover) !important;
+}
+
+/* Fix checkbox in the header */
+body.dark-mode .inbox-controls .form-check-input {
+  background-color: var(--bs-dark-bg-subtle) !important;
+  border-color: var(--bs-dark-border) !important;
+}
+
+/* ================================================
+   Main Content Area
+   ================================================ */
+body.dark-mode .content-container,
+body.dark-mode .inbox-wrapper,
+body.dark-mode .inbox-container {
+  background-color: var(--bs-dark-bg) !important;
+  color: var(--bs-dark-text) !important;
+}
+
+/* Fix empty inbox message */
+body.dark-mode .inbox-empty-message {
+  color: var(--bs-dark-text-secondary) !important;
+}
+
+/* ================================================
+   Fix Badge Text Color (not background)
+   ================================================ */
+/* Keep the badge background dark, but make text white */
+body.dark-mode .list-group-item .badge,
+body.dark-mode .list-group-item .rounded-pill {
+  /* Don't change background color */
+  color: var(--bs-dark-text) !important; /* White text */
+}
+
+/* ================================================
+   Add Label Modal Fix - More Specific Selectors
+   ================================================ */
+/* Target the exact modal components */
+body.dark-mode .add-screen.modal-content,
+body.dark-mode div.modal-content {
+  background-color: var(--bs-dark-bg-subtle) !important;
+  color: var(--bs-dark-text) !important;
+}
+
+/* Ensure the modal container is properly targeted */
+body.dark-mode .modal,
+body.dark-mode .modal-dialog {
+  color: var(--bs-dark-text) !important;
+}
+
+/* Directly target the add-label components */
+body.dark-mode .add-label-modal .modal-content,
+body.dark-mode .add-label-modal .modal-header,
+body.dark-mode .add-label-modal .modal-body,
+body.dark-mode .add-label-modal .modal-footer {
+  background-color: var(--bs-dark-bg-subtle) !important;
+  color: var(--bs-dark-text) !important;
+}
+
+/* Target the Bootstrap modal (as a last resort) */
+.modal.show .modal-dialog .modal-content {
+  background-color: var(--bs-dark-bg-subtle) !important;
+  color: var(--bs-dark-text) !important;
+}
+
+/* ================================================
+   System Label Badges - Match User Label Badge Style
+   ================================================ */
+/* Make system label badges (Draft, Sent, Received) match user label badges */
+body.dark-mode .list-group-item .badge.rounded-pill,
+body.dark-mode .list-group-item .badge {
+  background-color: #343a40 !important; /* Same as user label badges */
+  color: #f8f9fa !important; /* White text */
+}
+
+/* ================================================
+   Modal Dark Mode - Aggressive Fix
+   ================================================ */
+/* Direct targeting of the Add Label modal and all its children */
+body.dark-mode .modal-dialog,
+body.dark-mode .modal-content,
+body.dark-mode .add-screen {
+  background-color: #343a40 !important;
+  color: #f8f9fa !important;
+  border: none !important;
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+  background-color: #343a40 !important;
+  color: #f8f9fa !important;
+  border-color: #495057 !important;
+}
+
+/* Form controls inside modal */
+body.dark-mode .modal-body input,
+body.dark-mode .modal-body .form-control {
+  background-color: #212529 !important;
+  color: #f8f9fa !important;
+  border-color: #495057 !important;
+}
+
+/* Buttons */
+body.dark-mode .modal-footer .btn-secondary {
+  background-color: #495057 !important;
+  color: #f8f9fa !important;
+  border: none !important;
+}
+
+body.dark-mode .modal-footer .btn-primary {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Modal title */
+body.dark-mode .modal-header h5,
+body.dark-mode .modal-title {
+  color: #f8f9fa !important;
+}
+
+/* Close button */
+body.dark-mode .modal-header .btn-close,
+body.dark-mode .modal-header .btn-close:focus {
+  filter: invert(1) brightness(1.5) !important;
+  opacity: 0.7;
+}
+
+/* ================================================
+   Add Label Modal - Exact Color Match Fix
+   ================================================ */
+/* Target the modal overlay/backdrop */
+body.dark-mode .modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Target the modal dialog and content specifically */
+body.dark-mode .modal-dialog .modal-content {
+  background-color: #212529 !important; /* Match the exact sidebar dark color */
+  color: #f8f9fa !important;
+  border: 1px solid #343a40 !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Modal header */
+body.dark-mode .modal-header {
+  background-color: #212529 !important;
+  border-bottom: 1px solid #343a40 !important;
+  color: #f8f9fa !important;
+}
+
+/* Modal body */
+body.dark-mode .modal-body {
+  background-color: #212529 !important;
+  color: #f8f9fa !important;
+}
+
+/* Modal footer */
+body.dark-mode .modal-footer {
+  background-color: #212529 !important;
+  border-top: 1px solid #343a40 !important;
+}
+
+/* Input field */
+body.dark-mode .modal-body .form-control,
+body.dark-mode .modal-body input {
+  background-color: #343a40 !important;
+  color: #f8f9fa !important;
+  border-color: #495057 !important;
+}
+
+/* Buttons */
+body.dark-mode .modal-footer .btn-secondary {
+  background-color: #495057 !important;
+  color: #f8f9fa !important;
+  border: none !important;
+}
+
+/* Make these rules extremely specific */
+body.dark-mode .modal-dialog[role="document"] .modal-content {
+  background-color: #212529 !important;
+}
+
+/* Target by ID if the modal has one */
+body.dark-mode #labelModal .modal-content,
+body.dark-mode #addLabelModal .modal-content,
+body.dark-mode div[id*="modal"] .modal-content {
+  background-color: #212529 !important;
+}
+
+/* Last resort - apply to all elements inside modal */
+body.dark-mode .modal * {
+  background-color: inherit;
+}
+
+/* ================================================
+   Complete Modal Dark Mode Fix
+   ================================================ */
+/* Fix the backdrop */
+body.dark-mode .modal-backdrop {
+  opacity: 0.7 !important;
+}
+
+/* Target ALL possible modal layers */
+body.dark-mode .modal,
+body.dark-mode .modal-dialog,
+body.dark-mode .modal-content,
+body.dark-mode .modal div[class*="modal"],
+body.dark-mode div[class*="modal-wrapper"],
+body.dark-mode div[class*="modal-container"],
+body.dark-mode .add-screen,
+body.dark-mode .add-screen > * {
+  background-color: #212529 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Target the exact content areas */
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+  background-color: #212529 !important;
+  color: #f8f9fa !important;
+  border-color: #343a40 !important;
+}
+
+/* Handle the input field */
+body.dark-mode .modal-body input[type="text"],
+body.dark-mode .modal-body .form-control {
+  background-color: #343a40 !important;
+  color: #f8f9fa !important;
+  border-color: #495057 !important;
+}
+
+/* Fix Cancel button */
+body.dark-mode .modal-footer .btn-secondary {
+  background-color: #495057 !important;
+  color: #f8f9fa !important;
+  border: none !important;
+}
+
+/* Fix Save button */
+body.dark-mode .modal-footer .btn-primary {
+  background-color: #0d6efd !important;
+  color: white !important;
+  border: none !important;
+}
+
+/* Nuclear option - target absolutely everything within the modal */
+body.dark-mode .modal *:not(input):not(button):not(.btn-close):not(.btn-primary):not(.btn-secondary) {
+  background-color: #212529 !important;
+}
+
+/* Even more nuclear option - target by modal role */
+body.dark-mode [role="dialog"],
+body.dark-mode [role="dialog"] > *,
+body.dark-mode [aria-modal="true"],
+body.dark-mode [aria-modal="true"] > * {
+  background-color: #212529 !important;
+}
+
+/* ================================================
+   Fix Modal with Proper Backdrop
+   ================================================ */
+/* Reset any previous modal styling first */
+body.dark-mode .modal *:not(input):not(button) {
+  background-color: initial; /* Remove our nuclear option */
+}
+
+/* Ensure the backdrop is semi-transparent */
+body.dark-mode .modal-backdrop {
+  background-color: #000 !important;
+  opacity: 0.5 !important;
+}
+
+/* Only target the actual modal content */
+body.dark-mode .modal-content {
+  background-color: #212529 !important;
+  color: #f8f9fa !important;
+  border: 1px solid #343a40 !important;
+}
+
+/* Style the specific modal parts */
+body.dark-mode .modal-header {
+  background-color: #212529 !important;
+  border-bottom: 1px solid #343a40 !important;
+}
+
+body.dark-mode .modal-body {
+  background-color: #212529 !important;
+}
+
+body.dark-mode .modal-footer {
+  background-color: #212529 !important;
+  border-top: 1px solid #343a40 !important;
+}
+
+/* Style the form controls */
+body.dark-mode .modal-body .form-control {
+  background-color: #343a40 !important;
+  color: #f8f9fa !important;
+  border-color: #495057 !important;
+}
+
+/* Style the buttons */
+body.dark-mode .modal-footer .btn-secondary {
+  background-color: #495057 !important;
+  color: #f8f9fa !important;
+}
+
+body.dark-mode .modal-footer .btn-primary {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+}
+
+/* Style the modal title */
+body.dark-mode .modal-title {
+  color: #f8f9fa !important;
+}
+
+/* Style the close button */
+body.dark-mode .btn-close {
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.5;
+}
+
+body.dark-mode .btn-close:hover {
+  opacity: 0.7;
+}
+
+/* ================================================
+   Modal Dark Mode Without Backdrop
+   ================================================ */
+/* Remove the modal backdrop completely */
+body.dark-mode .modal-backdrop {
+  display: none !important; /* Hide the backdrop */
+  opacity: 0 !important; /* Ensure it's invisible */
+}
+
+/* Style the modal content for dark mode */
+body.dark-mode .modal-content {
+  background-color: #212529 !important;
+  color: #f8f9fa !important;
+  border: 1px solid #343a40 !important;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) !important; /* Add shadow for visibility */
+}
+
+/* Style the modal header */
+body.dark-mode .modal-header {
+  background-color: #212529 !important;
+  border-bottom: 1px solid #343a40 !important;
+}
+
+/* Style the modal body */
+body.dark-mode .modal-body {
+  background-color: #212529 !important;
+}
+
+/* Style the modal footer */
+body.dark-mode .modal-footer {
+  background-color: #212529 !important;
+  border-top: 1px solid #343a40 !important;
+}
+
+/* Style form controls */
+body.dark-mode .modal-body .form-control {
+  background-color: #343a40 !important;
+  color: #f8f9fa !important;
+  border-color: #495057 !important;
+}
+
+/* Style buttons */
+body.dark-mode .modal-footer .btn-secondary {
+  background-color: #495057 !important;
+  color: #f8f9fa !important;
+}
+
+body.dark-mode .modal-footer .btn-primary {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+}
+
+/* Style modal title */
+body.dark-mode .modal-title {
+  color: #f8f9fa !important;
+}
+
+/* Style close button */
+body.dark-mode .btn-close {
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.5;
+}
+
+body.dark-mode .btn-close:hover {
+  opacity: 1;
+}
+
+/* Ensure the modal stays on top without the backdrop */
+body.dark-mode .modal {
+  z-index: 1050 !important;
+  background-color: transparent !important;
+}
+
+/* ================================================
+   Consistent Badge Styling for All Labels
+   ================================================ */
+/* Target both system and user label badges to ensure consistency */
+body .list-group-item .badge,
+body .list-group-item .rounded-pill {
+  border-radius: 50% !important; /* Perfect circle */
+  width: 24px !important; /* Fixed width */
+  height: 24px !important; /* Fixed height */
+  display: flex !important; /* Flexbox for centering */
+  justify-content: center !important; /* Center horizontally */
+  align-items: center !important; /* Center vertically */
+  padding: 0 !important; /* Remove padding */
+  font-size: 0.75rem !important; /* Consistent font size */
+  font-weight: normal !important; /* Consistent font weight */
+}
+
+/* Regular mode badge styling */
+body .list-group-item .badge {
+  background-color: #e9ecef !important; /* Light gray for light mode */
+  color: #212529 !important;
+}
+
+/* Dark mode badge styling */
+body.dark-mode .list-group-item .badge {
+  background-color: #343a40 !important; /* Dark gray for dark mode */
+  color: #f8f9fa !important; /* White text */
 }
