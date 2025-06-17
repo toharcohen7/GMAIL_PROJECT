@@ -22,10 +22,10 @@ exports.getLast50Mails = (req, res) => {
 
   // Map each mail to return only necessary fields
   const filtered = mails.map(mail => {
-    const { id, mailStatus, senderId, receiversId, subject, content, formattedTime } = mail;
+    const { id, mailStatus, senderId, receiversNames, subject, content, formattedTime } = mail;
     let labelName = Labels.getLabelByName(userId, mail.labelName).name;
 
-    return { id, mailStatus, labelName, senderId, receiversId, subject, content, time: formattedTime };
+    return { id, mailStatus, labelName, senderId, receiversNames, subject, content, time: formattedTime };
   });
 
   res.json(filtered);
@@ -75,10 +75,10 @@ exports.getMailById = (req, res) => {
   }
 
   const mail = Mails.getMailById(userId, mailId);
-  const { id, mailStatus, senderId, receiversId, subject, content, formattedTime } = mail;
+  const { id, mailStatus, senderId, receiversNames, subject, content, formattedTime } = mail;
   let labelName = Labels.getLabelByName(userId, mail.labelName).name;
 
-  res.json({ id, mailStatus, labelName, senderId, receiversId, subject, content, time: formattedTime });
+  res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, time: formattedTime });
 }
 
 /**
@@ -172,11 +172,11 @@ function changeLabel(userId, mailId, updates, req, res) {
 async function changeDraftMail(userId, mailId, updates, req, res) {
 
   // Validate no extra fields in request body
-  if(isThereExtraFields(req, ['subject', 'content', 'receiversId', 'labelName'])) {
-    return res.status(400).json({ error: 'Only subject, content, receiversId, and labelName can be changed' });
+  if(isThereExtraFields(req, ['subject', 'content', 'receiversNames', 'labelName'])) {
+    return res.status(400).json({ error: 'Only subject, content, receiversNames, and labelName can be changed' });
   } 
 
-  if (!updates.subject && !updates.content && !updates.receiversId && !updates.labelName) {
+  if (!updates.subject && !updates.content && !updates.receiversNames && !updates.labelName) {
     return res.status(400).json({ error: 'At least one field must be provided' });
   }
 
@@ -185,22 +185,27 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
     return res.status(400).json({ error: 'Cannot change the label of an unsent mail' });
   }
 
-  // Validate receiversId if provided
-  if (updates.receiversId !== undefined) {
-    if (!Array.isArray(updates.receiversId)) {
-      return res.status(400).json({ error: 'receiversId must be an array' });
+  // Validate receiversNames if provided
+  if (updates.receiversNames !== undefined) {
+    if (!Array.isArray(updates.receiversNames)) {
+      return res.status(400).json({ error: 'receiversNames must be an array' });
     }
 
-    // Check if all provided receiversId are valid users
-    for (const receiverId of updates.receiversId) {
-      if (!isReceiversIdUser(receiverId)) {
-        return res.status(404).json({ error: `Receiver with ID ${receiverId} not found` });
+    // Check if all provided receiversNames are valid users
+    for (const receiverName of updates.receiversNames) {
+      notFoundArr = ""
+      if (!isReceiversNameUser(receiverName)) {
+        notFoundArr.append(receiverName + " ");
+      }
+
+      if (notFoundArr.length > 0) {
+        return res.status(404).json({ error: `Receiver(s) ${notFoundArr} not found` });
       }
     }
   }
 
   // If sending, validate that there are receivers
-  let recivers = (updates.receiversId !== undefined) ? updates.receiversId : Mails.getRecivers(userId, mailId);
+  let recivers = (updates.receiversNames !== undefined) ? updates.receiversNames : Mails.getRecivers(userId, mailId);
   if (recivers.length === 0 && updates.labelName === 'Sent') {
     return res.status(400).json({ error: 'Cannot send mail without a receiver' });
   }
@@ -246,9 +251,8 @@ exports.searchQueryInMails = (req, res) => {
 // ─── Helper Functions ───────────────────────────────────────────────────────────
 
 // Validates if a given receiver ID belongs to a user
-function isReceiversIdUser(receiversId) {
-  const id = Number(receiversId);
-  return Users.getUser(id);
+function isReceiversNameUser(receiverName) {
+  return Users.getIdFromUserName(receiverName) !== undefined;
 }
 
 // Extracts and validates the user ID from request headers

@@ -38,13 +38,13 @@ function CreateMail() {
       await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          receiversId: to.split(',').map(n => n.trim()).filter(Boolean),
+          receiversNames: to.split(',').map(n => n.trim()).filter(Boolean),
           subject,
           content: body,
         }),
       });
     } catch (err) {
-      console.error('Draft save error:', err);
+      console.log('Draft save error:', err);
     }
 
     setShowCard(false);
@@ -76,7 +76,7 @@ function CreateMail() {
       const sendRes = await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          receiversId: to.split(',').map(n => n.trim()).filter(Boolean),
+          receiversNames: to.split(',').map(n => n.trim()).filter(Boolean),
           subject,
           content: body,
           labelName: 'Sent',

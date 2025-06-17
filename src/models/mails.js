@@ -35,7 +35,7 @@ const createMail = (senderId) => {
     id: ++mailIdCounter,
     mailStatus: 'Draft',
     senderId: senderId,
-    receiversId: [],
+    receiversNames: [],
     subject: '',       // Empty by default
     content: '',       // Empty by default
     labelName: 'Draft',        // Draft
@@ -92,8 +92,8 @@ const updateMail = (userId, mailId, updates) => {
   }
 
   // Update receivers list if provided
-  if (updates.receiversId !== undefined) {
-    mail.receiversId = updates.receiversId;
+  if (updates.receiversNames !== undefined) {
+    mail.receiversNames = updates.receiversNames;
   }
 
   if (updates.onRead !== undefined) {
@@ -130,7 +130,7 @@ const updateMail = (userId, mailId, updates) => {
   if (updates.labelName !== undefined) {
     // If changing from draft to sent, create mail copies for receivers
     if (mail.labelName === 'Draft' && updates.labelName === 'Sent') {
-      sendMail(mail.receiversId, mail);
+      sendMail(mail.receiversNames, mail);
     }
     mail.labelName = updates.labelName;
   }
@@ -144,7 +144,7 @@ const updateMail = (userId, mailId, updates) => {
  */
 const searchQueryInMails = (userId, query) => {
   return userMails.get(userId).filter(mail =>
-    mail.subject.includes(query) || mail.content.includes(query)
+    mail.subject.includes(query) || mail.content.includes(query) || mail.receiversNames.some(name => name.includes(query))
   );
 };
 
@@ -173,14 +173,18 @@ const getMailStatus = (userId, mailId) => {
  */
 const getRecivers = (userId, mailId) => {
   const mail = userMails.get(userId).find(mail => mail.id === mailId);
-  return mail.receiversId;
+  return mail.receiversNames;
 };
 
 /**
  * Marks a mail as "Sent" and creates a copy for each receiver.
  * The original remains with the sender, new instances are added to each receiver.
  */
-const sendMail = async (receiversId, mail) => {
+const sendMail = async (receiversNames, mail) => {
+
+  // Import Users model to get user IDs. this is done here to avoid circular dependencies.
+  const Users = require('../models/users.js'); 
+
   mail.mailStatus = 'Sent';     // Mark as sent
   mail.labelName = 'Sent';     // Set label to "Sent"
 
@@ -192,7 +196,7 @@ const sendMail = async (receiversId, mail) => {
     id: ++mailIdCounter,
     mailStatus: 'Received',
     senderId: mail.senderId,
-    receiversId: mail.receiversId,
+    receiversNames: mail.receiversNames,
     subject: mail.subject,
     content: mail.content,
     labelName: receiverMailLabel, 
@@ -202,10 +206,14 @@ const sendMail = async (receiversId, mail) => {
   };
 
   // Add mail to each receiver's mailbox
-  for (const receiverId of receiversId) {
+  for (const receiverName of receiversNames) {
+
+    receiverId = Users.getIdFromUserName(receiverName);
+
     if (!userMails.has(receiverId)) {
-      throw new Error(`Receiver with ID ${receiverId} does not exist`);
+      throw new Error(`Receiver ${receiverName} does not exist`);
     }
+
     userMails.get(receiverId).push(newMailForReceivers);
     Labels.addLabelCountBadgeByOne(receiverId, receiverMailLabel); // Increment Received label count
   }

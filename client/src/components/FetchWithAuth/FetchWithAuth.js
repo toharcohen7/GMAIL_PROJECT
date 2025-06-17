@@ -23,8 +23,10 @@ export async function FetchWithAuth(url, options = {}) {
     ...(options.headers || {}),
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
-    'user-id': userId.toString()
+    'user-id': userId
   };
+
+  console.log('header:', headers);
 
   const res = await fetch(url, { ...options, headers });
 

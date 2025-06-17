@@ -4,7 +4,6 @@ import React from "react";
 import Search from './Search/Search';
 import TopLeftLogo from './TopLeftLogo/TopLeftLogo';
 import Theme_Profile from './Theme_Profile/Theme_Profile';
-import CreateMail from './CreateMail/CreateMail';
 
 function TopBar({ toggleSidebar }) {
     const doSearch = (q) => {

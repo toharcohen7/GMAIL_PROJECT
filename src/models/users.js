@@ -53,8 +53,20 @@ const signIn = (userName, password) => {
     }
 }
 
+const getIdFromUserName = (userName) => {
+    const user = users.find(u => u.userName === userName);
+    return user ? user.id : undefined;
+}
+
+const getUserNameFromId = (userId) => {
+    const user = users.find(u => u.id === userId);
+    return user ? user.userName : undefined;
+}
+
 module.exports = {
     getUser,
     createUser,
-    signIn
+    signIn,
+    getIdFromUserName,
+    getUserNameFromId
 };
