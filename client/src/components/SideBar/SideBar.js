@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SideBar.css';
-import SystemLabel from '../SystemLabel/SystemLabel.js';
 import AddLabel from '../AddLabel/AddLabel.js';
 import UserLabel from '../UserLabel/UserLabel.js';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
+import BlacklistDeleteDialog from '../BlacklistDeleteDialog/BlacklistDeleteDialog';
 
 const useLabels = () => {
     const [labels, setLabels] = useState([]);
@@ -34,7 +34,10 @@ function SideBar() {
     const { labels, setLabels } = useLabels();
     const [showModal, setShowModal] = useState(false);
     const [editLabelData, setEditLabelData] = useState(null);
-
+    const [showBlacklistDialog, setShowBlacklistDialog] = useState(false);
+    const [activeLabel, setActiveLabel] = useState('Inbox');
+    const [hoveredLabel, setHoveredLabel] = useState(null);
+    
     const handleCreateNewLabel = async (labelName) => {
         try {
             const response = await FetchWithAuth('http://localhost:12345/api/labels', {
@@ -132,16 +135,46 @@ function SideBar() {
     const systemLabels = labels.slice(0, 4);
     const userLabels = labels.slice(4);
 
+    const navigateToLabel = (labelName) => {
+        setActiveLabel(labelName);
+    };
+
     return (
         <div className="sidebar">
             <ol className="list-group mb-0">
                 {systemLabels.map((label, key) => (
-                    <SystemLabel
-                        key={`system-${key}`}
-                        name={label.name}
-                        iconClass={label.iconClass}
-                        badgeCount={label.countBadge || 0}
-                    />
+                    <li
+                        key={`system-label-${key}`}
+                        className={`list-group-item user-label d-flex align-items-center justify-content-between ${activeLabel === label.name ? 'active' : ''}`}
+                        onClick={() => navigateToLabel(label.name)}
+                        onMouseEnter={() => setHoveredLabel(label.name)}
+                        onMouseLeave={() => setHoveredLabel(null)}
+                    >
+                        <div className="d-flex align-items-center">
+                            <i className={`${label.iconClass} me-3`}></i>
+                            <span className="hover-label-text">{label.name}</span>
+                        </div>
+                        {label.name === 'Spam' ? (
+                            <div className="position-relative d-flex align-items-center">
+                                {hoveredLabel === 'Spam' ? (
+                                    <button 
+                                        className="btn btn-sm rounded-circle hover-label-action"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowBlacklistDialog(true);
+                                        }}
+                                        title="Remove URL from blacklist"
+                                    >
+                                        <i className="bi bi-shield-minus"></i>
+                                    </button>
+                                ) : (
+                                    <span className="badge rounded-pill">{label.countBadge || 0}</span>
+                                )}
+                            </div>
+                        ) : (
+                            <span className="badge rounded-pill">{label.countBadge || 0}</span>
+                        )}
+                    </li>
                 ))}
             </ol>
             <div className="label-divider d-flex justify-content-between align-items-center px-2">
@@ -174,6 +207,11 @@ function SideBar() {
                     onCancel={handleCancelNewLabel}
                     initialValue={editLabelData ? editLabelData.name : ""}
                     title={editLabelData ? "Edit Label" : "Create New Label"}
+                />
+            )}
+            {showBlacklistDialog && (
+                <BlacklistDeleteDialog 
+                    onClose={() => setShowBlacklistDialog(false)}
                 />
             )}
         </div>
