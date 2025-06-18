@@ -31,11 +31,31 @@ const useLabels = () => {
     return { labels, setLabels };
 };
 
-function SideBar({ onLabelSelect }) {
+function SideBar({ onLabelSelect, refreshTrigger }) {
     const { labels, setLabels } = useLabels();
     const [showModal, setShowModal] = useState(false);
     const [editLabelData, setEditLabelData] = useState(null);
     const [selectedLabelName, setSelectedLabelName] = useState("Received");
+    
+    useEffect(() => {
+        async function fetchLabels() {
+            try {
+                const response = await FetchWithAuth('http://localhost:12345/api/labels');
+                if (response.ok) {
+                    const data = await response.json();
+                    setLabels(data);
+                } else {
+                    console.error('Failed to fetch labels');
+                }
+            } catch (error) {
+                console.error('Error fetching labels:', error);
+            }
+        }
+
+        if (refreshTrigger) {
+            fetchLabels();
+        }
+    }, [refreshTrigger]);
 
     const handleCreateNewLabel = async (labelName) => {
         try {

@@ -9,20 +9,32 @@ function MainPage() {
   const [selectedLabel, setSelectedLabel] = useState('Received');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [refreshTrigger, setRefreshTrigger] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
 
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => !prev);
+  };
+
   return (
     <div className="main-page-container">
-      <TopBar toggleSidebar={toggleSidebar} onSearch={setSearchQuery}/>
+      <TopBar toggleSidebar={toggleSidebar} onSearch={setSearchQuery} />
       <div className="content-container">
         <div className={`sidebar-wrapper ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-         <SideBar onLabelSelect={setSelectedLabel} />
+          <SideBar
+            onLabelSelect={setSelectedLabel}
+            refreshTrigger={refreshTrigger}
+          />
         </div>
         <div className="inbox-responsive-wrapper">
-          <MainInbox selectedLabel={selectedLabel} searchQuery={searchQuery}/>
+          <MainInbox
+            selectedLabel={selectedLabel}
+            searchQuery={searchQuery}
+            onRefresh={triggerRefresh}  
+          />
         </div>
       </div>
     </div>
@@ -30,4 +42,3 @@ function MainPage() {
 }
 
 export default MainPage;
-

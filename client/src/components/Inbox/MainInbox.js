@@ -13,7 +13,7 @@ import ErrorState from './InboxStateComponentes/ErrorState';
 import EmptyState from './InboxStateComponentes/EmptyState';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
 
-function Inbox({ selectedLabel, searchQuery }) {
+function Inbox({ selectedLabel, searchQuery, onRefresh  }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [selectedMessages, setSelectedMessages] = useState(new Set());
@@ -127,7 +127,7 @@ useEffect(() => {
       setMessages(data);
       setSelectedMessages(new Set());
       loadSenderNames(data);
-      loadLabels(); // אפשר להשאיר את זה גם
+      loadLabels();
     } catch (err) {
       console.error('Error fetching messages:', err);
       setError('Failed to load messages');
@@ -150,7 +150,11 @@ useEffect(() => {
     });
   };
 
-  const handleRefresh = () => loadMessages();
+  const handleRefresh = async () => {
+    await loadMessages();
+    if (onRefresh) onRefresh(); 
+  };
+
   const handleRetry = () => loadMessages();
   const handleMarkAllRead = () => setMessages(msgs => msgs.map(m => ({ ...m, read: true })));
 

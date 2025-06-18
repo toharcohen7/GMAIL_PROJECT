@@ -41,11 +41,11 @@ const createMail = (senderId) => {
     labelName: 'Draft',        // Draft
     timestamp: timestamp,
     formattedTime: formattedTime,
-    onRead: true // Sender's draft is considered read
+    onRead: false // Sender's draft is considered read
   };
 
   userMails.get(senderId).push(newMailForSender); // Add to sender's mail list
-
+  Labels.addLabelCountBadgeByOne(senderId, 'Draft'); // Increment Draft label count
   return newMailForSender;
 };
 
@@ -63,12 +63,14 @@ const getMailById = (userId, mailId) => {
 const deleteMail = (userId, mailId) => {
   const index = userMails.get(userId).findIndex(mail => mail.id === mailId);
   if (index !== -1) {
-    userMails.get(userId).splice(index, 1); // Remove mail from array
 
     // If the mail was unread, decrement the label count
     if (userMails.get(userId)[index].onRead === false) {
       Labels.decreaseLabelCountBadgeByOne(userId, userMails.get(userId)[index].labelName);
     }
+
+    userMails.get(userId).splice(index, 1); // Remove mail from array
+
   } else {
     return undefined; // Mail not found for that user
   }
@@ -96,20 +98,22 @@ const updateMail = (userId, mailId, updates) => {
     mail.receiversNames = updates.receiversNames;
   }
 
-  if (updates.onRead !== undefined) {
+  if (updates.labelName !== undefined && mail.onRead === false) {
 
-    if(mail.onRead === false && updates.onRead === true) {
-      // If mail was unread and now marked as read, update label count
+    // If the mail is unread, update label count for the old label and new label
+    Labels.decreaseLabelCountBadgeByOne(userId, mail.labelName);
+    Labels.addLabelCountBadgeByOne(userId, updates.labelName);
+  }
+
+  // Update onRead status if provided
+  if (updates.onRead !== undefined && mail.onRead !== updates.onRead) {
+    mail.onRead = updates.onRead;
+    // If mail is marked as read, update label count
+    if (mail.onRead === true) {
       Labels.decreaseLabelCountBadgeByOne(userId, mail.labelName);
-    }
-
-    // If mail was read and now marked as unread, increment label count
-    if(mail.onRead === true && updates.onRead === false) {
+    } else {
       Labels.addLabelCountBadgeByOne(userId, mail.labelName);
     }
-
-    // Update the read status of the mail
-    mail.onRead = updates.onRead; // Update read status
   }
 
   // Update timestamp to reflect the update
@@ -131,8 +135,10 @@ const updateMail = (userId, mailId, updates) => {
     // If changing from draft to sent, create mail copies for receivers
     if (mail.labelName === 'Draft' && updates.labelName === 'Sent') {
       sendMail(mail.receiversNames, mail);
+    } else {
+      // If changing label to something else, just update the label
+      mail.mailStatus = updates.labelName; // Update mail status to new label 
     }
-    mail.labelName = updates.labelName;
   }
 
   return mail;
@@ -142,7 +148,6 @@ const updateMail = (userId, mailId, updates) => {
  * Searches for a given query string in both subject and content fields
  * for all mails of a given user.
  */
-
 
 const searchQueryInMails = (userId, query) => {
   const Users = require('../models/users');
@@ -201,6 +206,11 @@ const sendMail = async (receiversNames, mail) => {
   mail.mailStatus = 'Sent';     // Mark as sent
   mail.labelName = 'Sent';     // Set label to "Sent"
 
+  if (false === mail.onRead) {
+    Labels.decreaseLabelCountBadgeByOne(mail.senderId, mail.labelName); // Decrement Draft label count
+    mail.onRead = true;          // Mark as read for the sender
+  }
+
   // Check for blacklisted links
   const receiverMailLabel = await isSpamMail(mail.subject, mail.content);
 
@@ -243,7 +253,7 @@ function removeMailsFromLable(userId, labelName) {
 
     mail.labelName = mail.mailStatus; // Reset label to mail status (Draft/Sent/Received)
     if(mail.onRead === false) {
-      Labels.decreaseLabelCountBadgeByOne(userId, mail.labelName); // Decrement the count badge for the label
+      Labels.addLabelCountBadgeByOne(userId, mail.labelName); // Increment count for the new label
     }
   }
 }
