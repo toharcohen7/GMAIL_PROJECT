@@ -1,5 +1,5 @@
 import React from 'react';
-import LabelDropdown from './LabelDropdown';
+import LabelButton from '../LabelButton/LabelButton';
 
 function InboxHeader({
   messages,
@@ -11,15 +11,12 @@ function InboxHeader({
   onMarkAllRead,
   onDeleteSelected,
   onMarkAsSpam,
-  labels,
-  showLabelDropdown,
-  setShowLabelDropdown,
-  onAddToLabel
+  onMoveToLabel,
+  availableLabels = [],
+  currentLabel
 }) {
-  const selectableLabels = labels.filter(label => {
-    const lowerLabel = label.name.toLowerCase();
-    return lowerLabel !== 'sent' && lowerLabel !== 'draft';
-  });
+  // Don't show label button for Sent or Draft sections
+  const canChangeLabels = currentLabel !== 'Sent' && currentLabel !== 'Draft';
 
   return (
     <div className="inbox-header card-header bg-light d-flex align-items-center justify-content-between">
@@ -40,7 +37,6 @@ function InboxHeader({
             onChange={e => e.target.checked ? onSelectAll() : onDeselectAll()}
           />
         </div>
-
         <div className="inbox-controls d-flex align-items-center">
           {!hasSelectedMessages ? (
             <>
@@ -72,14 +68,6 @@ function InboxHeader({
                 <i className="bi bi-trash"></i>
               </button>
 
-              <LabelDropdown
-                labels={selectableLabels}
-                allLabels={labels}
-                showDropdown={showLabelDropdown}
-                onToggleDropdown={() => setShowLabelDropdown(!showLabelDropdown)}
-                onAddToLabel={onAddToLabel}
-              />
-
               <button
                 className="btn btn-circle btn-light"
                 aria-label="Mark as spam"
@@ -88,6 +76,13 @@ function InboxHeader({
               >
                 <i className="bi bi-shield-x"></i>
               </button>
+              
+              {canChangeLabels && (
+                <LabelButton 
+                  availableLabels={availableLabels}
+                  onMoveToLabel={onMoveToLabel}
+                />
+              )}
             </>
           )}
         </div>

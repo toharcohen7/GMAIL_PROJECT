@@ -7,9 +7,17 @@ function MessageItem({
   isSelected, 
   senderName, 
   onToggleSelect, 
-  onMailClick 
+  onMailClick,
+  onCompleteDraft
 }) {
   const isRead = message.read;
+  const isDraft = message.labelName === 'Draft';
+
+  // Handler to open draft editor without triggering message click
+  const handleCompleteDraftClick = (e) => {
+    e.stopPropagation();
+    onCompleteDraft(message);
+  };
 
   return (
     <div
@@ -43,6 +51,21 @@ function MessageItem({
           {message.snippet || message.content || ''}
         </span>
       </div>
+      
+      {/* Add the Complete Draft button only for draft emails */}
+      {isDraft && (
+        <div className="message-action me-2">
+          <button 
+            className="btn btn-sm btn-primary" 
+            onClick={handleCompleteDraftClick}
+            title="Complete and send this draft"
+          >
+            <i className="bi bi-send me-1"></i>
+            Complete
+          </button>
+        </div>
+      )}
+      
       <div className="message-time col-auto text-end small text-muted" title={message.time ? new Date(message.time).toLocaleString() : ''}>
         {formatTimestamp(message.time)}
       </div>
