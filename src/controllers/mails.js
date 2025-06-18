@@ -236,9 +236,9 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
 
   if (updates.labelName === 'Sent') {
   console.log(`📤 Mail ${mailId} sent by user ${userId}`);
+}
 
   return res.status(200).end();
-}
 }
 
 /**

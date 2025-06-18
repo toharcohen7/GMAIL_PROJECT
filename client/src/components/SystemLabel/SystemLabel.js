@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './SystemLabel.css';
 import BlacklistRemoveButton from '../SideBar/Buttons/BlacklistRemoveButton/BlacklistRemoveButton';
 
-function SystemLabel({name, badgeCount = 0, iconClass = "", onLabelClick, isSelected = false}) {
+function SystemLabel({name, badgeCount, iconClass, onLabelClick, isSelected}) {
   const [isHovered, setIsHovered] = useState(false);
   const isSpamLabel = name.toLowerCase() === 'spam';
 

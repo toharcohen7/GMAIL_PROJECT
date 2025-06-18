@@ -44,7 +44,7 @@ function CreateMail() {
           subject,
           content: body,
         }),
-      });
+      });      
     } catch (err) {
       console.log('Draft save error:', err);
     }
