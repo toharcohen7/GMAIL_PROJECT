@@ -13,7 +13,7 @@ import ErrorState from './InboxStateComponentes/ErrorState';
 import EmptyState from './InboxStateComponentes/EmptyState';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
 
-function Inbox({ selectedLabel }) {
+function Inbox({ selectedLabel, searchQuery }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [selectedMessages, setSelectedMessages] = useState(new Set());
@@ -104,12 +104,41 @@ function Inbox({ selectedLabel }) {
     }
   }, [currentUser]);
 
-  useEffect(() => {
-    if (currentUser) {
-      loadMessages();
-      loadLabels();
+useEffect(() => {
+  const searchFromServer = async () => {
+    if (!currentUser) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      let data = [];
+
+      if (searchQuery) {
+        const res = await FetchWithAuth(`http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`);
+        if (!res.ok) throw new Error('Search failed');
+        data = await res.json();
+      } else {
+        const res = await FetchWithAuth('http://localhost:12345/api/mails');
+        if (!res.ok) throw new Error('Failed to load messages');
+        data = await res.json();
+      }
+
+      setMessages(data);
+      setSelectedMessages(new Set());
+      loadSenderNames(data);
+      loadLabels(); // אפשר להשאיר את זה גם
+    } catch (err) {
+      console.error('Error fetching messages:', err);
+      setError('Failed to load messages');
     }
-  }, [currentUser, loadMessages, loadLabels]);
+
+    setIsLoading(false);
+  };
+
+  searchFromServer();
+}, [searchQuery, currentUser, loadSenderNames, loadLabels]);
+
 
   const selectAllMessages = () => setSelectedMessages(new Set(messages.map(msg => msg.id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
@@ -233,9 +262,9 @@ const handleMarkAsSpam = async () => {
     setSelectedMail(msg);
   };
 
-  const filteredMessages = selectedLabel
-  ? messages.filter(m => m.labelName === selectedLabel)
-  : messages;
+  const filteredMessages = messages.filter(m =>
+  (!selectedLabel || m.labelName === selectedLabel)
+  );
 
   return currentUser ? (
     <div className="inbox-wrapper">

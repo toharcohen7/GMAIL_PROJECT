@@ -7,6 +7,8 @@ import './MainPage.css';
 function MainPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedLabel, setSelectedLabel] = useState('Received');
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -14,13 +16,13 @@ function MainPage() {
 
   return (
     <div className="main-page-container">
-      <TopBar toggleSidebar={toggleSidebar} />
+      <TopBar toggleSidebar={toggleSidebar} onSearch={setSearchQuery}/>
       <div className="content-container">
         <div className={`sidebar-wrapper ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
          <SideBar onLabelSelect={setSelectedLabel} />
         </div>
         <div className="inbox-responsive-wrapper">
-          <MainInbox selectedLabel={selectedLabel} />
+          <MainInbox selectedLabel={selectedLabel} searchQuery={searchQuery}/>
         </div>
       </div>
     </div>
