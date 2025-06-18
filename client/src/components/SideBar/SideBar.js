@@ -30,16 +30,17 @@ const useLabels = () => {
     return { labels, setLabels };
 };
 
-function SideBar() {
+function SideBar({ onLabelSelect }) {
     const { labels, setLabels } = useLabels();
     const [showModal, setShowModal] = useState(false);
     const [editLabelData, setEditLabelData] = useState(null);
+    const [selectedLabelName, setSelectedLabelName] = useState("Received");
 
     const handleCreateNewLabel = async (labelName) => {
         try {
             const response = await FetchWithAuth('http://localhost:12345/api/labels', {
                 method: 'POST',
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     name: labelName,
                     iconClass: 'bi bi-tag'
                 })
@@ -108,9 +109,9 @@ function SideBar() {
                 });
 
                 if (response.status === 204) {
-                    setLabels(labels.map(label => 
-                        label.name === editLabelData.name 
-                            ? {...label, name: newLabelName} 
+                    setLabels(labels.map(label =>
+                        label.name === editLabelData.name
+                            ? { ...label, name: newLabelName }
                             : label
                     ));
                     setShowModal(false);
@@ -141,6 +142,11 @@ function SideBar() {
                         name={label.name}
                         iconClass={label.iconClass}
                         badgeCount={label.countBadge || 0}
+                        onLabelClick={() => {
+                            setSelectedLabelName(label.name);
+                            onLabelSelect(label.name);
+                        }}
+                        isSelected={label.name === selectedLabelName}
                     />
                 ))}
             </ol>
@@ -165,6 +171,11 @@ function SideBar() {
                         iconClass={label.iconClass}
                         badgeCount={label.countBadge || 0}
                         onActionClick={handleLabelAction}
+                        onLabelClick={() => {
+                            setSelectedLabelName(label.name);
+                            onLabelSelect(label.name);
+                        }}
+                        isSelected={label.name === selectedLabelName}
                     />
                 ))}
             </ol>

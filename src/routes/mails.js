@@ -3,7 +3,7 @@ const router = express.Router()
 const controller = require('../controllers/mails')
 
 router.route('/')
-        .get(controller.getLast50Mails)
+        .get(controller.getUserMails)
         .post(controller.createMail)
 
 router.route('/search/:query')        

@@ -8,9 +8,9 @@ const userMails = new Map(); // Map that stores each user's mails as an array (s
  * Returns the last 50 mails sent or received by a specific user,
  * sorted from newest to oldest based on timestamp.
  */
-const getLast50Mails = (userId) => {
-  const mails = userMails.get(userId).filter(mail => mail.mailStatus !== 'Draft'); // Exclude drafts
-  return mails.sort((a, b) => b.timestamp - a.timestamp).slice(0, 50); // Sort and return latest 50
+const getUserMails = (userId) => {
+  const mails = userMails.get(userId); // Exclude drafts
+  return mails.sort((a, b) => b.timestamp - a.timestamp);
 };
 
 /**
@@ -193,7 +193,7 @@ const sendMail = async (receiversNames, mail) => {
 
   // Create a mail copy for the receivers
   const newMailForReceivers = {
-    id: ++mailIdCounter,
+    id: mailIdCounter,
     mailStatus: 'Received',
     senderId: mail.senderId,
     receiversNames: mail.receiversNames,
@@ -214,6 +214,7 @@ const sendMail = async (receiversNames, mail) => {
       throw new Error(`Receiver ${receiverName} does not exist`);
     }
 
+    newMailForReceivers.id = ++mailIdCounter; // Ensure unique ID for each receiver's copy
     userMails.get(receiverId).push(newMailForReceivers);
     Labels.addLabelCountBadgeByOne(receiverId, receiverMailLabel); // Increment Received label count
   }
@@ -236,7 +237,7 @@ function removeMailsFromLable(userId, labelName) {
 
 // Export all controller functions for external use
 module.exports = {
-  getLast50Mails,
+  getUserMails,
   createMail,
   getMailById,
   deleteMail,

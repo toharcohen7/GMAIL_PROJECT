@@ -57,6 +57,11 @@
   background-color: #f8f9fa;
 }
 
+.hover-label-item.selected {
+  background-color: #d0e9ff;
+  color: #004085;
+}
+
 /* Update existing styles to better position the hover button */
 .position-relative {
   display: flex;
