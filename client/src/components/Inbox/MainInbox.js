@@ -13,7 +13,7 @@ import ErrorState from './InboxStateComponentes/ErrorState';
 import EmptyState from './InboxStateComponentes/EmptyState';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
 
-function Inbox() {
+function Inbox({ selectedLabel }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [selectedMessages, setSelectedMessages] = useState(new Set());
@@ -233,6 +233,10 @@ const handleMarkAsSpam = async () => {
     setSelectedMail(msg);
   };
 
+  const filteredMessages = selectedLabel
+  ? messages.filter(m => m.labelName === selectedLabel)
+  : messages;
+
   return currentUser ? (
     <div className="inbox-wrapper">
       <div className="inbox-container card shadow-sm">
@@ -262,7 +266,7 @@ const handleMarkAsSpam = async () => {
           {!isLoading && !error && messages.length === 0 && <EmptyState />}
           {!isLoading && !error && messages.length > 0 && (
             <MessageList
-              messages={messages}
+              messages={filteredMessages}
               selectedMessages={selectedMessages}
               senderCache={senderCache}
               onToggleSelect={toggleSelectMessage}

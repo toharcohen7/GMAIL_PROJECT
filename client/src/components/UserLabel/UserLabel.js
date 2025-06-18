@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import './UserLabel.css';
 
-function UserLabel({ name, iconClass, badgeCount, onActionClick }) {
+function UserLabel({ name, iconClass, badgeCount, onActionClick, onLabelClick, isSelected = false }) {
     const [hovered, setHovered] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef(null);
@@ -49,9 +49,10 @@ function UserLabel({ name, iconClass, badgeCount, onActionClick }) {
     return (
         <li
             ref={labelRef}
-            className="list-group-item d-flex justify-content-between align-items-center hover-label-item"
+            className={`list-group-item d-flex justify-content-between align-items-center hover-label-item ${isSelected ? 'selected' : ''}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={onLabelClick}
         >
             <div className="d-flex align-items-center label-text-wrapper">
                 <i className={`${iconClass} me-3`}></i>

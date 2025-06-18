@@ -6,6 +6,7 @@ import './MainPage.css';
 
 function MainPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedLabel, setSelectedLabel] = useState('Received');
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -16,10 +17,10 @@ function MainPage() {
       <TopBar toggleSidebar={toggleSidebar} />
       <div className="content-container">
         <div className={`sidebar-wrapper ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
-          <SideBar />
+         <SideBar onLabelSelect={setSelectedLabel} />
         </div>
         <div className="inbox-responsive-wrapper">
-          <MainInbox />
+          <MainInbox selectedLabel={selectedLabel} />
         </div>
       </div>
     </div>

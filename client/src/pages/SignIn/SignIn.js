@@ -84,6 +84,7 @@ function SignIn() {
               />
             </div>
             <button type="submit" className="btn btn-primary w-100">Sign In</button>
+            <a href="/signup" className="d-block text-center mt-3">Don't have an account? Sign Up now!</a>
           </form>
         </div>
       </div>

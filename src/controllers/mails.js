@@ -3,10 +3,10 @@ const Users = require('../models/users');
 const Labels = require('../models/labels');
 
 /**
- * Returns the last 50 mails sent or received by the current user.
+ * Returns the all mails of the current user.
  * Sorted by timestamp descending. Only relevant fields are returned.
  */
-exports.getLast50Mails = (req, res) => {
+exports.getUserMails = (req, res) => {
 
   if (isThereExtraFields(req, [])) {
     return res.status(400).json({ error: 'No extra fields allowed' });
@@ -17,15 +17,30 @@ exports.getLast50Mails = (req, res) => {
     return res; // Error response already sent in helper function
   }
 
-  // Retrieve last 50 mails for the user
-  const mails = Mails.getLast50Mails(userId);
+  // Retrieve all mails of the user
+  const mails = Mails.getUserMails(userId);
 
   // Map each mail to return only necessary fields
   const filtered = mails.map(mail => {
-    const { id, mailStatus, senderId, receiversNames, subject, content, formattedTime } = mail;
-    let labelName = Labels.getLabelByName(userId, mail.labelName).name;
+    const { id,
+            mailStatus, 
+            labelName,
+            senderId, 
+            receiversNames, 
+            subject, 
+            content, 
+            formattedTime, 
+            timestamp } = mail;
 
-    return { id, mailStatus, labelName, senderId, receiversNames, subject, content, time: formattedTime };
+    return { id, 
+             mailStatus, 
+             labelName, 
+             senderId, 
+             receiversNames, 
+             subject, 
+             content, 
+             time: formattedTime,
+             timestamp };
   });
 
   res.json(filtered);

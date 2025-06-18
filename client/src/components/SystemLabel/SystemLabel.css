@@ -10,6 +10,11 @@
         cursor: pointer;
 }
 
+.list-group-item.selected {
+  background-color: #d0e9ff;
+  color: #004085;
+}
+
 .row {
     width: 250px;
     height: 100px;
