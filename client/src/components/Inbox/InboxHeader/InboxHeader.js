@@ -1,5 +1,4 @@
 import React from 'react';
-import LabelDropdown from './LabelDropdown';
 
 function InboxHeader({
   messages,
@@ -10,16 +9,8 @@ function InboxHeader({
   onRefresh,
   onMarkAllRead,
   onDeleteSelected,
-  onMarkAsSpam,
-  labels,
-  showLabelDropdown,
-  setShowLabelDropdown,
-  onAddToLabel
+  onMarkAsSpam
 }) {
-  const selectableLabels = labels.filter(label => {
-    const lowerLabel = label.name.toLowerCase();
-    return lowerLabel !== 'sent' && lowerLabel !== 'draft';
-  });
 
   return (
     <div className="inbox-header card-header bg-light d-flex align-items-center justify-content-between">
@@ -71,14 +62,6 @@ function InboxHeader({
               >
                 <i className="bi bi-trash"></i>
               </button>
-
-              <LabelDropdown
-                labels={selectableLabels}
-                allLabels={labels}
-                showDropdown={showLabelDropdown}
-                onToggleDropdown={() => setShowLabelDropdown(!showLabelDropdown)}
-                onAddToLabel={onAddToLabel}
-              />
 
               <button
                 className="btn btn-circle btn-light"

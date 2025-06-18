@@ -19,8 +19,6 @@ function Inbox({ selectedLabel, searchQuery }) {
   const [selectedMessages, setSelectedMessages] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [labels, setLabels] = useState([]);
-  const [showLabelDropdown, setShowLabelDropdown] = useState(false);
   const [selectedMail, setSelectedMail] = useState(null);
   const [senderCache, setSenderCache] = useState(new Map());
   const navigate = useNavigate();
@@ -91,18 +89,7 @@ function Inbox({ selectedLabel, searchQuery }) {
     setIsLoading(false);
   }, [currentUser, loadSenderNames]);
 
-  const loadLabels = useCallback(async () => {
-    if (!currentUser) return;
-    try {
-      const res = await FetchWithAuth('http://localhost:12345/api/labels');
-      if (!res.ok) throw new Error('Failed to load labels');
-      const data = await res.json();
-      let labelsArray = Array.isArray(data) ? data : (data.labels || Object.values(data));
-      setLabels(labelsArray);
-    } catch (e) {
-      setLabels([]);
-    }
-  }, [currentUser]);
+  // Remove the loadLabels function completely
 
 useEffect(() => {
   const searchFromServer = async () => {
@@ -127,7 +114,7 @@ useEffect(() => {
       setMessages(data);
       setSelectedMessages(new Set());
       loadSenderNames(data);
-      loadLabels(); // אפשר להשאיר את זה גם
+      // Remove the loadLabels() call here
     } catch (err) {
       console.error('Error fetching messages:', err);
       setError('Failed to load messages');
@@ -137,7 +124,7 @@ useEffect(() => {
   };
 
   searchFromServer();
-}, [searchQuery, currentUser, loadSenderNames, loadLabels]);
+}, [searchQuery, currentUser, loadSenderNames]); // Remove loadLabels from dependency array
 
 
   const selectAllMessages = () => setSelectedMessages(new Set(messages.map(msg => msg.id)));
@@ -175,24 +162,6 @@ useEffect(() => {
       setSelectedMail(null);
     } catch (e) {
       setError('Failed to delete message');
-    }
-  };
-
-  const handleAddToLabel = async (labelName, labelIndex) => {
-    if (!currentUser) return;
-    try {
-      const updatePromises = Array.from(selectedMessages).map(id =>
-        FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ labelId: labelIndex })
-        })
-      );
-      await Promise.all(updatePromises);
-      await loadMessages();
-      setShowLabelDropdown(false);
-    } catch (e) {
-      setError('Failed to add messages to label');
     }
   };
 
@@ -279,15 +248,7 @@ const handleMarkAsSpam = async () => {
           onMarkAllRead={handleMarkAllRead}
           onDeleteSelected={handleDeleteSelected}
           onMarkAsSpam={handleMarkAsSpam}
-          labels={labels}
-          showLabelDropdown={showLabelDropdown}
-          setShowLabelDropdown={setShowLabelDropdown}
-          onAddToLabel={handleAddToLabel}
         />
-
-        {showLabelDropdown && (
-          <div className="position-fixed w-100 h-100" style={{ top: 0, left: 0, zIndex: 999 }} onClick={() => setShowLabelDropdown(false)} />
-        )}
 
         <div className="inbox-content card-body p-0">
           {isLoading && <LoadingState />}
