@@ -195,13 +195,13 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
     let notFoundArr = [];
 
     for (const receiverName of updates.receiversNames) {
-      if (!isReceiversNameUser(receiverName)) {
+      if (!isReceiversNameUser(receiverName) && !notFoundArr.includes(receiverName)) {
         notFoundArr.push(receiverName);
       }
     }
 
     if (notFoundArr.length > 0) {
-      return res.status(404).json({ error: `Receiver(s) ${notFoundArr.join(" ")} not found` });
+      return res.status(404).json({ error: `Receiver(s) ${notFoundArr.join(", ")} not found` });
     }
   }
 

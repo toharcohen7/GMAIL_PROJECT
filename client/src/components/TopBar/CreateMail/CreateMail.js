@@ -38,7 +38,9 @@ function CreateMail() {
       await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          receiversNames: to.split(',').map(n => n.trim()).filter(Boolean),
+          receiversNames: to.split(/[,\s]+/) // Split by comma or whitespace
+                            .map(n => n.trim())
+                            .filter(Boolean),
           subject,
           content: body,
         }),
@@ -85,7 +87,7 @@ function CreateMail() {
 
       if (!sendRes.ok) {
         const errorData = await sendRes.json();
-        throw new Error(errorData.message || 'Send failed');
+        throw new Error(errorData.error);
       }
 
       setShowCard(false);
