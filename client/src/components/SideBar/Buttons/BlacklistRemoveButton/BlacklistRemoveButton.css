@@ -1,0 +1,28 @@
+.blacklist-remove-btn {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #dc3545;
+  padding: 0;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.blacklist-remove-btn:hover {
+  opacity: 1;
+  background-color: #f1f3f5;
+}
+
+
+.blacklist-remove-btn i {
+  font-size: 18px;
+}

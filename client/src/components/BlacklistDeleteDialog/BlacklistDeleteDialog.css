@@ -68,3 +68,69 @@
     border-color: #dc3545;
     opacity: 0.65;
 }
+
+/* Fix for white text on light background */
+.blacklist-dialog-modal .modal-title,
+.blacklist-dialog-modal label,
+.blacklist-dialog-modal title,
+.blacklist-dialog-modal p {
+  color: #212529 !important; /* Dark text color */
+}
+
+/* Ensure the input placeholder is visible too */
+.blacklist-dialog-modal input::placeholder {
+  color: #6c757d !important; /* Slightly lighter but still visible */
+}
+
+/* If you have form elements with white text */
+.blacklist-dialog-modal .form-control {
+  color: #212529; /* Dark text for inputs */
+}
+
+/* Comprehensive fix for text visibility in BlacklistDeleteDialog */
+
+/* Modal title fix - target the specific element */
+.modal-title,
+.modal .modal-header h5,
+.modal-header .modal-title,
+.blacklist-dialog-modal .modal-title,
+.blacklist-delete-dialog .modal-title,
+[class*="blacklist"] .modal-title,
+.modal-content h5 {
+  color: #000000 !important;
+  font-weight: 500 !important;
+}
+
+/* Dialog content text fix */
+.modal-body label,
+.modal-body p,
+.modal-body .form-label,
+.modal-body .form-text,
+[class*="blacklist"] label,
+[class*="blacklist"] p,
+.blacklist-dialog-modal .modal-body * {
+  color: #212529 !important;
+}
+
+/* Input text fix */
+.modal-body input,
+.modal-body .form-control,
+[class*="blacklist"] input,
+.blacklist-dialog-modal .form-control {
+  color: #212529 !important;
+  background-color: #ffffff !important;
+  border: 1px solid #ced4da !important;
+}
+
+/* Input placeholder fix */
+.modal-body input::placeholder,
+[class*="blacklist"] input::placeholder {
+  color: #6c757d !important;
+  opacity: 0.7 !important;
+}
+
+/* Ensure buttons have proper contrast */
+.modal-footer .btn,
+[class*="blacklist"] .btn:not(.btn-close) {
+  color: contrast-appropriate !important;
+}
