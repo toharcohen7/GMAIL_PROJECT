@@ -1,4 +1,5 @@
 import React from 'react';
+import LabelButton from '../LabelButton/LabelButton';
 
 function InboxHeader({
   messages,
@@ -9,8 +10,13 @@ function InboxHeader({
   onRefresh,
   onMarkAllRead,
   onDeleteSelected,
-  onMarkAsSpam
+  onMarkAsSpam,
+  onMoveToLabel,
+  availableLabels = [],
+  currentLabel
 }) {
+  // Don't show label button for Sent or Draft sections
+  const canChangeLabels = currentLabel !== 'Sent' && currentLabel !== 'Draft';
 
   return (
     <div className="inbox-header card-header bg-light d-flex align-items-center justify-content-between">
@@ -31,7 +37,6 @@ function InboxHeader({
             onChange={e => e.target.checked ? onSelectAll() : onDeselectAll()}
           />
         </div>
-
         <div className="inbox-controls d-flex align-items-center">
           {!hasSelectedMessages ? (
             <>
@@ -71,6 +76,13 @@ function InboxHeader({
               >
                 <i className="bi bi-shield-x"></i>
               </button>
+              
+              {canChangeLabels && (
+                <LabelButton 
+                  availableLabels={availableLabels}
+                  onMoveToLabel={onMoveToLabel}
+                />
+              )}
             </>
           )}
         </div>

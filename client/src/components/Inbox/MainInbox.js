@@ -13,6 +13,7 @@ import LoadingState from './InboxStateComponentes/LoadingState';
 import ErrorState from './InboxStateComponentes/ErrorState';
 import EmptyState from './InboxStateComponentes/EmptyState';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
+import LabelManager from './LabelButton/LabelManager';
 
 function Inbox({ selectedLabel, searchQuery }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -250,6 +251,16 @@ const handleMarkAsSpam = async () => {
   (!selectedLabel || m.labelName === selectedLabel)
   );
 
+  // Use the LabelManager component
+  const { availableLabels, handleMoveToLabel } = LabelManager({
+    currentUser,
+    selectedLabel,
+    selectedMessages,
+    setSelectedMessages,
+    loadMessages,
+    setError
+  });
+  
   return currentUser ? (
     <div className="inbox-wrapper">
       <div className="inbox-container card shadow-sm">
@@ -263,6 +274,9 @@ const handleMarkAsSpam = async () => {
           onMarkAllRead={handleMarkAllRead}
           onDeleteSelected={handleDeleteSelected}
           onMarkAsSpam={handleMarkAsSpam}
+          onMoveToLabel={handleMoveToLabel} // Pass the handler from LabelManager
+          availableLabels={availableLabels} // Pass the labels from LabelManager
+          currentLabel={selectedLabel}
         />
 
         <div className="inbox-content card-body p-0">
