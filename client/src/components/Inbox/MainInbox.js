@@ -119,7 +119,6 @@ useEffect(() => {
       setMessages(data);
       setSelectedMessages(new Set());
       loadSenderNames(data);
-      loadLabels();
 
     } catch (err) {
       console.error('Error fetching messages:', err);
@@ -145,7 +144,7 @@ useEffect(() => {
 
   const handleRefresh = async () => {
     await loadMessages();
-    if (onRefresh) onRefresh(); 
+    if (onRefresh) onRefresh();  
   };
 
   const handleRetry = () => loadMessages();

@@ -137,7 +137,7 @@ const updateMail = (userId, mailId, updates) => {
       sendMail(mail.receiversNames, mail);
     } else {
       // If changing label to something else, just update the label
-      mail.mailStatus = updates.labelName; // Update mail status to new label 
+      mail.labelName = updates.labelName; // Update mail status to new label 
     }
   }
 
