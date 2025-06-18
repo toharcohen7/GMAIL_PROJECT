@@ -85,3 +85,30 @@
 .add-label-btn i {
   font-size: 0.9rem;
 }
+
+/* Style for the action button that replaces the badge */
+.hover-label-action {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.hover-label-action:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* For dark mode */
+body.dark-mode .hover-label-action {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .hover-label-action:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
