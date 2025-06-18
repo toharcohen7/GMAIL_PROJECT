@@ -15,8 +15,6 @@ function Search({doSearch}) {
 
   if (ignoredKeys.includes(e.key)) return;
 
-  if (text === '') return;
-
   doSearch(text);
 };
 

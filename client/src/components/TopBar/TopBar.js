@@ -5,9 +5,10 @@ import Search from './Search/Search';
 import TopLeftLogo from './TopLeftLogo/TopLeftLogo';
 import Theme_Profile from './Theme_Profile/Theme_Profile';
 
-function TopBar({ toggleSidebar }) {
+function TopBar({ toggleSidebar, onSearch }) {
+
     const doSearch = (q) => {
-        console.log("Searching for:", q);
+        onSearch(q);
     };
 
     return (

@@ -142,11 +142,24 @@ const updateMail = (userId, mailId, updates) => {
  * Searches for a given query string in both subject and content fields
  * for all mails of a given user.
  */
+
+
 const searchQueryInMails = (userId, query) => {
-  return userMails.get(userId).filter(mail =>
-    mail.subject.includes(query) || mail.content.includes(query) || mail.receiversNames.some(name => name.includes(query))
-  );
+  const Users = require('../models/users');
+  const allMails = userMails.get(userId);
+
+  return allMails.filter(mail => {
+    const sender = Users.getUser(mail.senderId);
+    const senderName = sender ? `${sender.firstName} ${sender.lastName}` : '';
+
+    return (
+      mail.subject.includes(query) ||
+      mail.content.includes(query) ||
+      senderName.includes(query)
+    );
+  });
 };
+
 
 /**
  * Initializes an empty mail array for a user.
