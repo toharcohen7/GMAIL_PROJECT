@@ -8,6 +8,7 @@ import { getUserDetails } from './InboxUtilityFunc/UserDataExt';
 import InboxHeader from './InboxHeader/InboxHeader';
 import MessageList from './MessageComponents/MessageList';
 import MailDetail from './MailDetail';
+import DraftEditor from './DraftEditor/DraftEditor';
 import LoadingState from './InboxStateComponentes/LoadingState';
 import ErrorState from './InboxStateComponentes/ErrorState';
 import EmptyState from './InboxStateComponentes/EmptyState';
@@ -21,6 +22,9 @@ function Inbox({ selectedLabel, searchQuery }) {
   const [error, setError] = useState(null);
   const [selectedMail, setSelectedMail] = useState(null);
   const [senderCache, setSenderCache] = useState(new Map());
+  // New state for draft editing
+  const [draftToEdit, setDraftToEdit] = useState(null);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -231,6 +235,17 @@ const handleMarkAsSpam = async () => {
     setSelectedMail(msg);
   };
 
+  // Add handler for completing drafts
+  const handleCompleteDraft = (draft) => {
+    setDraftToEdit(draft);
+  };
+
+  // Handler for when draft is successfully sent
+  const handleDraftSent = () => {
+    // Refresh mail list to reflect changes
+    loadMessages();
+  };
+
   const filteredMessages = messages.filter(m =>
   (!selectedLabel || m.labelName === selectedLabel)
   );
@@ -261,6 +276,7 @@ const handleMarkAsSpam = async () => {
               senderCache={senderCache}
               onToggleSelect={toggleSelectMessage}
               onMailClick={handleMailClick}
+              onCompleteDraft={handleCompleteDraft}
             />
           )}
         </div>
@@ -270,6 +286,15 @@ const handleMarkAsSpam = async () => {
             message={selectedMail}
             onClose={() => setSelectedMail(null)}
             onDelete={handleDeleteSingleMessage}
+          />
+        )}
+
+        {/* Draft editor overlay */}
+        {draftToEdit && (
+          <DraftEditor
+            draft={draftToEdit}
+            onClose={() => setDraftToEdit(null)}
+            onSuccess={handleDraftSent}
           />
         )}
       </div>

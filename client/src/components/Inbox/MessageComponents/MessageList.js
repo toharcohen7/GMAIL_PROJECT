@@ -6,7 +6,8 @@ function MessageList({
   selectedMessages, 
   senderCache, 
   onToggleSelect, 
-  onMailClick 
+  onMailClick,
+  onCompleteDraft 
 }) {
   return (
     <div className="message-list list-group" role="list" tabIndex="0">
@@ -19,6 +20,7 @@ function MessageList({
           senderName={senderCache.get(message.senderId) || 'Loading...'}
           onToggleSelect={onToggleSelect}
           onMailClick={onMailClick}
+          onCompleteDraft={onCompleteDraft}
         />
       ))}
     </div>
