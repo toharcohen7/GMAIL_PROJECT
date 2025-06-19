@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FetchWithAuth } from '../../../FetchWithAuth/FetchWithAuth';
 import './BlacklistDeleteDialog.css';
+import { buildApiUrl } from '../../../../config/api';
 
 function BlacklistDeleteDialog({ onClose }) {
     const [url, setUrl] = useState('');
@@ -41,7 +42,7 @@ function BlacklistDeleteDialog({ onClose }) {
         
         try {
             setLoading(true);
-            const response = await FetchWithAuth(`http://localhost:12345/api/blacklist/${encodeURIComponent(url.trim())}`, {
+            const response = await FetchWithAuth(buildApiUrl(`/api/blacklist/${encodeURIComponent(url.trim())}`), {
                 method: 'DELETE'
             });
 

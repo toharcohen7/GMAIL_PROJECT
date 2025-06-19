@@ -26,7 +26,22 @@ services:
       - "${NODE_PORT}:${NODE_PORT}"
     environment:
       - NODE_PORT=${NODE_PORT}
-      - SERVER_PORT=${SERVER_PORT}
+      - SERVER_PORT=${SERVER_PORT}  
       - SERVER_HOST=${SERVER_HOST}
     depends_on:
       - server
+
+  client:
+    image: gmail_project
+    container_name: gmail_client
+    working_dir: /usr/src/mytest/src/client
+    # Use development mode for flexible environment variables
+    command: npm start
+    ports:
+      - "3000:3000"
+    environment:
+      # This is the key change - dynamically set API URL
+      - REACT_APP_API_URL=http://localhost:${NODE_PORT}
+      - CHOKIDAR_USEPOLLING=true  # For file watching in Docker
+    depends_on:
+      - node

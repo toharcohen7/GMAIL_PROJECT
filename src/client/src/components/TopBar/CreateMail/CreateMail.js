@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
+import { buildApiUrl } from '../../../config/api';
+
 
 function CreateMail({ onSuccess }) {
   const [showCard, setShowCard] = useState(false);
@@ -23,7 +25,7 @@ function CreateMail({ onSuccess }) {
       let id = draftId;
 
       if (!id) {
-        const res = await FetchWithAuth('http://localhost:12345/api/mails', {
+        const res = await FetchWithAuth(buildApiUrl('/api/mails'), {
           method: 'POST',
         });
 
@@ -35,7 +37,7 @@ function CreateMail({ onSuccess }) {
         setDraftId(id);
       }
 
-      await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
+      await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {
         method: 'PATCH',
         body: JSON.stringify({
           receiversNames: to.split(/[,\s]+/) // Split by comma or whitespace
@@ -64,7 +66,7 @@ function CreateMail({ onSuccess }) {
       let id = draftId;
 
       if (!id) {
-        const res = await FetchWithAuth('http://localhost:12345/api/mails', {
+        const res = await FetchWithAuth(buildApiUrl('/api/mails'), {
           method: 'POST',
         });
 
@@ -76,7 +78,7 @@ function CreateMail({ onSuccess }) {
         setDraftId(id);
       }
 
-      const sendRes = await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
+      const sendRes = await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {
         method: 'PATCH',
         body: JSON.stringify({
           receiversNames: to.split(',').map(n => n.trim()).filter(Boolean),

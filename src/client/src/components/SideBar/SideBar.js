@@ -6,6 +6,7 @@ import AddLabel from './AddLabel/AddLabel.js';
 import UserLabel from './UserLabel/UserLabel.js';
 import AddLabelButton from './Buttons/AddLabelButton/AddLabelButton.js';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth.js';
+import { buildApiUrl } from '../../config/api.js';
 
 const useLabels = () => {
     const [labels, setLabels] = useState([]);
@@ -13,7 +14,7 @@ const useLabels = () => {
     useEffect(() => {
         async function fetchLabels() {
             try {
-                const response = await FetchWithAuth('http://localhost:12345/api/labels');
+                const response = await FetchWithAuth(buildApiUrl('api/labels'));
                 if (response.ok) {
                     const data = await response.json();
                     setLabels(data);
@@ -40,7 +41,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
     useEffect(() => {
         async function fetchLabels() {
             try {
-                const response = await FetchWithAuth('http://localhost:12345/api/labels');
+                const response = await FetchWithAuth(buildApiUrl('api/labels'));
                 if (response.ok) {
                     const data = await response.json();
                     setLabels(data);
@@ -59,7 +60,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
 
     const handleCreateNewLabel = async (labelName) => {
         try {
-            const response = await FetchWithAuth('http://localhost:12345/api/labels', {
+            const response = await FetchWithAuth(buildApiUrl('api/labels'), {
                 method: 'POST',
                 body: JSON.stringify({
                     name: labelName,
@@ -71,6 +72,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
                 const newLabel = await response.json();
                 setLabels([...labels, newLabel]);
                 setShowModal(false);
+                setEditLabelData(null);
                 if (onLabelsChange) onLabelsChange();
             } else if (response.status === 409) {
                 alert('Label name already exists. Please choose a different name.');
@@ -108,7 +110,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
 
     const deleteLabel = async (labelName) => {
         try {
-            const response = await FetchWithAuth(`http://localhost:12345/api/labels/${encodeURIComponent(labelName)}`, {
+            const response = await FetchWithAuth(buildApiUrl(`api/labels/${encodeURIComponent(labelName)}`), {
                 method: "DELETE"
             });
 
@@ -126,7 +128,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
     const handleSaveLabel = async (newLabelName) => {
         if (editLabelData) {
             try {
-                const response = await FetchWithAuth(`http://localhost:12345/api/labels/${encodeURIComponent(editLabelData.name)}`, {
+                const response = await FetchWithAuth(buildApiUrl(`api/labels/${encodeURIComponent(editLabelData.name)}`), {
                     method: "PATCH",
                     body: JSON.stringify({ name: newLabelName })
                 });
@@ -148,6 +150,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
                 }
             } catch (error) {
                 console.error("Error updating label:", error);
+                alert("Failed to update label. Please try again.");
             }
         } else {
             await handleCreateNewLabel(newLabelName);
