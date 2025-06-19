@@ -323,6 +323,7 @@ useEffect(() => {
       }
 
       await loadMessages();
+      if (onRefresh) onRefresh();
       setSelectedMessages(new Set());
 
     } catch (e) {
@@ -331,15 +332,6 @@ useEffect(() => {
     }
   };
 
-<<<<<<< HEAD
-    await loadMessages();
-    if (onRefresh) onRefresh();
-    setSelectedMessages(new Set());
-    
-  } catch (e) {
-    setError('Failed to mark messages as spam');
-    console.error('Error in handleMarkAsSpam:', e);
-=======
   const handleMailClick = async (msg, e) => {
   if (e.target.classList.contains('form-check-input')) return;
 
@@ -356,7 +348,6 @@ useEffect(() => {
     } catch (err) {
       console.error('Failed to mark mail as read on server:', err);
     }
->>>>>>> origin/GPDTH-286-Mail-Interaction-Search
   }
 
   setSelectedMail(msg);
