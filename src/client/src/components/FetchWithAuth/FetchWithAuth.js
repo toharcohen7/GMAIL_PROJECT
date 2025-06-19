@@ -26,8 +26,6 @@ export async function FetchWithAuth(url, options = {}) {
     'user-id': userId
   };
 
-  console.log('header:', headers);
-
   const res = await fetch(url, { ...options, headers });
 
   if (res.status === 401 || res.status === 403) {

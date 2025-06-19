@@ -36,7 +36,6 @@ const createUser = (userName, password,firstName,lastName,gender,birthDate, imag
     users.push(newUser);
     Labels.initLabelsForUser(newUser.id);
     Mails.initMailsForUser(newUser.id);
-    console.log("Current users array:", users);
     return newUser;
 };
 /**

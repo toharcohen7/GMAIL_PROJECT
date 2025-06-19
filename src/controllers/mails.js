@@ -65,8 +65,6 @@ exports.createMail = (req, res) => {
 
   // Create new draft mail for the user
   const newMail = Mails.createMail(userId);  
-  
-  console.log(`✉️  Draft created for user ${userId}:`, newMail); /////////////////////////////////////////////////////////////////
 
   res.status(201).json(newMail).end();
 }
@@ -154,7 +152,7 @@ exports.updateMail = async (req, res) => {
 };
 
 // Update label for a non-draft mail
-function changeUnDraftedMail(userId, mailId, updates, req, res) {
+async function changeUnDraftedMail(userId, mailId, updates, req, res) {
 
   // Validate no extra fields in request body
   if(isThereExtraFields(req, ['labelName', 'onRead'])) {
@@ -180,7 +178,7 @@ function changeUnDraftedMail(userId, mailId, updates, req, res) {
     }
   }
 
-  Mails.updateMail(userId, mailId, updates);
+  await Mails.updateMail(userId, mailId, updates);
   return res.status(204).end();
 }
 
@@ -231,16 +229,10 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
   }
 
   // Update the draft mail
-  const updatedMail = Mails.updateMail(userId, mailId, updates);
+  const updatedMail = await Mails.updateMail(userId, mailId, updates);
   if (updatedMail === undefined) {
     return res.status(404).json({ error: 'Unable to update Mail' });
   }
-
-  console.log(`📝 Updating mail ${mailId} for user ${userId}`, updates); ////////////////////////////////////////////////////
-
-  if (updates.labelName === 'Sent') {
-  console.log(`📤 Mail ${mailId} sent by user ${userId}`);
-}
 
   return res.status(200).end();
 }
