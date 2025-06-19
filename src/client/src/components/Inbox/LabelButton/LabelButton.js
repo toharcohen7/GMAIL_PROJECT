@@ -6,7 +6,7 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
   const [showLabelDropdown, setShowLabelDropdown] = useState(false);
   const [availableLabels, setAvailableLabels] = useState([]);
   const dropdownRef = useRef(null);
-  
+
   // Function to fetch labels
   const fetchLabels = async () => {
     try {
@@ -14,8 +14,8 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
       if (response.ok) {
         const data = await response.json();
         // Filter out system labels and current label
-        const filteredLabels = data.filter(label => 
-          !['Draft', 'Sent'].includes(label.name) && 
+        const filteredLabels = data.filter(label =>
+          !['Draft', 'Sent'].includes(label.name) &&
           label.name !== currentLabel
         );
         setAvailableLabels(filteredLabels);
@@ -24,7 +24,7 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
       console.error('Error fetching labels:', error);
     }
   };
-  
+
   // Toggle dropdown and fetch fresh labels when opening
   const handleToggleDropdown = async () => {
     if (!showLabelDropdown) {
@@ -41,7 +41,7 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
         setShowLabelDropdown(false);
       }
     }
-    
+
     if (showLabelDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
@@ -60,17 +60,18 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
       >
         <i className="bi bi-tag"></i>
       </button>
-      
+
       {showLabelDropdown && (
-        <div className="position-absolute bg-white border rounded shadow-sm"
-          style={{ 
-            top: '100%', 
-            left: '0', 
-            minWidth: '200px', 
+        <div className="label-dropdown-menu position-absolute border rounded shadow-sm"
+          style={{
+            top: '100%',
+            left: '0',
+            minWidth: '200px',
             zIndex: 1000,
             maxHeight: '200px',
             overflowY: 'auto'
           }}>
+
           {availableLabels && availableLabels.length > 0 ? (
             availableLabels.map((label, index) => (
               <button
