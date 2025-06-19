@@ -1,8 +1,37 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
 
-const LabelButton = ({ availableLabels = [], onMoveToLabel }) => {
+const LabelButton = ({ onMoveToLabel, currentLabel }) => {
   const [showLabelDropdown, setShowLabelDropdown] = useState(false);
+  const [availableLabels, setAvailableLabels] = useState([]);
   const dropdownRef = useRef(null);
+  
+  // Function to fetch labels
+  const fetchLabels = async () => {
+    try {
+      const response = await FetchWithAuth('http://localhost:12345/api/labels');
+      if (response.ok) {
+        const data = await response.json();
+        // Filter out system labels and current label
+        const filteredLabels = data.filter(label => 
+          !['Draft', 'Sent'].includes(label.name) && 
+          label.name !== currentLabel
+        );
+        setAvailableLabels(filteredLabels);
+      }
+    } catch (error) {
+      console.error('Error fetching labels:', error);
+    }
+  };
+  
+  // Toggle dropdown and fetch fresh labels when opening
+  const handleToggleDropdown = async () => {
+    if (!showLabelDropdown) {
+      // Fetch fresh labels when opening the dropdown
+      await fetchLabels();
+    }
+    setShowLabelDropdown(!showLabelDropdown);
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -25,7 +54,7 @@ const LabelButton = ({ availableLabels = [], onMoveToLabel }) => {
       <button
         className="btn btn-circle btn-light"
         aria-label="Move to label"
-        onClick={() => setShowLabelDropdown(!showLabelDropdown)}
+        onClick={handleToggleDropdown}
         title="Move to label"
       >
         <i className="bi bi-tag"></i>

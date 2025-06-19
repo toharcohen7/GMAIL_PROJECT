@@ -79,8 +79,8 @@ function InboxHeader({
               
               {canChangeLabels && (
                 <LabelButton 
-                  availableLabels={availableLabels}
                   onMoveToLabel={onMoveToLabel}
+                  currentLabel={currentLabel}
                 />
               )}
             </>

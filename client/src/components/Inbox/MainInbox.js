@@ -132,7 +132,8 @@ useEffect(() => {
 }, [searchQuery, currentUser, loadSenderNames]); // Remove loadLabels from dependency array
 
 
-  const selectAllMessages = () => setSelectedMessages(new Set(messages.map(msg => msg.id)));
+  // Replace the existing selectAllMessages function with this one
+  const selectAllMessages = () => setSelectedMessages(new Set(filteredMessages.map(msg => msg.id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
   const toggleSelectMessage = (id) => {
     setSelectedMessages(prev => {
@@ -255,10 +256,9 @@ const handleMarkAsSpam = async () => {
   (!selectedLabel || m.labelName === selectedLabel)
   );
 
-  // Use the LabelManager component
-  const { availableLabels, handleMoveToLabel } = LabelManager({
+  // Use the simplified LabelManager component
+  const { handleMoveToLabel } = LabelManager({
     currentUser,
-    selectedLabel,
     selectedMessages,
     setSelectedMessages,
     loadMessages,
@@ -269,7 +269,7 @@ const handleMarkAsSpam = async () => {
     <div className="inbox-wrapper">
       <div className="inbox-container card shadow-sm">
         <InboxHeader
-          messages={messages}
+          messages={filteredMessages} 
           selectedMessages={selectedMessages}
           hasSelectedMessages={selectedMessages.size > 0}
           onSelectAll={selectAllMessages}
@@ -278,8 +278,7 @@ const handleMarkAsSpam = async () => {
           onMarkAllRead={handleMarkAllRead}
           onDeleteSelected={handleDeleteSelected}
           onMarkAsSpam={handleMarkAsSpam}
-          onMoveToLabel={handleMoveToLabel} // Pass the handler from LabelManager
-          availableLabels={availableLabels} // Pass the labels from LabelManager
+          onMoveToLabel={handleMoveToLabel}
           currentLabel={selectedLabel}
         />
 
