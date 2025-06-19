@@ -1,3 +1,5 @@
+import { buildApiUrl } from '../../config/api';
+
 export async function FetchWithAuth(url, options = {}) {
   const token = localStorage.getItem('token');
 
@@ -5,7 +7,6 @@ export async function FetchWithAuth(url, options = {}) {
     redirectToSignIn();
     return null;
   }
-
 
   const userId = getUserIdFromToken(token);
   if (!userId) {
@@ -52,7 +53,7 @@ function getUserIdFromToken(token) {
 
 async function validateTokenWithServer(token) {
   try {
-    const res = await fetch('http://localhost:12345/api/users/me', {
+    const res = await fetch(buildApiUrl('api/users/me'), {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

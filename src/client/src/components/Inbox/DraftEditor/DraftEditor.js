@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
+import { buildApiUrl } from '../../../config/api';
 import './DraftEditor.css';
 
 function DraftEditor({ draft, onClose, onSuccess }) {
@@ -17,7 +18,7 @@ function DraftEditor({ draft, onClose, onSuccess }) {
     try {
       const receivers = to.split(/[,\s]+/).map(name => name.trim()).filter(Boolean);
 
-      await FetchWithAuth(`http://localhost:12345/api/mails/${draftId}`, {
+      await FetchWithAuth(buildApiUrl(`api/mails/${draftId}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,7 +48,7 @@ function DraftEditor({ draft, onClose, onSuccess }) {
         return;
       }
       
-      const response = await FetchWithAuth(`http://localhost:12345/api/mails/${draft.id}`, {
+      const response = await FetchWithAuth(buildApiUrl(`api/mails/${draft.id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

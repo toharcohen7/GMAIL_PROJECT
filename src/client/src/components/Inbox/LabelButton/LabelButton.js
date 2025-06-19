@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
+import { buildApiUrl } from '../../../config/api';
 
 const LabelButton = ({ onMoveToLabel, currentLabel }) => {
   const [showLabelDropdown, setShowLabelDropdown] = useState(false);
@@ -9,7 +10,7 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
   // Function to fetch labels
   const fetchLabels = async () => {
     try {
-      const response = await FetchWithAuth('http://localhost:12345/api/labels');
+      const response = await FetchWithAuth(buildApiUrl('/api/labels'));
       if (response.ok) {
         const data = await response.json();
         // Filter out system labels and current label

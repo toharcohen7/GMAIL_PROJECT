@@ -14,6 +14,7 @@ import ErrorState from './InboxStateComponentes/ErrorState';
 import EmptyState from './InboxStateComponentes/EmptyState';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
 import LabelManager from './LabelButton/LabelManager';
+import { buildApiUrl } from '../../config/api';
 
 function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -81,7 +82,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await FetchWithAuth('http://localhost:12345/api/mails');
+      const res = await FetchWithAuth(buildApiUrl('/api/mails'));
       if (!res.ok) throw new Error('Failed to load messages');
       const data = await res.json();
       setMessages(data);
@@ -105,11 +106,11 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
         let data = [];
 
         if (searchQuery) {
-          const res = await FetchWithAuth(`http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`);
+          const res = await FetchWithAuth(buildApiUrl(`/api/mails/search/${encodeURIComponent(searchQuery)}`));
           if (!res.ok) throw new Error('Search failed');
           data = await res.json();
         } else {
-          const res = await FetchWithAuth('http://localhost:12345/api/mails');
+          const res = await FetchWithAuth(buildApiUrl('api/mails'));
           if (!res.ok) throw new Error('Failed to load messages');
           data = await res.json();
         }
@@ -141,8 +142,8 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
 
         const res = await FetchWithAuth(
           searchQuery
-            ? `http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`
-            : 'http://localhost:12345/api/mails'
+            ? buildApiUrl(`/api/mails/search/${encodeURIComponent(searchQuery)}`)
+            : buildApiUrl('/api/mails')
         );
 
         if (!res.ok) throw new Error(searchQuery ? 'Search failed' : 'Failed to load messages');
@@ -186,7 +187,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       const updatedMessages = await Promise.all(
         messages.map(async (mail) => {
           if (selectedMessages.has(mail.id) && !mail.onRead) {
-            const res = await FetchWithAuth(`http://localhost:12345/api/mails/${mail.id}`, {
+            const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
               method: 'PATCH',
               body: JSON.stringify({ onRead: true })
             });
@@ -214,7 +215,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       const updatedMessages = await Promise.all(
         messages.map(async (mail) => {
           if (selectedMessages.has(mail.id) && mail.onRead) {
-            const res = await FetchWithAuth(`http://localhost:12345/api/mails/${mail.id}`, {
+            const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
               method: 'PATCH',
               body: JSON.stringify({ onRead: false })
             });
@@ -244,7 +245,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     if (!currentUser) return;
     try {
       const deletePromises = Array.from(selectedMessages).map(id =>
-        FetchWithAuth(`http://localhost:12345/api/mails/${id}`, { method: 'DELETE' })
+        FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' })
       );
       await Promise.all(deletePromises);
       await loadMessages();
@@ -257,7 +258,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   const handleDeleteSingleMessage = async (id) => {
     if (!currentUser) return;
     try {
-      await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, { method: 'DELETE' });
+      await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' });
       await loadMessages();
       if (onRefresh) onRefresh();
 
@@ -293,7 +294,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       if (urls.size > 0) {
         for (const url of urls) {
           try {
-            const response = await FetchWithAuth('http://localhost:12345/api/blacklist', {
+            const response = await FetchWithAuth(buildApiUrl('api/blacklist'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ url })
@@ -308,7 +309,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       // Mark messages as spam
       for (const id of selectedMessages) {
         try {
-          await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
+          await FetchWithAuth(buildApiUrl(`api/mails/${id}`), {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ labelName: 'Spam' })
@@ -337,7 +338,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       );
 
       try {
-        await FetchWithAuth(`http://localhost:12345/api/mails/${msg.id}`, {
+        await FetchWithAuth(buildApiUrl(`/api/mails/${msg.id}`), {
           method: 'PATCH',
           body: JSON.stringify({ onRead: true })
         });
@@ -353,7 +354,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   // Add handler for completing drafts
   const handleCompleteDraft = async (draft) => {
     try {
-      const res = await FetchWithAuth(`http://localhost:12345/api/mails/${draft.id}`);
+      const res = await FetchWithAuth(buildApiUrl(`/api/mails/${draft.id}`));
       if (!res.ok) throw new Error('Failed to fetch updated draft');
       const freshDraft = await res.json();
       setDraftToEdit(freshDraft);

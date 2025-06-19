@@ -5,6 +5,7 @@ import FormField from '../../components/SignUp/FormField/FormField';
 import ProfileImageUpload from '../../components/SignUp/ProfileImageUpload/ProfileImageUpload';
 import './SignUp.css';
 import logo from '../../images/logo.png';
+import { buildApiUrl } from '../../config/api';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -47,7 +48,7 @@ function SignUp() {
 
   const registerUser = async (data) => {
     try {
-      const response = await fetch("http://localhost:12345/api/users", {
+      const response = await fetch(buildApiUrl("api/users"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

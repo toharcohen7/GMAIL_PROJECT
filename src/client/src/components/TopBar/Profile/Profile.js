@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserCard from "../UserCard/UserCard";
 import { FetchWithAuth } from "../../FetchWithAuth/FetchWithAuth";
+import { buildApiUrl } from "../../../config/api";
 
 function Profile() {
   const [showCard, setShowCard] = useState(false);
@@ -10,7 +11,7 @@ function Profile() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await FetchWithAuth("http://localhost:12345/api/users/me");
+        const res = await FetchWithAuth(buildApiUrl("api/users/me"));
         if (!res || !res.ok) throw new Error("Unauthorized or error fetching user");
         const data = await res.json();
         setUser(data);
@@ -28,7 +29,6 @@ function Profile() {
     <div className="position-relative mx-1">
       <button onClick={() => setShowCard(prev => !prev)} className="btn btn-outline-secondary">
         <img src={user.image} className="rounded-circle object-fit-cover top-bar-img" alt="" aria-hidden="true" />
-
       </button>
 
       {showCard && (

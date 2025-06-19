@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from '../../images/logo.png';
 import { FetchWithAuth } from '../../components/FetchWithAuth/FetchWithAuth';
+import { buildApiUrl } from '../../config/api';
 
 function SignIn() {
   const [userName, setUserName] = useState("");
@@ -18,7 +19,7 @@ function SignIn() {
 
   async function getToken(userName, password) {
     try {
-      const response = await fetch("http://localhost:12345/api/tokens", {
+      const response = await fetch(buildApiUrl("api/tokens"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +35,7 @@ function SignIn() {
       localStorage.setItem("token", data.token);
 
       // Fetch user data with FetchWithAuth
-      const userResponse = await FetchWithAuth("http://localhost:12345/api/users/me");
+      const userResponse = await FetchWithAuth(buildApiUrl("api/users/me"));
 
       if (userResponse && userResponse.ok) {
         const userData = await userResponse.json();

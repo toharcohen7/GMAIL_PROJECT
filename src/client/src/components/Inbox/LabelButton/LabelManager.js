@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect, useCallback } from 'react';
 import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
+import { buildApiUrl } from '../../../config/api';
 
 const LabelManager = ({ 
   currentUser, 
@@ -15,7 +16,7 @@ const LabelManager = ({
     
     try {
       const movePromises = Array.from(selectedMessages).map(id =>
-        FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
+        FetchWithAuth(buildApiUrl(`api/mails/${id}`), {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ labelName })
@@ -25,7 +26,7 @@ const LabelManager = ({
       await Promise.all(movePromises);
       await loadMessages();
       if (onRefresh) onRefresh();
-      setSelectedMessages(new Set()); // Clear selection
+      setSelectedMessages(new Set());
     } catch (error) {
       setError(`Failed to move messages to ${labelName}`);
       console.error('Error moving messages to label:', error);
