@@ -51,10 +51,10 @@ function MessageItem({
       </div>
       <div className="message-content col d-flex flex-column flex-md-row">
         <span className="message-subject me-md-2 text-truncate">
-          {truncateText(message.subject || 'No Subject',20)}
+          {truncateText(message.subject || 'No Subject',15)}
         </span>
         <span className="message-snippet text-muted small text-truncate">
-          {truncateText(message.snippet || message.content || '', 180)}
+          {truncateText(message.snippet || message.content || '', 70)}
         </span>
       </div>
 
