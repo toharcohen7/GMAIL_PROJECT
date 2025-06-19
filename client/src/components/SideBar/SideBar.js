@@ -55,7 +55,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
         if (refreshTrigger) {
             fetchLabels();
         }
-    }, [refreshTrigger]);
+    }, [refreshTrigger, setLabels]);
 
     const handleCreateNewLabel = async (labelName) => {
         try {
