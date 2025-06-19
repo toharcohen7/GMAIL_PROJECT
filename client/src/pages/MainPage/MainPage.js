@@ -21,7 +21,12 @@ function MainPage() {
 
   return (
     <div className="main-page-container">
-      <TopBar toggleSidebar={toggleSidebar} onSearch={setSearchQuery} />
+      <TopBar
+        toggleSidebar={toggleSidebar}
+        onSearch={setSearchQuery}
+        onMailActionSuccess={triggerRefresh}
+      />
+
       <div className="content-container">
         <div className={`sidebar-wrapper ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <SideBar
@@ -30,6 +35,7 @@ function MainPage() {
               triggerRefresh();
             }}
             refreshTrigger={refreshTrigger}
+            onLabelsChange={triggerRefresh}
           />
         </div>
         <div className="inbox-responsive-wrapper">

@@ -23,7 +23,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh  }) {
   const [error, setError] = useState(null);
   const [selectedMail, setSelectedMail] = useState(null);
   const [senderCache, setSenderCache] = useState(new Map());
-  // New state for draft editing
   const [draftToEdit, setDraftToEdit] = useState(null);
   
   const navigate = useNavigate();
@@ -94,8 +93,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh  }) {
     setIsLoading(false);
   }, [currentUser, loadSenderNames]);
 
-  // Remove the loadLabels function completely
-
 useEffect(() => {
   const searchFromServer = async () => {
     if (!currentUser) return;
@@ -129,7 +126,7 @@ useEffect(() => {
   };
 
   searchFromServer();
-}, [searchQuery, currentUser, loadSenderNames]); // Remove loadLabels from dependency array
+}, [searchQuery, currentUser, loadSenderNames]);
 
 useEffect(() => {
   const fetchMessages = async () => {
@@ -165,8 +162,6 @@ useEffect(() => {
   fetchMessages();
 }, [searchQuery, selectedLabel, onRefresh, currentUser, loadSenderNames]);
 
-
-  // Replace the existing selectAllMessages function with this one
   const selectAllMessages = () => setSelectedMessages(new Set(filteredMessages.map(msg => msg.id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
   const toggleSelectMessage = (id) => {
@@ -280,9 +275,18 @@ const handleMarkAsSpam = async () => {
   };
 
   // Add handler for completing drafts
-  const handleCompleteDraft = (draft) => {
-    setDraftToEdit(draft);
-  };
+  const handleCompleteDraft = async (draft) => {
+  try {
+    const res = await FetchWithAuth(`http://localhost:12345/api/mails/${draft.id}`);
+    if (!res.ok) throw new Error('Failed to fetch updated draft');
+    const freshDraft = await res.json();
+    setDraftToEdit(freshDraft);
+  } catch (err) {
+    console.error('Error loading draft:', err);
+    setError('Failed to load draft');
+  }
+};
+
 
   // Handler for when draft is successfully sent
   const handleDraftSent = () => {

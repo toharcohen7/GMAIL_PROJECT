@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../../images/logo.png';
-import CreateMail from '../CreateMail/CreateMail';
 
 function TopLeftLogo({ toggleSidebar }) {
   return (
@@ -17,7 +16,6 @@ function TopLeftLogo({ toggleSidebar }) {
       <Link className="navbar-brand" to="/mainpage">
         <img src={logo} alt="logo" className="logo-img" />
       </Link>
-      <CreateMail />
     </div>
   );
 }
