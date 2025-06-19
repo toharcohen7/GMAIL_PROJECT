@@ -1,12 +1,12 @@
 import React from 'react';
 import { formatTimestamp } from '../InboxUtilityFunc/DateFormation';
 
-function MessageItem({ 
-  message, 
-  index, 
-  isSelected, 
-  senderName, 
-  onToggleSelect, 
+function MessageItem({
+  message,
+  index,
+  isSelected,
+  senderName,
+  onToggleSelect,
   onMailClick,
   onCompleteDraft
 }) {
@@ -18,6 +18,12 @@ function MessageItem({
     e.stopPropagation();
     onCompleteDraft(message);
   };
+
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  };
+
 
   return (
     <div
@@ -45,18 +51,18 @@ function MessageItem({
       </div>
       <div className="message-content col d-flex flex-column flex-md-row">
         <span className="message-subject me-md-2 text-truncate">
-          {message.subject || 'No Subject'}
+          {truncateText(message.subject || 'No Subject',20)}
         </span>
         <span className="message-snippet text-muted small text-truncate">
-          {message.snippet || message.content || ''}
+          {truncateText(message.snippet || message.content || '', 180)}
         </span>
       </div>
-      
+
       {/* Add the Complete Draft button only for draft emails */}
       {isDraft && (
         <div className="message-action me-2">
-          <button 
-            className="btn btn-sm btn-primary" 
+          <button
+            className="btn btn-sm btn-primary"
             onClick={handleCompleteDraftClick}
             title="Complete and send this draft"
           >
@@ -65,7 +71,7 @@ function MessageItem({
           </button>
         </div>
       )}
-      
+
       <div className="message-time col-auto text-end small text-muted" title={message.time ? new Date(message.time).toLocaleString() : ''}>
         {formatTimestamp(message.time)}
       </div>

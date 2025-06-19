@@ -15,8 +15,10 @@ function TopBar({ toggleSidebar, onSearch, onMailActionSuccess }) {
     return (
         <nav className="navbar navbar-expand-lg custom-navbar bg-TopBar flex-nowrap">
             <div className="container-fluid d-flex align-items-center justify-content-between flex-nowrap">
-                <TopLeftLogo toggleSidebar={toggleSidebar} />
-                <CreateMail onSuccess={onMailActionSuccess}/>
+                <div className="d-flex align-items-center gap-2">
+                    <TopLeftLogo toggleSidebar={toggleSidebar} />
+                    <CreateMail onSuccess={onMailActionSuccess} />
+                </div>
                 <Search doSearch={doSearch} />
                 {/* eslint-disable-next-line react/jsx-pascal-case */}
                 <Theme_Profile />

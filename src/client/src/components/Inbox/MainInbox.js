@@ -94,12 +94,12 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   }, [currentUser, loadSenderNames]);
 
 
-useEffect(() => {
-  const searchFromServer = async () => {
-    if (!currentUser) return;
+  useEffect(() => {
+    const searchFromServer = async () => {
+      if (!currentUser) return;
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
       try {
         let data = [];
@@ -129,39 +129,39 @@ useEffect(() => {
     searchFromServer();
   }, [searchQuery, currentUser, loadSenderNames]);
 
-useEffect(() => {
-  const fetchMessages = async () => {
-    if (!currentUser) return;
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!currentUser) return;
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      let data = [];
+      try {
+        let data = [];
 
-      const res = await FetchWithAuth(
-        searchQuery
-          ? `http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`
-          : 'http://localhost:12345/api/mails'
-      );
+        const res = await FetchWithAuth(
+          searchQuery
+            ? `http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`
+            : 'http://localhost:12345/api/mails'
+        );
 
-      if (!res.ok) throw new Error(searchQuery ? 'Search failed' : 'Failed to load messages');
+        if (!res.ok) throw new Error(searchQuery ? 'Search failed' : 'Failed to load messages');
 
-      data = await res.json();
-      setMessages(data);
-      setSelectedMessages(new Set());
-      loadSenderNames(data);
+        data = await res.json();
+        setMessages(data);
+        setSelectedMessages(new Set());
+        loadSenderNames(data);
 
-    } catch (err) {
-      console.error('Error fetching messages:', err);
-      setError('Failed to load messages');
-    }
+      } catch (err) {
+        console.error('Error fetching messages:', err);
+        setError('Failed to load messages');
+      }
 
-    setIsLoading(false);
-  };
+      setIsLoading(false);
+    };
 
-  fetchMessages();
-}, [searchQuery, selectedLabel, onRefresh, currentUser, loadSenderNames]);
+    fetchMessages();
+  }, [searchQuery, selectedLabel, onRefresh, currentUser, loadSenderNames]);
 
   const selectAllMessages = () => setSelectedMessages(new Set(filteredMessages.map(msg => msg.id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
@@ -210,32 +210,32 @@ useEffect(() => {
   };
 
   const handleMarkAsUnread = async () => {
-  try {
-    const updatedMessages = await Promise.all(
-      messages.map(async (mail) => {
-        if (selectedMessages.has(mail.id) && mail.onRead) {
-          const res = await FetchWithAuth(`http://localhost:12345/api/mails/${mail.id}`, {
-            method: 'PATCH',
-            body: JSON.stringify({ onRead: false })
-          });
+    try {
+      const updatedMessages = await Promise.all(
+        messages.map(async (mail) => {
+          if (selectedMessages.has(mail.id) && mail.onRead) {
+            const res = await FetchWithAuth(`http://localhost:12345/api/mails/${mail.id}`, {
+              method: 'PATCH',
+              body: JSON.stringify({ onRead: false })
+            });
 
-          if (res && res.ok) {
-            return { ...mail, onRead: false };
+            if (res && res.ok) {
+              return { ...mail, onRead: false };
+            }
           }
-        }
 
-        return mail;
-      })
-    );
+          return mail;
+        })
+      );
 
-    setMessages(updatedMessages);
-    setSelectedMessages(new Set());
-    if (onRefresh) onRefresh();
-  } catch (err) {
-    console.error('Failed to mark selected mails as unread:', err);
-    setError('Failed to mark selected mails as unread');
-  }
-};
+      setMessages(updatedMessages);
+      setSelectedMessages(new Set());
+      if (onRefresh) onRefresh();
+    } catch (err) {
+      console.error('Failed to mark selected mails as unread:', err);
+      setError('Failed to mark selected mails as unread');
+    }
+  };
 
 
 
@@ -329,39 +329,39 @@ useEffect(() => {
   };
 
   const handleMailClick = async (msg, e) => {
-  if (e.target.classList.contains('form-check-input')) return;
+    if (e.target.classList.contains('form-check-input')) return;
 
-  if (!msg.onRead) {
-    setMessages(msgs =>
-      msgs.map(m => m.id === msg.id ? { ...m, onRead: true } : m)
-    );
+    if (!msg.onRead) {
+      setMessages(msgs =>
+        msgs.map(m => m.id === msg.id ? { ...m, onRead: true } : m)
+      );
 
-    try {
-      await FetchWithAuth(`http://localhost:12345/api/mails/${msg.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ onRead: true })
-      });
-    } catch (err) {
-      console.error('Failed to mark mail as read on server:', err);
+      try {
+        await FetchWithAuth(`http://localhost:12345/api/mails/${msg.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ onRead: true })
+        });
+      } catch (err) {
+        console.error('Failed to mark mail as read on server:', err);
+      }
     }
-  }
 
-  setSelectedMail(msg);
-};
+    setSelectedMail(msg);
+  };
 
 
   // Add handler for completing drafts
   const handleCompleteDraft = async (draft) => {
-  try {
-    const res = await FetchWithAuth(`http://localhost:12345/api/mails/${draft.id}`);
-    if (!res.ok) throw new Error('Failed to fetch updated draft');
-    const freshDraft = await res.json();
-    setDraftToEdit(freshDraft);
-  } catch (err) {
-    console.error('Error loading draft:', err);
-    setError('Failed to load draft');
-  }
-};
+    try {
+      const res = await FetchWithAuth(`http://localhost:12345/api/mails/${draft.id}`);
+      if (!res.ok) throw new Error('Failed to fetch updated draft');
+      const freshDraft = await res.json();
+      setDraftToEdit(freshDraft);
+    } catch (err) {
+      console.error('Error loading draft:', err);
+      setError('Failed to load draft');
+    }
+  };
 
 
   // Handler for when draft is successfully sent
@@ -389,7 +389,7 @@ useEffect(() => {
     <div className="inbox-wrapper">
       <div className="inbox-container card shadow-sm">
         <InboxHeader
-          messages={filteredMessages} 
+          messages={filteredMessages}
           selectedMessages={selectedMessages}
           hasSelectedMessages={selectedMessages.size > 0}
           onSelectAll={selectAllMessages}
@@ -406,8 +406,8 @@ useEffect(() => {
         <div className="inbox-content card-body p-0">
           {isLoading && <LoadingState />}
           {error && <ErrorState error={error} onRetry={handleRetry} />}
-          {!isLoading && !error && messages.length === 0 && <EmptyState />}
-          {!isLoading && !error && messages.length > 0 && (
+          {!isLoading && !error && filteredMessages.length === 0 && <EmptyState />}
+          {!isLoading && !error && filteredMessages.length > 0 && (
             <MessageList
               messages={filteredMessages}
               selectedMessages={selectedMessages}
@@ -417,6 +417,7 @@ useEffect(() => {
               onCompleteDraft={handleCompleteDraft}
             />
           )}
+
         </div>
 
         {selectedMail && (
