@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './BlacklistRemoveButton.css';
-import BlacklistDeleteDialog from '../../../BlacklistDeleteDialog/BlacklistDeleteDialog';
+import BlacklistDeleteDialog from '../BlacklistDeleteDialog/BlacklistDeleteDialog';
 
 function BlacklistRemoveButton() {
   const [showDialog, setShowDialog] = useState(false);

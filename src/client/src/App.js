@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import WelcomePage from "./pages/WelcomePage/WelcomePage";
 import SignIn from "./pages/SignIn/SignIn";
 import SignUp from './pages/SignUp/SignUp';

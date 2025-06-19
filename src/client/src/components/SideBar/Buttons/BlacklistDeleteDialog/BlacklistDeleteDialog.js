@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
+import { FetchWithAuth } from '../../../FetchWithAuth/FetchWithAuth';
 import './BlacklistDeleteDialog.css';
 
 function BlacklistDeleteDialog({ onClose }) {

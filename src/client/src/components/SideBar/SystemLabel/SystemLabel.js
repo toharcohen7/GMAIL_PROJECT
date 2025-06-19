@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './SystemLabel.css';
-import BlacklistRemoveButton from '../SideBar/Buttons/BlacklistRemoveButton/BlacklistRemoveButton';
+import BlacklistRemoveButton from '../Buttons/BlacklistRemoveButton/BlacklistRemoveButton';
 
 function SystemLabel({name, badgeCount, iconClass, onLabelClick, isSelected}) {
   const [isHovered, setIsHovered] = useState(false);

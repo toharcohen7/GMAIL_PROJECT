@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './SideBar.css';
-import SystemLabel from '../SystemLabel/SystemLabel.js';
-import AddLabel from '../AddLabel/AddLabel.js';
-import UserLabel from '../UserLabel/UserLabel.js';
+import SystemLabel from './SystemLabel/SystemLabel.js';
+import AddLabel from './AddLabel/AddLabel.js';
+import UserLabel from './UserLabel/UserLabel.js';
 import AddLabelButton from './Buttons/AddLabelButton/AddLabelButton.js';
-import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
+import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth.js';
 
 const useLabels = () => {
     const [labels, setLabels] = useState([]);
