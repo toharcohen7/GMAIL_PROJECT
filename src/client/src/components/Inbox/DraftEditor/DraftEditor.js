@@ -75,8 +75,8 @@ function DraftEditor({ draft, onClose, onSuccess }) {
 
   return (
     <div className="draft-editor-overlay">
-      <div className="draft-editor-card">
-        <div className="draft-editor-header">
+      <div className="draft-editor-card complete-draft">
+        <div className="draft-editor-header complete-draft">
           <h5>Complete Draft</h5>
           <button className="close-button" onClick={async () => {
             await saveDraft();

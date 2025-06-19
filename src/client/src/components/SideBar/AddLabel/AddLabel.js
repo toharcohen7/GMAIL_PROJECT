@@ -24,7 +24,10 @@ const AddLabel = ({ onSave, onCancel, initialValue = "", title = "Create New Lab
                 <div className="add-screen modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="AddLabelTitle">{title}</h5>
-                        <button type="button" className="btn-close bi bi-x-circle" aria-label="Close" onClick={onCancel}></button>
+                        <button type="button" className="btn btn-icon" onClick={onCancel} aria-label="Close">
+                            <i className="bi bi-x-circle fs-5"></i>
+                        </button>
+
                     </div>
                     <form onSubmit={handleSubmit}>
                         <div className="modal-body">

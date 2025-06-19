@@ -26,7 +26,7 @@ function MailDetail({ message, onClose, onDelete }) {
 
   return (
     <div className="mail-detail-overlay position-fixed w-100 h-100" style={{ top: 0, left: 0, zIndex: 1050, backgroundColor: 'rgba(0,0,0,0.5)' }}>
-      <div className="mail-detail-container position-absolute bg-white rounded shadow-lg" 
+      <div className="mail-detail-container position-absolute rounded shadow-lg"
            style={{ top: '5%', left: '10%', width: '80%', height: '90%', overflow: 'hidden' }}>
         
         <div className="mail-detail-header p-3 border-bottom d-flex justify-content-between align-items-center">
@@ -41,7 +41,7 @@ function MailDetail({ message, onClose, onDelete }) {
           </div>
         </div>
 
-        <div className="mail-detail-info p-3 border-bottom bg-light">
+        <div className="mail-detail-info p-3 border-bottom mail-detail-info">
           <div className="row">
             <div className="col-md-6">
               <strong>From:</strong> {senderName}
