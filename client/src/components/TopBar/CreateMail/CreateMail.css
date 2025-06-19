@@ -1,19 +1,30 @@
 .create-mail-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin-left: 1px;
   background-color: #0b57d0;
   color: white;
-  border: none;
-  padding: 6px 16px;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  border: none;
+  box-shadow: 0 2px 8px rgba(11, 87, 208, 0.25);
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .create-mail-btn:hover {
   background-color: #0846a0;
+  transform: translateY(-1px);
 }
+
+.create-mail-btn:active {
+  transform: scale(0.98);
+}
+
+
 
 .mail-header {
   position: relative;
@@ -50,6 +61,5 @@
   border-color: #1a73e8;
   transition: all 0.2s ease-in-out;
 }
-
 
 

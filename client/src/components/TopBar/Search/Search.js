@@ -1,22 +1,23 @@
 import { useRef } from "react";
+import './Search.css'
 
-function Search({doSearch}) {
+function Search({ doSearch }) {
 
     const searchBox = useRef(null);
 
-  const search = (e) => {
-  const text = searchBox.current.value.trim();
+    const search = (e) => {
+        const text = searchBox.current.value.trim();
 
-  const ignoredKeys = [
-    'Shift', 'Control', 'Alt', 'Meta',
-    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-    'CapsLock', 'Tab'
-  ];
+        const ignoredKeys = [
+            'Shift', 'Control', 'Alt', 'Meta',
+            'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+            'CapsLock', 'Tab'
+        ];
 
-  if (ignoredKeys.includes(e.key)) return;
+        if (ignoredKeys.includes(e.key)) return;
 
-  doSearch(text);
-};
+        doSearch(text);
+    };
 
     return (
         <div className="position-relative search-form d-none d-sm-block">
@@ -26,10 +27,12 @@ function Search({doSearch}) {
                 onKeyUp={search}
                 type="text"
                 className="form-control search-input-with-icon"
-                placeholder="Search mail"
+                placeholder="Search"
             />
         </div>
     );
+
+
 }
 
 export default Search;

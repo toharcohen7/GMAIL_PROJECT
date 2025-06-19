@@ -10,7 +10,7 @@ function MessageItem({
   onMailClick,
   onCompleteDraft
 }) {
-  const isRead = message.read;
+  const isRead = message.onRead;
   const isDraft = message.labelName === 'Draft';
 
   // Handler to open draft editor without triggering message click
