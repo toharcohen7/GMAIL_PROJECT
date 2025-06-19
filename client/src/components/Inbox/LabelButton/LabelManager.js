@@ -4,44 +4,12 @@ import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
 
 const LabelManager = ({ 
   currentUser, 
-  selectedLabel, 
   selectedMessages, 
   setSelectedMessages, 
   loadMessages, 
   setError,
   onRefresh
 }) => {
-  const [availableLabels, setAvailableLabels] = useState([]);
-  
-  const loadLabels = useCallback(async () => {
-    if (!currentUser) return [];
-    
-    try {
-      const response = await FetchWithAuth('http://localhost:12345/api/labels');
-      if (response.ok) {
-        const data = await response.json();
-        // Filter out system labels and current label
-        const filteredLabels = data.filter(label => 
-          !['Draft', 'Sent'].includes(label.name) && 
-          label.name !== selectedLabel
-        );
-        
-        setAvailableLabels(filteredLabels);
-        return filteredLabels;
-      }
-      return [];
-    } catch (error) {
-      console.error('Error fetching labels:', error);
-      return [];
-    }
-  }, [currentUser, selectedLabel]);
-
-  useEffect(() => {
-    if (currentUser) {
-      loadLabels();
-    }
-  }, [currentUser, selectedLabel, loadLabels]);
-
   const handleMoveToLabel = async (labelName) => {
     if (!currentUser || selectedMessages.size === 0) return;
     
@@ -65,9 +33,7 @@ const LabelManager = ({
   };
 
   return {
-    availableLabels,
-    handleMoveToLabel,
-    loadLabels
+    handleMoveToLabel
   };
 };
 

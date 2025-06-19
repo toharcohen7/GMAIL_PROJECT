@@ -22,6 +22,12 @@
   background-color: #f1f3f5;
 }
 
+.blacklist-remove-btn:active {
+  transform: translateY(-50%);
+  border: 1px solid #dee2e6;
+  outline: none;
+  background-color: #e9ecef;
+}
 
 .blacklist-remove-btn i {
   font-size: 18px;
