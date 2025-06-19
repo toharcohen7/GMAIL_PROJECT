@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
 
-function CreateMail() {
+function CreateMail({ onSuccess }) {
   const [showCard, setShowCard] = useState(false);
   const [to, setTo] = useState('');
   const [subject, setSubject] = useState('');
@@ -54,6 +54,7 @@ function CreateMail() {
     setSubject('');
     setBody('');
     setDraftId(null);
+    if (onSuccess) onSuccess(); // Notify parent component of success
   };
 
   const sendMail = async (e) => {
@@ -96,6 +97,7 @@ function CreateMail() {
       setBody('');
       setDraftId(null);
       setError('');
+      if (onSuccess) onSuccess(); // Notify parent component of success
     } catch (err) {
       setError(err.message || 'An error occurred while sending the mail.');
     }

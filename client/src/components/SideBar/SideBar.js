@@ -31,7 +31,7 @@ const useLabels = () => {
     return { labels, setLabels };
 };
 
-function SideBar({ onLabelSelect, refreshTrigger }) {
+function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
     const { labels, setLabels } = useLabels();
     const [showModal, setShowModal] = useState(false);
     const [editLabelData, setEditLabelData] = useState(null);
@@ -71,6 +71,7 @@ function SideBar({ onLabelSelect, refreshTrigger }) {
                 const newLabel = await response.json();
                 setLabels([...labels, newLabel]);
                 setShowModal(false);
+                if (onLabelsChange) onLabelsChange();
             } else if (response.status === 409) {
                 alert('Label name already exists. Please choose a different name.');
             } else {
@@ -98,6 +99,7 @@ function SideBar({ onLabelSelect, refreshTrigger }) {
                 const labelToEdit = labels.find(label => label.name === labelName);
                 setEditLabelData(labelToEdit);
                 setShowModal(true);
+                if (onLabelsChange) onLabelsChange();
             }
         } catch (error) {
             console.error(`Error during ${action} action:`, error);
@@ -137,6 +139,7 @@ function SideBar({ onLabelSelect, refreshTrigger }) {
                     ));
                     setShowModal(false);
                     setEditLabelData(null);
+                    if (onLabelsChange) onLabelsChange();
                 } else if (response.status === 409) {
                     alert("Label name already exists. Please choose a different name.");
                 } else {

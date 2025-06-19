@@ -8,6 +8,30 @@ function DraftEditor({ draft, onClose, onSuccess }) {
   const [content, setContent] = useState(draft.content || '');
   const [error, setError] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [draftId] = useState(draft.id);
+
+
+  const saveDraft = async () => {
+    if (!to && !subject && !content) return;
+
+    try {
+      const receivers = to.split(/[,\s]+/).map(name => name.trim()).filter(Boolean);
+
+      await FetchWithAuth(`http://localhost:12345/api/mails/${draftId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          receiversNames: receivers,
+          subject,
+          content
+        }),
+      });
+
+    } catch (err) {
+      console.error('Auto-save failed:', err);
+    }
+  };
+
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -15,7 +39,7 @@ function DraftEditor({ draft, onClose, onSuccess }) {
     setError('');
     
     try {
-      const receivers = to.split(',').map(name => name.trim()).filter(Boolean);
+      const receivers = to.split(/[,\s]+/).map(name => name.trim()).filter(Boolean);
       
       if (receivers.length === 0) {
         setError('Please enter at least one recipient');
@@ -54,7 +78,11 @@ function DraftEditor({ draft, onClose, onSuccess }) {
       <div className="draft-editor-card">
         <div className="draft-editor-header">
           <h5>Complete Draft</h5>
-          <button className="close-button" onClick={onClose}>
+          <button className="close-button" onClick={async () => {
+            await saveDraft();
+            onSuccess();
+            onClose();
+          }}>
             <i className="bi bi-x-lg"></i>
           </button>
         </div>
