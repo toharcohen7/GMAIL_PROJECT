@@ -6,11 +6,11 @@ This project is part of the Gmail Project, which includes both the server-side b
 
 ### Components:
 
-- **Bloom Filter Server (C++):**  
+- **Blacklist Server (C++):**  
   Implements backend infrastructure and security by maintaining a persistent Bloom filter to efficiently check and manage blacklisted (bad) URLs.
 
 - **Node.js Gmail Server:**  
-  Provides Gmail-like application logic and REST API endpoints, communicating with the Bloom filter server to validate URLs.
+  Provides Gmail-like application logic and REST API endpoints, communicating with the Blacklist server to validate URLs.
 
 - **React Client:**  
   Provides a user-friendly interface for managing emails, labels, drafts, and blacklisted URLs. The frontend is built using React, Bootstrap, and other modern libraries to ensure responsiveness and scalability.
@@ -96,18 +96,21 @@ This project is designed to build and run inside Docker containers. It uses GCC,
 ## Key Components
 
 ### Inbox
-- **InboxHeader**: Provides controls for refreshing, marking emails as read/unread, deleting emails, and moving emails to labels.
+- **InboxHeader**: Provides controls for refreshing, marking emails as read/unread, deleting emails,  and moving emails to labels include.
+- **Flag as Spam**: Allows users to mark an email as spam for filtering bad URL's in future mails.
 - **MessageList**: Displays a list of emails with options to select, view, or delete.
-- **DraftEditor**: Allows users to compose and send drafts.
+- **DraftEditor**: Allows users to edit and send drafts.
 
 ### Sidebar
 - **SystemLabel**: Displays system labels like "Sent" and "Draft".
 - **UserLabel**: Displays user-created labels with options to edit or delete.
 - **AddLabel**: Modal for creating or editing labels.
+- **Remove URL from Blacklist**: Allows users to delete a URL from the blacklist. 
 
 ### TopBar
 - **Search**: Provides a search bar for filtering emails.
 - **DarkMode**: Button to toggle between light and dark themes.
+- **Profile**: Displays the user's profile information and provides options such as logging out or accessing account settings.
 
 ### Authentication
 - **SignUp**: Form for creating a new user account.
@@ -117,7 +120,7 @@ This project is designed to build and run inside Docker containers. It uses GCC,
 
 1. **Start all containers** using Docker Compose.  
    This will launch:
-   - The C++ Bloom Filter server (handles blacklist validation).
+   - The C++ Blacklist server (handles blacklist validation).
    - The Node.js Gmail server (provides REST API and Gmail-like functionality).
    - The React client (provides the user interface for interacting with the system).
 
@@ -141,17 +144,24 @@ This project is designed to build and run inside Docker containers. It uses GCC,
      - Use the **Sidebar** to create, edit, or delete labels.  
      - Click the **Add Label** button to create a new label, or use the edit/delete options next to existing labels.
 
-   - **Send Emails**:  
-     - Navigate to the **Draft Editor** and compose your email.  
+   - **Send Emails**:
+     - Use the compose button to send a new mail.  
+     - Navigate to the **Draft Label** to edit and send your email.  
      - Fill in the recipient, subject, and content fields, then click the **Send** button.
 
    - **Blacklist URLs**:  
-     - Use the **Blacklist Management** section to add or remove URLs from the blacklist.  
-     - Enter the URL in the input field and click the **Add to Blacklist** button, or use the delete option to remove a URL.
+     - Use the **Blacklist Management** button to remove URLs from the blacklist.  
+     - Enter the URL in the input field and click the **Delete from Blacklist** button.
+     - The button becomes visible when hovering over the spam label.
+     - The URLs added to the blacklist are those that appeared in emails reported as spam by users.
 
    - **View Inbox**:  
-     - Navigate to the **Inbox** to view your emails.  
+     - Navigate to the **Recived Label** to view your emails.  
      - Use the search bar or filters to find specific emails, and click on an email to view its details.
+
+> **Note**: The default port for the React client is `3000`.  
+> If port 3000 is unavailable, React will automatically move to the next available port (e.g., 3001, 3002, etc.).  
+> You can see the assigned port in the terminal when running
 
 > **Note:** All interactions are performed through the React client, which communicates with the Node.js server and the C++ Bloom Filter server in the background.
 
@@ -200,20 +210,46 @@ This project is designed to build and run inside Docker containers. It uses GCC,
 The React application is organized as follows:
 
 ```
-src/client/src/
-├── components/          # Reusable UI components
-│   ├── Inbox/           # Inbox-related components
-│   ├── SideBar/         # Sidebar and label management
-│   ├── TopBar/          # Top navigation bar
-│   ├── SignUp/          # Sign-up form components
-│   ├── SignIn/          # Sign-in form components
-├── pages/               # Page-level components
-│   ├── MainPage/        # Main application page
-│   ├── WelcomePage/     # Welcome page
-├── utils/               # Utility functions
-├── config/              # Configuration files (e.g., API URLs)
-├── index.js             # Application entry point
-├── App.js               # Main application component
+GMAIL_PROJECT_D.T.H/
+├── src/                     # Project source code
+│   ├── client/              # React frontend application
+│   │   ├── .gitignore       # Git ignore file for React client
+│   │   ├── package.json     # React client dependencies
+│   │   ├── src/             # React source code
+│   │   │   ├── components/  # Reusable UI components
+│   │   │   │   ├── Inbox/   # Inbox-related components
+│   │   │   │   ├── SideBar/ # Sidebar and label management
+│   │   │   │   ├── TopBar/  # Top navigation bar
+│   │   │   │   ├── SignUp/  # Sign-up form components
+│   │   │   │   ├── SignIn/  # Sign-in form components
+│   │   │   ├── pages/       # Page-level components
+│   │   │   │   ├── MainPage/        # Main application page
+│   │   │   │   ├── WelcomePage/     # Welcome page
+│   │   │   ├── utils/       # Utility functions
+│   │   │   ├── config/      # Configuration files (e.g., API URLs)
+│   │   │   ├── index.js     # Application entry point
+│   │   │   ├── App.js       # Main application component
+│   │
+│   ├── blacklist/           # C++ Bloom Filter server implementation
+│   │   ├── cpp/             # C++ source files
+│   │   ├── hpp/             # C++ header files
+│   │   ├── client.py        # Python client for testing the server
+│   │
+│   ├── controllers/         # Node.js controllers for handling API logic
+│   ├── models/              # Node.js models for database and application logic
+│   ├── routes/              # Node.js routes for API endpoints
+│   │── app.js               # Main Node.js server file
+│   │── package.json         # Node.js server dependencies
+│
+├── images/              # Project images for documentation  
+├── .env                 # Environment variables for the project
+├── .dockerignore        # Docker ignore file
+├── .gitignore           # Git ignore file
+├── CMakeLists.txt       # CMake configuration for building the C++ server
+├── Dockerfile           # Dockerfile for building the project
+├── docker-compose.yml   # Docker Compose configuration
+├── README.md            # Project documentation
+├── details.txt          # Project details (authors, repository link, etc.)
 ```
 
 ## Requirements
