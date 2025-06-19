@@ -211,45 +211,45 @@ The React application is organized as follows:
 
 ```
 GMAIL_PROJECT_D.T.H/
-├── src/                     # Project source code
-│   ├── client/              # React frontend application
-│   │   ├── .gitignore       # Git ignore file for React client
-│   │   ├── package.json     # React client dependencies
-│   │   ├── src/             # React source code
-│   │   │   ├── components/  # Reusable UI components
-│   │   │   │   ├── Inbox/   # Inbox-related components
-│   │   │   │   ├── SideBar/ # Sidebar and label management
-│   │   │   │   ├── TopBar/  # Top navigation bar
-│   │   │   │   ├── SignUp/  # Sign-up form components
-│   │   │   │   ├── SignIn/  # Sign-in form components
-│   │   │   ├── pages/       # Page-level components
+├── src/                             # Project source code
+│   ├── client/                      # React frontend application
+│   │   ├── .gitignore               # Git ignore file for React client
+│   │   ├── package.json             # React client dependencies
+│   │   ├── src/                     # React source code
+│   │   │   ├── components/          # Reusable UI components
+│   │   │   │   ├── Inbox/           # Inbox-related components
+│   │   │   │   ├── SideBar/         # Sidebar and label management
+│   │   │   │   ├── TopBar/          # Top navigation bar
+│   │   │   │   ├── SignUp/          # Sign-up form components
+│   │   │   │   ├── SignIn/          # Sign-in form components
+│   │   │   ├── pages/               # Page-level components
 │   │   │   │   ├── MainPage/        # Main application page
 │   │   │   │   ├── WelcomePage/     # Welcome page
-│   │   │   ├── utils/       # Utility functions
-│   │   │   ├── config/      # Configuration files (e.g., API URLs)
-│   │   │   ├── index.js     # Application entry point
-│   │   │   ├── App.js       # Main application component
+│   │   │   ├── utils/               # Utility functions
+│   │   │   ├── config/              # Configuration files (e.g., API URLs)
+│   │   │   ├── index.js             # Application entry point
+│   │   │   ├── App.js               # Main application component
 │   │
-│   ├── blacklist/           # C++ Bloom Filter server implementation
-│   │   ├── cpp/             # C++ source files
-│   │   ├── hpp/             # C++ header files
-│   │   ├── client.py        # Python client for testing the server
+│   ├── blacklist/                   # C++ Bloom Filter server implementation
+│   │   ├── cpp/                     # C++ source files
+│   │   ├── hpp/                     # C++ header files
+│   │   ├── client.py                # Python client for testing the server
 │   │
-│   ├── controllers/         # Node.js controllers for handling API logic
-│   ├── models/              # Node.js models for database and application logic
-│   ├── routes/              # Node.js routes for API endpoints
-│   │── app.js               # Main Node.js server file
-│   │── package.json         # Node.js server dependencies
+│   ├── controllers/                 # Node.js controllers for handling API logic
+│   ├── models/                      # Node.js models for database and application logic
+│   ├── routes/                      # Node.js routes for API endpoints
+│   │── app.js                       # Main Node.js server file
+│   │── package.json                 # Node.js server dependencies
 │
-├── images/              # Project images for documentation  
-├── .env                 # Environment variables for the project
-├── .dockerignore        # Docker ignore file
-├── .gitignore           # Git ignore file
-├── CMakeLists.txt       # CMake configuration for building the C++ server
-├── Dockerfile           # Dockerfile for building the project
-├── docker-compose.yml   # Docker Compose configuration
-├── README.md            # Project documentation
-├── details.txt          # Project details (authors, repository link, etc.)
+├── images/                          # Project images for documentation  
+├── .env                             # Environment variables for the project
+├── .dockerignore                    # Docker ignore file
+├── .gitignore                       # Git ignore file
+├── CMakeLists.txt                   # CMake configuration for building the C++ server
+├── Dockerfile                       # Dockerfile for building the project
+├── docker-compose.yml               # Docker Compose configuration
+├── README.md                        # Project documentation
+├── details.txt                      # Project details (authors, repository link, etc.)
 ```
 
 ## Requirements
