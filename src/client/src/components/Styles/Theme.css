@@ -688,3 +688,417 @@ body.dark-mode .list-group-item .badge {
   background-color: #343a40 !important; /* Dark gray for dark mode */
   color: #f8f9fa !important; /* White text */
 }
+
+body.dark-mode .message-list,
+body.dark-mode .message-item.read {
+  background-color: #1e1e1e !important;
+}
+
+body.dark-mode .message-item.unread {
+  background-color: #1f2933 !important;
+}
+
+body.dark-mode .add-label-btn {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+}
+
+body.dark-mode .empty-state {
+  background-color: #1e1e1e;
+  color: #aaa;
+}
+
+body.dark-mode .message-list,
+body.dark-mode .message-item.read,
+body.dark-mode .inbox-content,
+body.dark-mode .card-body,
+body.dark-mode .card,
+body.dark-mode .inbox-container {
+  background-color: #181818 !important;
+  color: var(--md-on-surface) !important;
+}
+
+body.dark-mode .message-item.read {
+  background-color: #222 !important;
+  color: var(--md-on-surface) !important;
+}
+
+body.dark-mode .message-item.read .message-sender {
+  color: #77aaff !important;
+}
+
+body.dark-mode .message-item.read .message-subject {
+  color: #f5f5f5 !important;
+}
+
+body.dark-mode .message-item.read .message-snippet {
+  color: #cccccc !important;
+}
+
+body.dark-mode .message-item.read .message-time {
+  color: #aaaaaa !important;
+}
+
+body.dark-mode .message-item.unread .message-sender {
+  color: #87cefa !important;
+  font-weight: 600;
+}
+
+body.dark-mode .message-item.unread .message-subject {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+body.dark-mode .message-item.unread .message-snippet {
+  color: #dddddd !important;
+}
+
+body.dark-mode .message-item.unread .message-time {
+  color: #bbbbbb !important;
+}
+
+body.dark-mode .form-control {
+  background-color: #2a2a2a !important;
+  color: #f8f9fa !important;
+  border-color: #555 !important;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #aaa !important;
+}
+
+body.dark-mode .compose-card .btn .bi {
+  color: #ffffff !important;
+  opacity: 0.85;
+}
+
+body.dark-mode .compose-card .btn .bi:hover {
+  opacity: 1;
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+}
+
+body.dark-mode .btn-icon i {
+  color: #fff;
+  opacity: 0.8;
+}
+
+body.dark-mode .btn-icon i:hover {
+  opacity: 1;
+}
+
+.mail-detail-container {
+  background-color: #ffffff;
+  color: #212529;
+}
+
+body.dark-mode .mail-detail-container {
+  background-color: #1e1e1e !important;
+  color: #f8f9fa !important;
+}
+
+.mail-detail-info {
+  background-color: #f8f9fa;
+}
+
+body.dark-mode .mail-detail-info {
+  background-color: #2a2a2a !important;
+}
+
+body.dark-mode .mail-detail-container .btn {
+  background-color: transparent;
+  color: #f8f9fa;
+  border-color: #777;
+}
+
+body.dark-mode .mail-detail-container .btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+body.dark-mode input.search-input-with-icon.form-control {
+  background-color: #2a2a2a !important;
+  color: #f8f9fa !important;
+  border-color: #555 !important;
+}
+
+body.dark-mode input.search-input-with-icon.form-control::placeholder {
+  color: #aaaaaa !important;
+}
+
+body.dark-mode .draft-editor-modal,
+body.dark-mode .draft-editor-modal .modal-content,
+body.dark-mode .complete-draft {
+  background-color: #1e1e1e !important;
+  color: #f8f9fa !important;
+  border: 1px solid #444;
+}
+
+body.dark-mode .complete-draft .modal-header {
+  background-color: #1e1e1e !important;
+  border-bottom: 1px solid #444;
+}
+
+body.dark-mode .complete-draft .form-control {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+  border-color: #555 !important;
+}
+
+body.dark-mode .complete-draft .form-control::placeholder {
+  color: #aaa !important;
+}
+
+body.dark-mode .complete-draft .btn-primary {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .complete-draft .btn-close {
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+body.dark-mode .modal-dialog-centered {
+  align-items: flex-start !important;
+  padding-top: 3rem;
+  min-height: unset !important;
+}
+
+body.dark-mode .modal-dialog-centered::before {
+  display: none !important;
+}
+
+body.dark-mode .modal-dialog {
+  max-width: 450px;
+  margin: 2rem auto !important;
+}
+
+body.dark-mode .modal-content {
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+body.dark-mode .modal {
+  padding: 20rem; 
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+  padding: 1rem 1.25rem;
+}
+
+.modal-dialog {
+  max-width: 400px;
+  width: 100%;
+  margin: 2rem auto;
+}
+
+.modal-content {
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .modal-content,
+body.dark-mode .add-screen.modal-content {
+  background-color: #1e1e1e !important;
+  color: #f8f9fa !important;
+  border: 1px solid #444 !important;
+  padding: 1.5rem;
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+  background-color: transparent !important;
+  border-color: #444 !important;
+  padding: 1rem 0;
+}
+
+.modal-body .form-control {
+  width: 100%;
+}
+
+.modal-header .btn {
+  padding: 0.25rem;
+}
+
+body.dark-mode .modal-header .btn i {
+  color: #fff !important;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 1rem;
+}
+
+.modal-content,
+.add-screen.modal-content {
+  border-radius: 0 !important;
+}
+
+body.dark-mode .modal-content {
+  background-color: #1e1e1e !important;
+  color: #f8f9fa !important;
+  border: 1px solid #444 !important;
+  border-radius: 0.25rem !important;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5) !important;
+}
+
+body.dark-mode .modal-header {
+  background-color: #1e1e1e !important;
+  border-bottom: 1px solid #444 !important;
+}
+
+body.dark-mode .modal-body {
+  background-color: transparent !important;
+}
+
+body.dark-mode .modal-body input.form-control {
+  background-color: #2a2a2a !important;
+  color: #f8f9fa !important;
+  border-color: #555 !important;
+}
+
+body.dark-mode .modal-body input.form-control::placeholder {
+  color: #aaa !important;
+}
+
+body.dark-mode .modal-footer .btn-secondary {
+  background-color: #555 !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+body.dark-mode .modal-footer .btn-danger {
+  background-color: #cc4b4b !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+body.dark-mode .modal-footer .btn-danger:hover {
+  background-color: #b93d3d !important;
+}
+
+.blacklist-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blacklist-dialog-modal {
+  background-color: #ffffff;
+  color: #212529;
+  border-radius: 0.5rem; 
+  padding: 1.5rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.blacklist-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.blacklist-dialog-header .btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+body.dark-mode .blacklist-dialog-modal {
+  background-color: #1e1e1e;
+  color: #f8f9fa;
+  border-radius: 0.5rem;
+  border: 1px solid #444;
+}
+
+body.dark-mode .blacklist-dialog-header .btn-close i {
+  color: #f8f9fa;
+  opacity: 0.8;
+}
+
+body.dark-mode .blacklist-dialog-header .btn-close i:hover {
+  opacity: 1;
+}
+
+body.dark-mode .form-control {
+  background-color: #2a2a2a !important;
+  color: #f8f9fa !important;
+  border-color: #555 !important;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #aaa !important;
+}
+
+body.dark-mode .alert-success,
+body.dark-mode .alert-danger {
+  background-color: #2f2f2f;
+  color: #fff;
+  border-color: #555;
+}
+
+body.dark-mode .btn-danger {
+  background-color: #cc4b4b;
+  color: #fff;
+  border: none;
+}
+
+body.dark-mode .btn-secondary {
+  background-color: #555;
+  color: #fff;
+  border: none;
+}
+
+body.dark-mode .blacklist-dialog-header h5 {
+  color: #ffffff !important;
+}
+
+body.dark-mode .blacklist-dialog-body label,
+body.dark-mode .blacklist-dialog-body .form-label {
+  color: #cccccc !important;
+  font-weight: 500;
+}
+
+/* placeholder */
+body.dark-mode .form-control::placeholder {
+  color: #bbbbbb !important;
+}
+
+body.dark-mode .btn {
+  font-weight: 500;
+}
+
+body.dark-mode .btn-close {
+  filter: brightness(0) invert(1); 
+  background-color: transparent !important;
+  border: none;
+  opacity: 0.7;
+}
+
+body.dark-mode .btn-close:hover {
+  background-color: transparent !important;
+  opacity: 1;
+}
+
