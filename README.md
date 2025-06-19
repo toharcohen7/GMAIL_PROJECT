@@ -2,16 +2,18 @@
 
 ## Overview
 
-This project implements the server-side of our Gmail Project, focusing on backend infrastructure and security.  
-It includes:
+This project is part of the Gmail Project, which includes both the server-side backend infrastructure and the React-based frontend. Together, these components create a seamless and secure email management system.
 
-- **Bloom Filter Server (C++):**  
-  Maintains a persistent Bloom filter to efficiently check and manage blacklisted (bad) URLs.
+### Components:
+
+- **Blacklist Server (C++):**  
+  Implements backend infrastructure and security by maintaining a persistent Bloom filter to efficiently check and manage blacklisted (bad) URLs.
 
 - **Node.js Gmail Server:**  
-  Provides Gmail-like application logic and REST API endpoints, communicating with the Bloom filter server to validate URLs.
+  Provides Gmail-like application logic and REST API endpoints, communicating with the Blacklist server to validate URLs.
 
-Together, these services form the backend infrastructure for a secure, scalable Gmail-like system with robust URL filtering.
+- **React Client:**  
+  Provides a user-friendly interface for managing emails, labels, drafts, and blacklisted URLs. The frontend is built using React, Bootstrap, and other modern libraries to ensure responsiveness and scalability.
 
 ## Milestones
 
@@ -35,352 +37,138 @@ Milestone 3 branch:
 GPDTH-218-branch-for-milestone-3
 ```
 
+Milestone 4 branch:
+
+```sh
+GPDTH-309-branch-for-milestone-4
+```
+
 ## Building with Docker
 
-This project is designed to build and run inside Docker containers using GCC, CMake, Python3, Node.js, and npm.
+This project is designed to build and run inside Docker containers. It uses GCC, CMake, Python3, Node.js, and npm to build and execute the application components.
+
+---
 
 ## Running the Program
 
-1. **Using Docker Compose**
+### Using Docker Compose
 
-First, build the image (only needed after changes or the first time):
+1. **Build and Start the Services**:
+   - Run:
+     ```sh
+     docker-compose up --build
+     ```
+   - This command builds the Docker images and starts all services in one step.
 
-```sh
-docker-compose build
-```
+2. **Start All Services Without Rebuilding**:
+   - Run:
+     ```sh
+     docker-compose up
+     ```
+   - To run in detached mode (background):
+     ```sh
+     docker-compose up -d
+     ```
+> **Note**: Run `docker-compose build` first, then `docker-compose up`. Or use `docker-compose up --build` to do both.
 
-Default run:
+3. **Stop and Clean Up**:
+   - Stop the running containers:
+     ```sh
+     docker-compose down
+     ```
+   - To remove containers, images, and networks:
+     ```sh
+     docker-compose down --rmi all
+     ```
 
-```sh
-docker-compose up
-```
-
-To run in the background (detached mode):
-
-```sh
-docker-compose up -d
-```
-
-Change arguments at runtime:
-
-Format:
-
-```sh
-SERVER_PORT=<server port> NODE_PORT=<node port> BF_SIZE=<bloom filter size> HASH_COUNTS="<hash count 1> <hash count 2> ..." SERVER_HOST=<server host> docker-compose up
-```
-
-Example:
-
-```sh
-SERVER_PORT=5555 NODE_PORT=5556 BF_SIZE=16 HASH_COUNTS="3 5 7 11" SERVER_HOST=gmail_server docker-compose up
-```
-
-How to stop and clean up:
-
-You can stop the running containers at any time with `Ctrl+C`.  
-To remove containers and clean up images/networks, run:
-
-```sh
-docker-compose down --rmi all
-```
-
-> By default, Compose uses values from the `.env` file.  
-> Overriding variables inline only affects that run and does **not** change the `.env` file.
+4. **Override Runtime Arguments**:
+   - Format:
+     ```sh
+     SERVER_PORT=<server port> NODE_PORT=<node port> BF_SIZE=<bloom filter size> HASH_COUNTS="<hash count 1> <hash count 2> ..." SERVER_HOST=<server host> docker-compose up --build
+     ```
+   - Example:
+     ```sh
+     SERVER_PORT=5555 NODE_PORT=5556 BF_SIZE=16 HASH_COUNTS="3 5 7 11" SERVER_HOST=gmail_server docker-compose up --build
+     ```
 
 ---
 
-2. **Using the `run_both.sh` Script**
-
-Format:
-
-```sh
-./rScripts/run_both.sh <node_port> <server_port> <server_host> [additional server args]
-```
-
-Example:
-
-```sh
-./rScripts/run_both.sh 12345 12346 gmail_server 8 3
-```
-
-> This starts both the server and node in the **same terminal window**.
-
-> **Note:** If you don't have permissions, give any script execute permission with  
-> `chmod +x ./rScripts/run_both.sh`
-
-
----
-
-3. **Using `run_server.sh` and `run_node.sh` Separately**
-
-**First, clear the image to avoid conflicts with other images:**
-
-```sh
-docker rmi -f gmail_project
-```
-
-**Run the server (in the first terminal):**
-
-Format:
-
-```sh
-./rScripts/run_server.sh <server_port> [additional server args]
-```
-
-Example:
-
-```sh
-./rScripts/run_server.sh 12346 8 3
-```
-
-> **Note:** If you don't have permissions, give any script execute permission with  
-> `chmod +x ./rScripts/run_server.sh`
-
-**Open a separate terminal and run the node:**
-
-Format:
-
-```sh
-./rScripts/run_node.sh <node_port> <server_port> <server_host>
-```
-
-Example:
-
-```sh
-./rScripts/run_node.sh 12345 12346 gmail_server
-```
-
-> **Note:** If you don't have permissions, give any script execute permission with  
-> `chmod +x ./rScripts/run_node.sh`
-
----
-
-4. **Simplest Docker Run Commands**
-
-**First, build the image:**
-
-```sh
-docker build -t gmail_project .
-```
-
-**Run the server (in the first terminal):**
-
-Format:
-
-```sh
-docker run --network gmailnetdth --name gmail_server -p <server_port>:<server_port> gmail_project ./runServer <server_port> [additional server args]
-```
-
-Example:
-
-```sh
-docker run --network gmailnetdth --name gmail_server -p 12346:12346 gmail_project ./runServer 12346 8 3
-```
-
-**Open a separate terminal and run the node:**
-
-Format:
-
-```sh
-docker run --network gmailnetdth --name gmail_node -p <node_port>:<node_port> gmail_project node /usr/src/mytest/src/app.js <node_port> <server_port> <server_host>
-```
-
-Example:
-
-```sh
-docker run --network gmailnetdth --name gmail_node -p 12345:12345 gmail_project node /usr/src/mytest/src/app.js 12345 12346 gmail_server
-```
-
-> **Note:** If you use a different image or network name, update the commands accordingly.
-
----
-
-> **Note:** If you don't have permissions, give any script execute permission with  
-> `chmod +x <script_path>`
-
-
-### Running the Test Suite
-
-To run the GoogleTest-based test suite:
-
-**First, build the image:**
-
-```sh
-docker build -t gmail_project .
-```
-
-**Then, run the tests:**
-
-```sh
-docker run gmail_project ./runTest
-```
-
-- This will execute all unit tests and print the results.
-
-## Usage Instructions
-
-After starting both containers (Node.js server and Bloom filter server), you can interact with the system using the provided REST API endpoints.  
-Below are example `curl` commands for common operations:
-
-> **Note:** All example commands below assume the Node.js server is running on port **12345**.
-
-### USERS
-
-- **Post - create new user:**
-  ```sh
-  curl -i -X POST http://localhost:12345/api/users \
-  -H "Content-Type: application/json" \
-  -d '{ 
-    "userName": "user1",
-    "password": "Pass123!",
-    "firstName": "Jane",
-    "lastName": "Smith",
-    "gender": "female",
-    "birthDate": "1992-05-15"
-  }'
-  ```
-
-- **Get - get user by id:**
-  ```sh
-  curl -i -X GET http://localhost:12345/api/users/1
-  ```
-
-### TOKENS
-
-- **Post - sign in:**
-  ```sh
-  curl -i -X POST http://localhost:12345/api/tokens \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userName": "user1",
-    "password": "Pass123!"
-  }'
-  ```
-
-### LABELS
-
-- **Get - get all labels:**
-  ```sh
-  curl -i -X GET http://localhost:12345/api/labels -H "user-id: 1"
-  ```
-
-- **Post - create label:**
-  ```sh
-  curl -i -X POST http://localhost:12345/api/labels \
-  -H "Content-Type: application/json" -H "user-id: 1" \
-  -d '{"name": "Work"}'
-  ```
-  > **Note:** Reserved labels: id = 0,1,2 (Draft, Sent, Received).  
-> You cannot create or modify labels with these IDs.
-
-- **Get - get label by id:**
-  ```sh
-  curl -i -X GET http://localhost:12345/api/labels/1 -H "user-id: 1"
-  ```
-
-- **Patch - update a label name:**
-  ```sh
-  curl -i -X PATCH http://localhost:12345/api/labels/3 \
-  -H "Content-Type: application/json" \
-  -H "user-id: 1" \
-  -d '{"name": "UpdatedLabel"}'
-  ```
-
-- **Delete - delete a label by a specific id:**
-  ```sh
-  curl -i -X DELETE http://localhost:12345/api/labels/3 -H "user-id: 1"
-  ```
-
-> **Note:** When a label is deleted, all mails associated with that label will automatically revert to their original status (either "sent" or "received") based on each mail's status.
-
-### MAILS
-
-- **Get - get last 50 mails:**
-  ```sh
-  curl -i -X GET http://localhost:12345/api/mails -H "user-id: 1"
-  ```
-
-> **Note:**  exclude Draft mails.
-
-- **Post - create a mail:**
-  ```sh
-  curl -i -X POST http://localhost:12345/api/mails \
-  -H "Content-Type: application/json" -H "user-id: 1"
-  ```
-
-> **Note:** Creating a mail will create an empty draft mail.  
-> To actually send the mail, you must update it using the PATCH endpoint with the required fields (must field: labelId = 1 (sent), at least one valid receiver).
-
-- **Get - search string in all mails:**
-  ```sh
-  curl -i -X GET http://localhost:12345/api/mails/search/Hello -H "user-id: 1"
-  ```
-
-- **Get - get a mail by id:**
-  ```sh
-  curl -i -X GET http://localhost:12345/api/mails/1 -H "user-id: 1"
-  ```
-
-- **Patch - update a mail (subject/content/labelId/receiversId):**
-  ```sh
-  curl -i -X PATCH http://localhost:12345/api/mails/1 \
-  -H "Content-Type: application/json" -H "user-id: 1" \
-  -d '{
-    "receiversId": [1],
-    "labelId": 1,
-    "subject": "Hello mate",
-    "content": "Check this out2!"
-  }'
-  ```
-
-> **Note:** For mails that have already been sent, only the label can be updated.
-
-- **Delete - delete a mail by a specific id:**
-  ```sh
-  curl -i -X DELETE http://localhost:12345/api/mails/1 -H "user-id: 1"
-  ```
-
-### BLACKLIST
-
-- **Post - add a url to the blacklist:**
-  ```sh
-  curl -i -X POST http://localhost:12345/api/blacklist \
-  -H "Content-Type: application/json" \
-  -d '{"url": "www.example.com"}'
-  ```
-
-- **Delete - delete a url from the blacklist:**
-  ```sh
-  curl -i -X DELETE http://localhost:12345/api/blacklist/www.example.com
-  ```
-  
-> **Note:** The server validates the JSON body of each `curl` request for required fields and correct data types.  
-> Make sure your request body matches the expected format, otherwise the server will respond with an error.
-
-> Replace IDs and data as needed for your use case.  
-> All endpoints are available once both containers are running.
----
+## Key Components
+
+### Inbox
+- **InboxHeader**: Provides controls for refreshing, marking emails as read/unread, deleting emails,  and moving emails to labels include.
+- **Flag as Spam**: Allows users to mark an email as spam for filtering bad URL's in future mails.
+- **MessageList**: Displays a list of emails with options to select, view, or delete.
+- **DraftEditor**: Allows users to edit and send drafts.
+
+### Sidebar
+- **SystemLabel**: Displays system labels like "Sent" and "Draft".
+- **UserLabel**: Displays user-created labels with options to edit or delete.
+- **AddLabel**: Modal for creating or editing labels.
+- **Remove URL from Blacklist**: Allows users to delete a URL from the blacklist. 
+
+### TopBar
+- **Search**: Provides a search bar for filtering emails.
+- **DarkMode**: Button to toggle between light and dark themes.
+- **Profile**: Displays the user's profile information and provides options such as logging out or accessing account settings.
+
+### Authentication
+- **SignUp**: Form for creating a new user account.
+- **SignIn**: Form for logging into the application.
 
 ## Program Flow
 
-1. **Start both containers** using one of the provided methods.
- This will launch:
-   - The C++ Bloom filter server (handles blacklist logic)
-   - The Node.js Gmail server (handles REST API and Gmail-like features)
+1. **Start all containers** using Docker Compose.  
+   This will launch:
+   - The C++ Blacklist server (handles blacklist validation).
+   - The Node.js Gmail server (provides REST API and Gmail-like functionality).
+   - The React client (provides the user interface for interacting with the system).
 
-2. **Interact with the system** by sending HTTP requests (using `curl` or similar tools) to the Node.js server
-on port **12345**.
+2. **Welcome Page**:  
+   - After starting the containers, navigate to the **Welcome Page** at `http://localhost:3000`.  
+   - This page provides an introduction to the application and options to either **Sign Up** or **Sign In**.  
+   - Click the appropriate button to proceed.
 
-   Use the example commands in the "Usage Instructions" section for creating users, signing in, managing labels, sending mails, and updating the blacklist.
+3. **Sign Up**:  
+   - Use the **Sign Up** form on the React client to create a new user.  
+   - Navigate to the Sign Up page (`http://localhost:3000/signup`) and fill in the required details (e.g., username, password).  
+   - Click the **Sign Up** button to submit the form.
 
-3. **The Node.js server** processes your requests, communicates with the Bloom filter server as needed, and returns responses.
+4. **Sign In**:  
+   - Use the **Sign In** form on the React client to authenticate.  
+   - Navigate to the Sign In page (`http://localhost:3000/signin`) and enter your credentials.  
+   - Click the **Sign In** button to log in. Upon successful authentication, you will be redirected to the main application page.
 
-4. **Bloom filter state** is automatically saved and loaded by the server for persistence.
+5. **Use the Mail System**:  
+   - **Manage Labels**:  
+     - Use the **Sidebar** to create, edit, or delete labels.  
+     - Click the **Add Label** button to create a new label, or use the edit/delete options next to existing labels.
+
+   - **Send Emails**:
+     - Use the compose button to send a new mail.  
+     - Navigate to the **Draft Label** to edit and send your email.  
+     - Fill in the recipient, subject, and content fields, then click the **Send** button.
+
+   - **Blacklist URLs**:  
+     - Use the **Blacklist Management** button to remove URLs from the blacklist.  
+     - Enter the URL in the input field and click the **Delete from Blacklist** button.
+     - The button becomes visible when hovering over the spam label.
+     - The URLs added to the blacklist are those that appeared in emails reported as spam by users.
+
+   - **View Inbox**:  
+     - Navigate to the **Recived Label** to view your emails.  
+     - Use the search bar or filters to find specific emails, and click on an email to view its details.
+
+> **Note**: The default port for the React client is `3000`.  
+> If port 3000 is unavailable, React will automatically move to the next available port (e.g., 3001, 3002, etc.).  
+> You can see the assigned port in the terminal when running
+
+> **Note:** All interactions are performed through the React client, which communicates with the Node.js server and the C++ Bloom Filter server in the background.
 
 > **Note:** Both servers run continuously to serve requests.  
 > Stop the system at any time with `Ctrl+C` in the terminal running Docker Compose or the containers.
 
-### Examples
+### Screenshots
 
 **Building the Docker images with Docker Compose:**  
 ![Build Command](images/build_command.jpeg)
@@ -391,36 +179,80 @@ on port **12345**.
 **removing all services with Compose down:**  
 ![Docker Compose Down](images/compose_down.jpeg)
 
-**Running both servers with the helper script:**  
-![Run Both Script](images/run_both.jpeg)
+**Welcome Page**  
+![Welcome Page](images/welcome_page.jpeg)
 
-**Running the C++ server and Node.js server separately:**  
-![Run Server & Node Script](images/run_separate.jpeg)  
+**Sign Up Page**  
+![Sign Up Page](images/sign_up_page.jpeg)
 
-**Running the test suite:**  
-![Run Test Suite](images/run_test.jpeg)
+**Sign In Page**  
+![Sign In Page](images/sign_in_page.jpeg)
 
-**Sample API interaction (creating a user):**  
-![Sample API Call](images/api_call.jpeg)
+**Main Inbox Page**  
+![Main Inbox Page](images/main_inbox_page.jpeg)
 
-**Secound sample API interaction (creating a mail):**  
-![Sample API 2 Call](images/send_mail.jpeg)
+**Dark Mode Example**  
+![Dark Mode Example](images/dark_mode_example.jpeg)
 
 ---
 
+## Features
+
+- **Inbox Management**: View, search, and filter emails by labels.
+- **Draft Editor**: Create, edit, and send email drafts.
+- **Label Management**: Add, edit, and delete labels.
+- **Blacklist Management**: Add or remove URLs from the blacklist.
+- **User Authentication**: Sign up and sign in functionality.
+- **Dark Mode**: Toggle between light and dark themes.
+
 ## Project Structure
 
-- `src/blacklist/cpp/main.cpp` — C++ Bloom filter server entry point
-- `src/blacklist/cpp/server.cpp` / `server.hpp` — Server logic
-- `src/blacklist/cpp/bloomFilter.cpp` / `bloomFilter.hpp` — Bloom filter logic
-- `src/app.js` — Node.js Gmail server (REST API and Gmail logic)
-- `CMakeLists.txt` — C++ build configuration
-- `Dockerfile` — Docker build instructions
-- `docker-compose.yml` — Multi-container orchestration
-- `rScripts/` — Helper scripts for running containers
+The React application is organized as follows:
+
+```
+GMAIL_PROJECT_D.T.H/
+├── src/                             # Project source code
+│   ├── client/                      # React frontend application
+│   │   ├── .gitignore               # Git ignore file for React client
+│   │   ├── package.json             # React client dependencies
+│   │   ├── src/                     # React source code
+│   │   │   ├── components/          # Reusable UI components
+│   │   │   │   ├── Inbox/           # Inbox-related components
+│   │   │   │   ├── SideBar/         # Sidebar and label management
+│   │   │   │   ├── TopBar/          # Top navigation bar
+│   │   │   │   ├── SignUp/          # Sign-up form components
+│   │   │   │   ├── SignIn/          # Sign-in form components
+│   │   │   ├── pages/               # Page-level components
+│   │   │   │   ├── MainPage/        # Main application page
+│   │   │   │   ├── WelcomePage/     # Welcome page
+│   │   │   ├── utils/               # Utility functions
+│   │   │   ├── config/              # Configuration files (e.g., API URLs)
+│   │   │   ├── index.js             # Application entry point
+│   │   │   ├── App.js               # Main application component
+│   │
+│   ├── blacklist/                   # C++ Bloom Filter server implementation
+│   │   ├── cpp/                     # C++ source files
+│   │   ├── hpp/                     # C++ header files
+│   │   ├── client.py                # Python client for testing the server
+│   │
+│   ├── controllers/                 # Node.js controllers for handling API logic
+│   ├── models/                      # Node.js models for database and application logic
+│   ├── routes/                      # Node.js routes for API endpoints
+│   │── app.js                       # Main Node.js server file
+│   │── package.json                 # Node.js server dependencies
+│
+├── images/                          # Project images for documentation  
+├── .env                             # Environment variables for the project
+├── .dockerignore                    # Docker ignore file
+├── .gitignore                       # Git ignore file
+├── CMakeLists.txt                   # CMake configuration for building the C++ server
+├── Dockerfile                       # Dockerfile for building the project
+├── docker-compose.yml               # Docker Compose configuration
+├── README.md                        # Project documentation
+├── details.txt                      # Project details (authors, repository link, etc.)
+```
 
 ## Requirements
 
 - [Docker](https://www.docker.com/) (with Docker Compose)
-- Two terminal windows (one for the server, one for the Node.js Gmail server)
-- (Optional) `curl` or similar tool for making HTTP requests to the API
+- A web browser to access the React client
