@@ -25,7 +25,10 @@ function MainPage() {
       <div className="content-container">
         <div className={`sidebar-wrapper ${!sidebarOpen ? 'sidebar-closed' : ''}`}>
           <SideBar
-            onLabelSelect={setSelectedLabel}
+            onLabelSelect={(labelName) => {
+              setSelectedLabel(labelName);
+              triggerRefresh();
+            }}
             refreshTrigger={refreshTrigger}
           />
         </div>
@@ -33,7 +36,7 @@ function MainPage() {
           <MainInbox
             selectedLabel={selectedLabel}
             searchQuery={searchQuery}
-            onRefresh={triggerRefresh}  
+            onRefresh={triggerRefresh}
           />
         </div>
       </div>

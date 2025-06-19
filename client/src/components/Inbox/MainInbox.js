@@ -131,6 +131,40 @@ useEffect(() => {
   searchFromServer();
 }, [searchQuery, currentUser, loadSenderNames]); // Remove loadLabels from dependency array
 
+useEffect(() => {
+  const fetchMessages = async () => {
+    if (!currentUser) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      let data = [];
+
+      const res = await FetchWithAuth(
+        searchQuery
+          ? `http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`
+          : 'http://localhost:12345/api/mails'
+      );
+
+      if (!res.ok) throw new Error(searchQuery ? 'Search failed' : 'Failed to load messages');
+
+      data = await res.json();
+      setMessages(data);
+      setSelectedMessages(new Set());
+      loadSenderNames(data);
+
+    } catch (err) {
+      console.error('Error fetching messages:', err);
+      setError('Failed to load messages');
+    }
+
+    setIsLoading(false);
+  };
+
+  fetchMessages();
+}, [searchQuery, selectedLabel, onRefresh, currentUser, loadSenderNames]);
+
 
   const selectAllMessages = () => setSelectedMessages(new Set(messages.map(msg => msg.id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
@@ -158,6 +192,7 @@ useEffect(() => {
       );
       await Promise.all(deletePromises);
       await loadMessages();
+      if (onRefresh) onRefresh();
     } catch (e) {
       setError('Failed to delete messages');
     }
@@ -168,6 +203,8 @@ useEffect(() => {
     try {
       await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, { method: 'DELETE' });
       await loadMessages();
+      if (onRefresh) onRefresh();
+
       setSelectedMail(null);
     } catch (e) {
       setError('Failed to delete message');
@@ -226,6 +263,7 @@ const handleMarkAsSpam = async () => {
     }
 
     await loadMessages();
+    if (onRefresh) onRefresh();
     setSelectedMessages(new Set());
     
   } catch (e) {
@@ -249,6 +287,7 @@ const handleMarkAsSpam = async () => {
   const handleDraftSent = () => {
     // Refresh mail list to reflect changes
     loadMessages();
+    if (onRefresh) onRefresh();
   };
 
   const filteredMessages = messages.filter(m =>
@@ -262,7 +301,8 @@ const handleMarkAsSpam = async () => {
     selectedMessages,
     setSelectedMessages,
     loadMessages,
-    setError
+    setError,
+    onRefresh
   });
   
   return currentUser ? (

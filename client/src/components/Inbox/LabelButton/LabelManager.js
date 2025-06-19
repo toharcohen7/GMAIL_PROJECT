@@ -8,7 +8,8 @@ const LabelManager = ({
   selectedMessages, 
   setSelectedMessages, 
   loadMessages, 
-  setError 
+  setError,
+  onRefresh
 }) => {
   const [availableLabels, setAvailableLabels] = useState([]);
   
@@ -55,6 +56,7 @@ const LabelManager = ({
       
       await Promise.all(movePromises);
       await loadMessages();
+      if (onRefresh) onRefresh();
       setSelectedMessages(new Set()); // Clear selection
     } catch (error) {
       setError(`Failed to move messages to ${labelName}`);
