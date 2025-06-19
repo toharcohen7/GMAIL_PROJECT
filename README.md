@@ -40,51 +40,6 @@ GPDTH-218-branch-for-milestone-3
 Milestone 4 branch:
 
 ```sh
-GPDTH-218-branch-for-milestone-4
-```
-
-# Gmail_Project
-
-## Overview
-
-This project is part of the Gmail Project, which includes both the server-side backend infrastructure and the React-based frontend. Together, these components create a seamless and secure email management system.
-
-### Components:
-
-- **Bloom Filter Server (C++):**  
-  Implements backend infrastructure and security by maintaining a persistent Bloom filter to efficiently check and manage blacklisted (bad) URLs.
-
-- **Node.js Gmail Server:**  
-  Provides Gmail-like application logic and REST API endpoints, communicating with the Bloom filter server to validate URLs.
-
-- **React Client:**  
-  Provides a user-friendly interface for managing emails, labels, drafts, and blacklisted URLs. The frontend is built using React, Bootstrap, and other modern libraries to ensure responsiveness and scalability.
-
-## Milestones
-
-If you like to see a previous milestone please connect to the designated branch
-
-Milestone 1 branch:
-
-```sh
-GPDTH-99-branch-for-milestone-1
-```
-
-Milestone 2 branch:
-
-```sh
-GPDTH-165-branch-for-milestone-2
-```
-
-Milestone 3 branch:
-
-```sh
-GPDTH-218-branch-for-milestone-3
-```
-
-Milestone 4 branch:
-
-```sh
 GPDTH-309-branch-for-milestone-4
 ```
 
