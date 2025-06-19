@@ -112,7 +112,7 @@ function BlacklistDeleteDialog({ onClose }) {
                             </button>
                             <button
                                 type="submit"
-                                className="btn btn-danger" // Always keep it red with btn-danger
+                                className="btn btn-danger" 
                                 disabled={loading || !url.trim() || status === 'success'}
                             >
                                 {loading ? 'Deleting...' : 'Delete from Blacklist'}

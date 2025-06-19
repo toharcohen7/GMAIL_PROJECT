@@ -1,3 +1,4 @@
+/* Base structure */
 .blacklist-dialog-backdrop {
     position: fixed;
     top: 0;
@@ -19,6 +20,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Header styling */
 .blacklist-dialog-header {
     display: flex;
     justify-content: space-between;
@@ -30,12 +32,15 @@
 .blacklist-dialog-header h5 {
     margin: 0;
     font-weight: 600;
+    color: #212529;
 }
 
+/* Body styling */
 .blacklist-dialog-body {
     padding: 1rem;
 }
 
+/* Close button */
 .blacklist-dialog-modal .btn-close {
     background: none;
     border: none;
@@ -49,10 +54,11 @@
     opacity: 1;
 }
 
+/* Danger button styling */
 .blacklist-dialog-body .btn-danger {
     background-color: #dc3545;
     border-color: #dc3545;
-    color: white;
+    color: white !important;
 }
 
 .blacklist-dialog-body .btn-danger:hover, 
@@ -60,7 +66,7 @@
 .blacklist-dialog-body .btn-danger:active {
     background-color: #c82333;
     border-color: #bd2130;
-    color: white;
+    color: white !important;
 }
 
 .blacklist-dialog-body .btn-danger:disabled {
@@ -69,68 +75,35 @@
     opacity: 0.65;
 }
 
-/* Fix for white text on light background */
-.blacklist-dialog-modal .modal-title,
+/* Text color fixes - Consolidated */
+.blacklist-dialog-modal h1,
+.blacklist-dialog-modal h2,
+.blacklist-dialog-modal h3,
+.blacklist-dialog-modal h4,
+.blacklist-dialog-modal h5,
+.blacklist-dialog-modal h6,
+.blacklist-dialog-modal p,
 .blacklist-dialog-modal label,
-.blacklist-dialog-modal title,
-.blacklist-dialog-modal p {
-  color: #212529 !important; /* Dark text color */
+.blacklist-dialog-modal span:not(.btn *) {
+    color: #212529 !important;
 }
 
-/* Ensure the input placeholder is visible too */
+/* Form element styling */
+.blacklist-dialog-modal input,
+.blacklist-dialog-modal .form-control {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #ced4da !important;
+}
+
+/* Placeholder styling */
 .blacklist-dialog-modal input::placeholder {
-  color: #6c757d !important; /* Slightly lighter but still visible */
+    color: #6c757d !important;
+    opacity: 0.7 !important;
 }
 
-/* If you have form elements with white text */
-.blacklist-dialog-modal .form-control {
-  color: #212529; /* Dark text for inputs */
-}
-
-/* Comprehensive fix for text visibility in BlacklistDeleteDialog */
-
-/* Modal title fix - target the specific element */
-.modal-title,
-.modal .modal-header h5,
-.modal-header .modal-title,
-.blacklist-dialog-modal .modal-title,
-.blacklist-delete-dialog .modal-title,
-[class*="blacklist"] .modal-title,
-.modal-content h5 {
-  color: #000000 !important;
-  font-weight: 500 !important;
-}
-
-/* Dialog content text fix */
-.modal-body label,
-.modal-body p,
-.modal-body .form-label,
-.modal-body .form-text,
-[class*="blacklist"] label,
-[class*="blacklist"] p,
-.blacklist-dialog-modal .modal-body * {
-  color: #212529 !important;
-}
-
-/* Input text fix */
-.modal-body input,
-.modal-body .form-control,
-[class*="blacklist"] input,
-.blacklist-dialog-modal .form-control {
-  color: #212529 !important;
-  background-color: #ffffff !important;
-  border: 1px solid #ced4da !important;
-}
-
-/* Input placeholder fix */
-.modal-body input::placeholder,
-[class*="blacklist"] input::placeholder {
-  color: #6c757d !important;
-  opacity: 0.7 !important;
-}
-
-/* Ensure buttons have proper contrast */
-.modal-footer .btn,
-[class*="blacklist"] .btn:not(.btn-close) {
-  color: contrast-appropriate !important;
+/* Button text color overrides */
+.blacklist-dialog-modal .btn-secondary,
+.blacklist-dialog-modal .btn-secondary * {
+    color: white !important;
 }
