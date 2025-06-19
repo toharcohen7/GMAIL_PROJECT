@@ -29,6 +29,7 @@ exports.getUserMails = (req, res) => {
             receiversNames, 
             subject, 
             content, 
+            onRead,
             formattedTime, 
             timestamp } = mail;
 
@@ -39,6 +40,7 @@ exports.getUserMails = (req, res) => {
              receiversNames, 
              subject, 
              content, 
+             onRead,
              time: formattedTime,
              timestamp };
   });
@@ -90,10 +92,10 @@ exports.getMailById = (req, res) => {
   }
 
   const mail = Mails.getMailById(userId, mailId);
-  const { id, mailStatus, senderId, receiversNames, subject, content, formattedTime } = mail;
+  const { id, mailStatus, senderId, receiversNames, subject, content, onRead, formattedTime } = mail;
   let labelName = Labels.getLabelByName(userId, mail.labelName).name;
 
-  res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, time: formattedTime });
+  res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, onRead, time: formattedTime });
 }
 
 /**
@@ -147,39 +149,38 @@ exports.updateMail = async (req, res) => {
   if (Mails.getMailStatus(userId, mailId) === 'Draft') {
     return changeDraftMail(userId, mailId, updates, req, res);
   } else {
-    return changeLabel(userId, mailId, updates, req, res);
+    return changeUnDraftedMail(userId, mailId, updates, req, res);
   }
 };
 
 // Update label for a non-draft mail
-function changeLabel(userId, mailId, updates, req, res) {
+function changeUnDraftedMail(userId, mailId, updates, req, res) {
 
   // Validate no extra fields in request body
-  if(isThereExtraFields(req, ['labelName'])) {
+  if(isThereExtraFields(req, ['labelName', 'onRead'])) {
     return res.status(400).json({ error: 'Only the label can be changed in already sent mails' });
   } 
 
-  if (updates.labelName === undefined) {
-    return res.status(400).json({ error: 'labelName is required' });
+  if (updates.labelName === undefined && updates.onRead === undefined) {
+    return res.status(400).json({ error: 'labelName or onRead is required' });
+  }
+  if(updates.labelName !== undefined){
+
+    if (!Labels.getLabelByName(userId, updates.labelName)) {
+      return res.status(404).json({ error: 'Label not found' });
+    }   
+    if ('Draft' === updates.labelName) {
+      return res.status(400).json({ error: 'Cannot change label to Draft' });
+    }   
+    if ('Sent' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Sent') {
+      return res.status(400).json({ error: 'Cannot change the label of a received mail to Sent' });
+    }   
+    if ('Received' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Received') {
+      return res.status(400).json({ error: 'Cannot change the label of a sent mail to Received' });
+    }
   }
 
-  if (!Labels.getLabelByName(userId, updates.labelName)) {
-    return res.status(404).json({ error: 'Label not found' });
-  }
-
-  if ('Draft' === updates.labelName) {
-    return res.status(400).json({ error: 'Cannot change label to Draft' });
-  }
-
-  if ('Sent' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Sent') {
-    return res.status(400).json({ error: 'Cannot change the label of a received mail to Sent' });
-  }
-
-  if ('Received' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Received') {
-    return res.status(400).json({ error: 'Cannot change the label of a sent mail to Received' });
-  }
-
-  Mails.updateMail(userId, mailId, { labelName: updates.labelName });
+  Mails.updateMail(userId, mailId, updates);
   return res.status(204).end();
 }
 

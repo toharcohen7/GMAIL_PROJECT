@@ -15,7 +15,7 @@ import EmptyState from './InboxStateComponentes/EmptyState';
 import { FetchWithAuth } from '../FetchWithAuth/FetchWithAuth';
 import LabelManager from './LabelButton/LabelManager';
 
-function Inbox({ selectedLabel, searchQuery, onRefresh  }) {
+function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [selectedMessages, setSelectedMessages] = useState(new Set());
@@ -24,7 +24,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh  }) {
   const [selectedMail, setSelectedMail] = useState(null);
   const [senderCache, setSenderCache] = useState(new Map());
   const [draftToEdit, setDraftToEdit] = useState(null);
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,6 +93,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh  }) {
     setIsLoading(false);
   }, [currentUser, loadSenderNames]);
 
+
 useEffect(() => {
   const searchFromServer = async () => {
     if (!currentUser) return;
@@ -100,33 +101,33 @@ useEffect(() => {
     setIsLoading(true);
     setError(null);
 
-    try {
-      let data = [];
+      try {
+        let data = [];
 
-      if (searchQuery) {
-        const res = await FetchWithAuth(`http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`);
-        if (!res.ok) throw new Error('Search failed');
-        data = await res.json();
-      } else {
-        const res = await FetchWithAuth('http://localhost:12345/api/mails');
-        if (!res.ok) throw new Error('Failed to load messages');
-        data = await res.json();
+        if (searchQuery) {
+          const res = await FetchWithAuth(`http://localhost:12345/api/mails/search/${encodeURIComponent(searchQuery)}`);
+          if (!res.ok) throw new Error('Search failed');
+          data = await res.json();
+        } else {
+          const res = await FetchWithAuth('http://localhost:12345/api/mails');
+          if (!res.ok) throw new Error('Failed to load messages');
+          data = await res.json();
+        }
+
+        setMessages(data);
+        setSelectedMessages(new Set());
+        loadSenderNames(data);
+
+      } catch (err) {
+        console.error('Error fetching messages:', err);
+        setError('Failed to load messages');
       }
 
-      setMessages(data);
-      setSelectedMessages(new Set());
-      loadSenderNames(data);
+      setIsLoading(false);
+    };
 
-    } catch (err) {
-      console.error('Error fetching messages:', err);
-      setError('Failed to load messages');
-    }
-
-    setIsLoading(false);
-  };
-
-  searchFromServer();
-}, [searchQuery, currentUser, loadSenderNames]);
+    searchFromServer();
+  }, [searchQuery, currentUser, loadSenderNames]);
 
 useEffect(() => {
   const fetchMessages = async () => {
@@ -174,11 +175,70 @@ useEffect(() => {
 
   const handleRefresh = async () => {
     await loadMessages();
-    if (onRefresh) onRefresh();  
+    if (onRefresh) onRefresh();
   };
 
   const handleRetry = () => loadMessages();
-  const handleMarkAllRead = () => setMessages(msgs => msgs.map(m => ({ ...m, read: true })));
+
+
+  const handleMarkAsRead = async () => {
+    try {
+      const updatedMessages = await Promise.all(
+        messages.map(async (mail) => {
+          if (selectedMessages.has(mail.id) && !mail.onRead) {
+            const res = await FetchWithAuth(`http://localhost:12345/api/mails/${mail.id}`, {
+              method: 'PATCH',
+              body: JSON.stringify({ onRead: true })
+            });
+
+            if (res && res.ok) {
+              return { ...mail, onRead: true };
+            }
+          }
+
+          return mail;
+        })
+      );
+
+      setMessages(updatedMessages);
+      setSelectedMessages(new Set());
+      if (onRefresh) onRefresh();
+    } catch (err) {
+      console.error('Failed to mark selected mails as read:', err);
+      setError('Failed to mark selected mails as read');
+    }
+  };
+
+  const handleMarkAsUnread = async () => {
+  try {
+    const updatedMessages = await Promise.all(
+      messages.map(async (mail) => {
+        if (selectedMessages.has(mail.id) && mail.onRead) {
+          const res = await FetchWithAuth(`http://localhost:12345/api/mails/${mail.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ onRead: false })
+          });
+
+          if (res && res.ok) {
+            return { ...mail, onRead: false };
+          }
+        }
+
+        return mail;
+      })
+    );
+
+    setMessages(updatedMessages);
+    setSelectedMessages(new Set());
+    if (onRefresh) onRefresh();
+  } catch (err) {
+    console.error('Failed to mark selected mails as unread:', err);
+    setError('Failed to mark selected mails as unread');
+  }
+};
+
+
+
 
   const handleDeleteSelected = async () => {
     if (!currentUser) return;
@@ -207,72 +267,88 @@ useEffect(() => {
     }
   };
 
-const handleMarkAsSpam = async () => {
-  if (!currentUser) return;
-  try {
-    // Get the full message objects for selected messages
-    const selectedData = messages.filter(msg => selectedMessages.has(msg.id));
-    console.log("Selected messages for spam:", selectedData);
-    
-    // Improved regex that matches URLs with or without http/https prefix
-    const urlRegex = /(https?:\/\/)?([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}/gi;
-    const urls = new Set();
-    
-    // Extract URLs from both subject and content fields
-    selectedData.forEach(msg => {
-      const subjectMatches = msg.subject ? String(msg.subject).match(urlRegex) || [] : [];
-      const contentMatches = msg.content ? String(msg.content).match(urlRegex) || [] : [];
-      
-      subjectMatches.forEach(url => urls.add(url));
-      contentMatches.forEach(url => urls.add(url));
-    });
-    
-    console.log("URLs found to blacklist:", Array.from(urls));
+  const handleMarkAsSpam = async () => {
+    if (!currentUser) return;
+    try {
+      // Get the full message objects for selected messages
+      const selectedData = messages.filter(msg => selectedMessages.has(msg.id));
+      console.log("Selected messages for spam:", selectedData);
 
-    // Add URLs to blacklist
-    if (urls.size > 0) {
-      for (const url of urls) {
-        try {
-          const response = await FetchWithAuth('http://localhost:12345/api/blacklist', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
-          });
-          console.log(`URL ${url} blacklist result:`, response);
-        } catch (error) {
-          console.error(`Error blacklisting URL ${url}:`, error);
+      // Improved regex that matches URLs with or without http/https prefix
+      const urlRegex = /(https?:\/\/)?([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}/gi;
+      const urls = new Set();
+
+      // Extract URLs from both subject and content fields
+      selectedData.forEach(msg => {
+        const subjectMatches = msg.subject ? String(msg.subject).match(urlRegex) || [] : [];
+        const contentMatches = msg.content ? String(msg.content).match(urlRegex) || [] : [];
+
+        subjectMatches.forEach(url => urls.add(url));
+        contentMatches.forEach(url => urls.add(url));
+      });
+
+      console.log("URLs found to blacklist:", Array.from(urls));
+
+      // Add URLs to blacklist
+      if (urls.size > 0) {
+        for (const url of urls) {
+          try {
+            const response = await FetchWithAuth('http://localhost:12345/api/blacklist', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ url })
+            });
+            console.log(`URL ${url} blacklist result:`, response);
+          } catch (error) {
+            console.error(`Error blacklisting URL ${url}:`, error);
+          }
         }
       }
-    }
 
-    // Mark messages as spam
-    for (const id of selectedMessages) {
-      try {
-        await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ labelName: 'Spam' })
-        });
-      } catch (error) {
-        console.error(`Error marking message ${id} as spam:`, error);
+      // Mark messages as spam
+      for (const id of selectedMessages) {
+        try {
+          await FetchWithAuth(`http://localhost:12345/api/mails/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ labelName: 'Spam' })
+          });
+        } catch (error) {
+          console.error(`Error marking message ${id} as spam:`, error);
+        }
       }
-    }
 
-    await loadMessages();
-    if (onRefresh) onRefresh();
-    setSelectedMessages(new Set());
-    
-  } catch (e) {
-    setError('Failed to mark messages as spam');
-    console.error('Error in handleMarkAsSpam:', e);
+      await loadMessages();
+      if (onRefresh) onRefresh();
+      setSelectedMessages(new Set());
+
+    } catch (e) {
+      setError('Failed to mark messages as spam');
+      console.error('Error in handleMarkAsSpam:', e);
+    }
+  };
+
+  const handleMailClick = async (msg, e) => {
+  if (e.target.classList.contains('form-check-input')) return;
+
+  if (!msg.onRead) {
+    setMessages(msgs =>
+      msgs.map(m => m.id === msg.id ? { ...m, onRead: true } : m)
+    );
+
+    try {
+      await FetchWithAuth(`http://localhost:12345/api/mails/${msg.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ onRead: true })
+      });
+    } catch (err) {
+      console.error('Failed to mark mail as read on server:', err);
+    }
   }
+
+  setSelectedMail(msg);
 };
 
-  const handleMailClick = (msg, e) => {
-    if (e.target.classList.contains('form-check-input')) return;
-    if (!msg.read) setMessages(msgs => msgs.map(m => m.id === msg.id ? { ...m, read: true } : m));
-    setSelectedMail(msg);
-  };
 
   // Add handler for completing drafts
   const handleCompleteDraft = async (draft) => {
@@ -296,7 +372,7 @@ const handleMarkAsSpam = async () => {
   };
 
   const filteredMessages = messages.filter(m =>
-  (!selectedLabel || m.labelName === selectedLabel)
+    (!selectedLabel || m.labelName === selectedLabel)
   );
 
   // Use the simplified LabelManager component
@@ -308,7 +384,7 @@ const handleMarkAsSpam = async () => {
     setError,
     onRefresh
   });
-  
+
   return currentUser ? (
     <div className="inbox-wrapper">
       <div className="inbox-container card shadow-sm">
@@ -319,7 +395,8 @@ const handleMarkAsSpam = async () => {
           onSelectAll={selectAllMessages}
           onDeselectAll={deselectAllMessages}
           onRefresh={handleRefresh}
-          onMarkAllRead={handleMarkAllRead}
+          onMarkAsRead={handleMarkAsRead}
+          onMarkAsUnread={handleMarkAsUnread}
           onDeleteSelected={handleDeleteSelected}
           onMarkAsSpam={handleMarkAsSpam}
           onMoveToLabel={handleMoveToLabel}
