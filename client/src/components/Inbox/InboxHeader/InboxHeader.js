@@ -8,7 +8,8 @@ function InboxHeader({
   onSelectAll,
   onDeselectAll,
   onRefresh,
-  onMarkAllRead,
+  onMarkAsRead,
+  onMarkAsUnread,
   onDeleteSelected,
   onMarkAsSpam,
   onMoveToLabel,
@@ -48,19 +49,11 @@ function InboxHeader({
               >
                 <i className="bi bi-arrow-clockwise"></i>
               </button>
-              <button
-                className="btn btn-circle btn-light"
-                aria-label="Mark all as read"
-                onClick={onMarkAllRead}
-                title="Mark all as read"
-              >
-                <i className="bi bi-envelope-open"></i>
-              </button>
             </>
           ) : (
             <>
               <button
-                className="btn btn-circle btn-light"
+                className="btn btn-circle btn-light ml-2"
                 aria-label="Delete selected"
                 onClick={onDeleteSelected}
                 title="Delete selected messages"
@@ -83,6 +76,22 @@ function InboxHeader({
                   onMoveToLabel={onMoveToLabel}
                 />
               )}
+              <button
+                className="btn btn-circle btn-light"
+                aria-label="Mark all as read"
+                onClick={onMarkAsRead}
+                title="Mark as read"
+              >
+                <i className="bi bi-envelope-open"></i>
+              </button>
+              <button
+                className="btn btn-circle btn-light"
+                aria-label="Mark all as read"
+                onClick={onMarkAsUnread}
+                title="Mark as Unread"
+              >
+                <i className="bi bi-envelope"></i>
+              </button>
             </>
           )}
         </div>

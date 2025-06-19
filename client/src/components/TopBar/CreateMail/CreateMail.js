@@ -39,12 +39,12 @@ function CreateMail() {
         method: 'PATCH',
         body: JSON.stringify({
           receiversNames: to.split(/[,\s]+/) // Split by comma or whitespace
-                            .map(n => n.trim())
-                            .filter(Boolean),
+            .map(n => n.trim())
+            .filter(Boolean),
           subject,
           content: body,
         }),
-      });      
+      });
     } catch (err) {
       console.log('Draft save error:', err);
     }
@@ -103,9 +103,11 @@ function CreateMail() {
 
   return (
     <div className="create-mail-wrapper position-relative">
-      <button className="create-mail-btn btn btn-primary" onClick={openCard}>
+      <button className="create-mail-btn mr-2" onClick={openCard}>
+        <i className="bi bi-pencil me-2"></i>
         Compose
       </button>
+
 
       {showCard && (
         <div className="card compose-card custom-compose-card position-absolute mt-2 start-0 top-100" style={{ width: '25rem', zIndex: 100 }}>
