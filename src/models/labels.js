@@ -54,7 +54,8 @@ const initLabelsForUser = (userId) => {
     data: [{ name: 'Draft', countBadge: 0, iconClass: 'bi bi-inbox-fill' },
            { name: 'Sent', countBadge: 0, iconClass: 'bi bi-send' },
            { name: 'Received', countBadge: 0, iconClass: 'bi bi-file-earmark' },
-           { name: 'Spam', countBadge: 0, iconClass: 'bi bi-exclamation-octagon' }
+           { name: 'Spam', countBadge: 0, iconClass: 'bi bi-exclamation-octagon' },
+           { name: 'Trash', countBadge: 0, iconClass: 'bi bi-trash' }
           ]
   });
 };

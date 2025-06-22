@@ -184,8 +184,8 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange }) {
         setShowModal(true);
     };
 
-    const systemLabels = labels.slice(0, 5);
-    const userLabels = labels.slice(5);
+    const systemLabels = labels.slice(0, 6);
+    const userLabels = labels.slice(6);
 
     return (
         <div className="sidebar">
@@ -195,13 +195,14 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange }) {
                         key={`system-${key}`}
                         name={label.name}
                         iconClass={label.iconClass}
-                        {...(label.name !== 'Starred' && { badgeCount: label.countBadge || 0 })}
+                        {...(!['Starred', 'Trash'].includes(label.name) && { badgeCount: label.countBadge || 0 })}
                         onLabelClick={() => {
                             setSelectedLabelName(label.name);
                             onLabelSelect(label.name);
                         }}
                         isSelected={label.name === selectedLabelName}
                     />
+
 
                 ))}
             </ol>
