@@ -264,31 +264,70 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   };
 
   const handleDeleteSelected = async () => {
-    if (!currentUser) return;
-    try {
-      const deletePromises = Array.from(selectedMessages).map(id =>
-        FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' })
-      );
-      await Promise.all(deletePromises);
-      await loadMessages();
-      if (onRefresh) onRefresh();
-    } catch (e) {
-      setError('Failed to delete messages');
-    }
-  };
+  if (!currentUser) return;
+
+  try {
+    const updatedMessages = await Promise.all(
+      messages.map(async (mail) => {
+        if (!selectedMessages.has(mail.id)) return mail;
+
+        if (mail.labelName === 'Trash') {
+          await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+            method: 'DELETE'
+          });
+          return null;
+        }
+
+        const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+          method: 'PATCH',
+          body: JSON.stringify({ labelName: 'Trash' })
+        });
+
+        if (res && res.ok) {
+          return { ...mail, labelName: 'Trash' };
+        }
+
+        return mail;
+      })
+    );
+
+    setMessages(updatedMessages.filter(Boolean));
+    setSelectedMessages(new Set());
+    if (onRefresh) onRefresh();
+
+  } catch (e) {
+    console.error('Failed to delete or move messages to trash:', e);
+    setError('Failed to process deletion.');
+  }
+};
+
 
   const handleDeleteSingleMessage = async (id) => {
-    if (!currentUser) return;
-    try {
-      await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' });
-      await loadMessages();
-      if (onRefresh) onRefresh();
+  if (!currentUser) return;
 
-      setSelectedMail(null);
-    } catch (e) {
-      setError('Failed to delete message');
+  const mail = messages.find(m => m.id === id);
+  if (!mail) return;
+
+  try {
+    if (mail.labelName === 'Trash') {
+      await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' });
+    } else {
+      await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {
+        method: 'PATCH',
+        body: JSON.stringify({ labelName: 'Trash' })
+      });
     }
-  };
+
+    await loadMessages();
+    if (onRefresh) onRefresh();
+    setSelectedMail(null);
+
+  } catch (e) {
+    console.error('Failed to delete message:', e);
+    setError('Failed to delete message');
+  }
+};
+
 
   const handleMarkAsSpam = async () => {
     if (!currentUser) return;
