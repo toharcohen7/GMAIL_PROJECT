@@ -1,5 +1,6 @@
 import React from 'react';
 import LabelButton from '../LabelButton/LabelButton';
+import PaginationControls from '../PaginationControls/PaginationControls';
 
 function InboxHeader({
   messages,
@@ -13,7 +14,11 @@ function InboxHeader({
   onDeleteSelected,
   onMarkAsSpam,
   onMoveToLabel,
-  currentLabel
+  currentLabel,
+  offset,
+  setOffset,
+  loadMessages,
+  hasMoreMessages,
 }) {
   // Don't show label button for Sent or Draft sections
   const canChangeLabels = currentLabel !== 'Sent' && currentLabel !== 'Draft';
@@ -94,6 +99,14 @@ function InboxHeader({
             </>
           )}
         </div>
+      </div>
+      <div className="header-right">
+        <PaginationControls
+          offset={offset}
+          setOffset={setOffset}
+          loadMessages={loadMessages}
+          hasMoreMessages={hasMoreMessages}
+        />
       </div>
     </div>
   );

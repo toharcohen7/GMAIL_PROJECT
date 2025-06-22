@@ -1,0 +1,14 @@
+div.pagination-controls {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 0.1rem !important;
+}
+
+div.pagination-controls .btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.2rem !important;
+  padding: 0.1rem !important;
+  margin: 0 !important;
+}
