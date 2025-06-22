@@ -29,6 +29,7 @@ exports.getUserMails = (req, res) => {
             receiversNames, 
             subject, 
             content, 
+            starred,
             onRead,
             formattedTime, 
             timestamp } = mail;
@@ -40,6 +41,7 @@ exports.getUserMails = (req, res) => {
              receiversNames, 
              subject, 
              content, 
+             starred,
              onRead,
              time: formattedTime,
              timestamp };
@@ -90,10 +92,10 @@ exports.getMailById = (req, res) => {
   }
 
   const mail = Mails.getMailById(userId, mailId);
-  const { id, mailStatus, senderId, receiversNames, subject, content, onRead, formattedTime } = mail;
+  const { id, mailStatus, senderId, receiversNames, subject, content, starred, onRead, formattedTime } = mail;
   let labelName = Labels.getLabelByName(userId, mail.labelName).name;
 
-  res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, onRead, time: formattedTime });
+  res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, starred, onRead, time: formattedTime });
 }
 
 /**
@@ -155,13 +157,14 @@ exports.updateMail = async (req, res) => {
 async function changeUnDraftedMail(userId, mailId, updates, req, res) {
 
   // Validate no extra fields in request body
-  if(isThereExtraFields(req, ['labelName', 'onRead'])) {
-    return res.status(400).json({ error: 'Only the label can be changed in already sent mails' });
+  if(isThereExtraFields(req, ['labelName', 'onRead', 'starred'])) {
+    return res.status(400).json({ error: 'Only labelName, onRead, or starred can be changed in already sent mails' });
   } 
 
-  if (updates.labelName === undefined && updates.onRead === undefined) {
-    return res.status(400).json({ error: 'labelName or onRead is required' });
+  if (updates.labelName === undefined && updates.onRead === undefined && updates.starred === undefined) {
+    return res.status(400).json({ error: 'labelName, onRead, or starred is required' });
   }
+
   if(updates.labelName !== undefined){
 
     if (!Labels.getLabelByName(userId, updates.labelName)) {
@@ -186,13 +189,14 @@ async function changeUnDraftedMail(userId, mailId, updates, req, res) {
 async function changeDraftMail(userId, mailId, updates, req, res) {
 
   // Validate no extra fields in request body
-  if(isThereExtraFields(req, ['subject', 'content', 'receiversNames', 'labelName'])) {
-    return res.status(400).json({ error: 'Only subject, content, receiversNames, and labelName can be changed' });
-  } 
+  if(isThereExtraFields(req, ['subject', 'content', 'receiversNames', 'labelName', 'starred'])) {
+    return res.status(400).json({ error: 'Only subject, content, receiversNames, labelName, and starred can be changed' });
+  }
 
-  if (!updates.subject && !updates.content && !updates.receiversNames && !updates.labelName) {
+  if (!updates.subject && !updates.content && !updates.receiversNames && !updates.labelName && updates.starred === undefined) {
     return res.status(400).json({ error: 'At least one field must be provided' });
   }
+
 
   // Prevent changing label to non-Sent for drafts
   if (updates.labelName !== undefined && updates.labelName !== 'Sent') {

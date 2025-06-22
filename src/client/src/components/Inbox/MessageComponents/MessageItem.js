@@ -8,9 +8,11 @@ function MessageItem({
   senderName,
   onToggleSelect,
   onMailClick,
-  onCompleteDraft
+  onCompleteDraft,
+  onToggleStar
 }) {
   const isRead = message.onRead;
+  const isStarred = message.starred;
   const isDraft = message.labelName === 'Draft';
 
   // Handler to open draft editor without triggering message click
@@ -46,12 +48,25 @@ function MessageItem({
           onClick={e => e.stopPropagation()}
         />
       </div>
+      <div className="message-star">
+        <button
+          type="button"
+          className="btn btn-link p-0 ms-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleStar(message.id);
+          }}
+          aria-label="Toggle star"
+        >
+          <i className={message.starred ? "bi bi-star-fill text-warning" : "bi bi-star"}></i>
+        </button>
+      </div>
       <div className="message-sender col-md-2 text-truncate" title={senderName}>
         {senderName}
       </div>
       <div className="message-content col d-flex flex-column flex-md-row">
         <span className="message-subject me-md-2 text-truncate">
-          {truncateText(message.subject || 'No Subject',15)}
+          {truncateText(message.subject || 'No Subject', 15)}
         </span>
         <span className="message-snippet text-muted small text-truncate">
           {truncateText(message.snippet || message.content || '', 70)}
