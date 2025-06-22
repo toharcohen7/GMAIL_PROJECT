@@ -82,7 +82,8 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await FetchWithAuth(buildApiUrl('/api/mails'));
+      let offset = 0;
+      const res = await FetchWithAuth(buildApiUrl(`/api/mails?labelName=${encodeURIComponent(selectedLabel)}&offset=${offset}`));
       if (!res.ok) throw new Error('Failed to load messages');
       const data = await res.json();
       setMessages(data);
@@ -140,10 +141,11 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       try {
         let data = [];
 
+        let offset = 0;
         const res = await FetchWithAuth(
           searchQuery
             ? buildApiUrl(`/api/mails/search/${encodeURIComponent(searchQuery)}`)
-            : buildApiUrl('/api/mails')
+            : buildApiUrl(`/api/mails?labelName=${encodeURIComponent(selectedLabel)}&offset=${offset}`)
         );
 
         if (!res.ok) throw new Error(searchQuery ? 'Search failed' : 'Failed to load messages');

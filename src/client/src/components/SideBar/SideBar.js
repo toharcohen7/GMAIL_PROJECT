@@ -202,8 +202,6 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange }) {
                         }}
                         isSelected={label.name === selectedLabelName}
                     />
-
-
                 ))}
             </ol>
             <div className="label-divider d-flex justify-content-between align-items-center px-2">

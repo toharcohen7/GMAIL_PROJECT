@@ -13,7 +13,7 @@ const get50Mails = (userId, offset = 0, labelName = null) => {
 
   console.log(`Retrieving mails for user ${userId} with offset ${offset} and labelName ${labelName}`);
 
-  if (labelName !== null) {
+  if (labelName !== null && labelName !== 'Starred') {
     mails = mails.filter(mail => mail.labelName === labelName);
   }
 
@@ -226,20 +226,7 @@ const sendMail = async (receiversNames, mail) => {
   // Check for blacklisted links
   const receiverMailLabel = await isSpamMail(mail.subject, mail.content);
 
-  // Create a mail copy for the receivers
-  const newMailForReceivers = {
-    id: mailIdCounter,
-    mailStatus: 'Received',
-    senderId: mail.senderId,
-    receiversNames: mail.receiversNames,
-    subject: mail.subject,
-    content: mail.content,
-    labelName: receiverMailLabel, 
-    timestamp: mail.timestamp,
-    formattedTime: mail.formattedTime,
-    starred: false,
-    onRead: false // New mails are unread by default
-  };
+
 
   // Add mail to each receiver's mailbox
   for (const receiverName of receiversNames) {
@@ -250,7 +237,21 @@ const sendMail = async (receiversNames, mail) => {
       throw new Error(`Receiver ${receiverName} does not exist`);
     }
 
-    newMailForReceivers.id = ++mailIdCounter; // Ensure unique ID for each receiver's copy
+    // Create a mail copy for the receivers
+    const newMailForReceivers = {
+      id: ++mailIdCounter,
+      mailStatus: 'Received',
+      senderId: mail.senderId,
+      receiversNames: mail.receiversNames,
+      subject: mail.subject,
+      content: mail.content,
+      labelName: receiverMailLabel, 
+      timestamp: mail.timestamp,
+      formattedTime: mail.formattedTime,
+      starred: false,
+      onRead: false // New mails are unread by default
+    };
+
     userMails.get(receiverId).push(newMailForReceivers);
     Labels.addLabelCountBadgeByOne(receiverId, receiverMailLabel); // Increment Received label count
   }

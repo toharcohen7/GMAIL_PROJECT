@@ -13,7 +13,6 @@ function InboxHeader({
   onDeleteSelected,
   onMarkAsSpam,
   onMoveToLabel,
-  availableLabels = [],
   currentLabel
 }) {
   // Don't show label button for Sent or Draft sections

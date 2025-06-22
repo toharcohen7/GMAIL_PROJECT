@@ -28,7 +28,7 @@ exports.get50Mails = async (req, res) => {
     labelName = String(labelName);
   }
 
-  if (labelName && !Labels.getLabelByName(userId, labelName)) {
+  if (labelName && !Labels.getLabelByName(userId, labelName) && labelName !== 'Starred') {
     return res.status(404).json({ error: 'Label not found' });
   }
 
