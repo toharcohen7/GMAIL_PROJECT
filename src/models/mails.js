@@ -8,9 +8,16 @@ const userMails = new Map(); // Map that stores each user's mails as an array (s
  * Returns the last 50 mails sent or received by a specific user,
  * sorted from newest to oldest based on timestamp.
  */
-const getUserMails = (userId) => {
-  const mails = userMails.get(userId); // Exclude drafts
-  return mails.sort((a, b) => b.timestamp - a.timestamp);
+const get50Mails = (userId, offset = 0, labelName = null) => {
+  let mails = userMails.get(userId);
+
+  console.log(`Retrieving mails for user ${userId} with offset ${offset} and labelName ${labelName}`);
+
+  if (labelName !== null) {
+    mails = mails.filter(mail => mail.labelName === labelName);
+  }
+
+  return mails.sort((a, b) => b.timestamp - a.timestamp).slice(offset, offset + 50);
 };
 
 /**
@@ -266,7 +273,7 @@ function removeMailsFromLable(userId, labelName) {
 
 // Export all controller functions for external use
 module.exports = {
-  getUserMails,
+  get50Mails,
   createMail,
   getMailById,
   deleteMail,

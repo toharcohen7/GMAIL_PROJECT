@@ -6,7 +6,7 @@ const Labels = require('../models/labels');
  * Returns the all mails of the current user.
  * Sorted by timestamp descending. Only relevant fields are returned.
  */
-exports.getUserMails = (req, res) => {
+exports.get50Mails = async (req, res) => {
 
   if (isThereExtraFields(req, [])) {
     return res.status(400).json({ error: 'No extra fields allowed' });
@@ -17,8 +17,23 @@ exports.getUserMails = (req, res) => {
     return res; // Error response already sent in helper function
   }
 
+  // Validate and parse query parameters
+  let offset = parseInt(req.query.offset) || 0; // Default to 0 if not provided
+  if (req.query.offset && isNaN(req.query.offset)) {
+    return res.status(400).json({ error: 'offset must be a number' });
+  }
+
+  let labelName = req.query.labelName || null; // Default to null if not provided
+  if (labelName !== null) {
+    labelName = String(labelName);
+  }
+
+  if (labelName && !Labels.getLabelByName(userId, labelName)) {
+    return res.status(404).json({ error: 'Label not found' });
+  }
+
   // Retrieve all mails of the user
-  const mails = Mails.getUserMails(userId);
+  const mails = await Mails.get50Mails(userId, offset, labelName);
 
   // Map each mail to return only necessary fields
   const filtered = mails.map(mail => {
