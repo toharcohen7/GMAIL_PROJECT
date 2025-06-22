@@ -41,6 +41,7 @@ const createMail = (senderId) => {
     labelName: 'Draft',        // Draft
     timestamp: timestamp,
     formattedTime: formattedTime,
+    starred: false,
     onRead: false // Sender's draft is considered read
   };
 
@@ -96,6 +97,10 @@ const updateMail = (userId, mailId, updates) => {
   // Update receivers list if provided
   if (updates.receiversNames !== undefined) {
     mail.receiversNames = updates.receiversNames;
+  }
+
+  if (updates.starred !== undefined) {
+    mail.starred = updates.starred;
   }
 
   if (updates.labelName !== undefined && mail.onRead === false) {
@@ -225,6 +230,7 @@ const sendMail = async (receiversNames, mail) => {
     labelName: receiverMailLabel, 
     timestamp: mail.timestamp,
     formattedTime: mail.formattedTime,
+    starred: false,
     onRead: false // New mails are unread by default
   };
 

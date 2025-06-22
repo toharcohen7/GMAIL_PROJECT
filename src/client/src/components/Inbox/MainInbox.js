@@ -210,6 +210,31 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     }
   };
 
+  const handleToggleStar = async (mailId) => {
+  const message = messages.find(m => m.id === mailId);
+  if (!message) return;
+
+  const updatedStar = !message.starred;
+
+  try {
+    const res = await FetchWithAuth(buildApiUrl(`api/mails/${mailId}`), {
+      method: 'PATCH',
+      body: JSON.stringify({ starred: updatedStar }),
+    });
+
+    if (res && res.ok) {
+      setMessages(prev =>
+        prev.map(m => m.id === mailId ? { ...m, starred: updatedStar } : m)
+      );
+    } else {
+      console.error('Failed to update star status');
+    }
+  } catch (err) {
+    console.error('Error updating star status:', err);
+  }
+};
+
+
   const handleMarkAsUnread = async () => {
     try {
       const updatedMessages = await Promise.all(
@@ -237,9 +262,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       setError('Failed to mark selected mails as unread');
     }
   };
-
-
-
 
   const handleDeleteSelected = async () => {
     if (!currentUser) return;
@@ -372,9 +394,16 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     if (onRefresh) onRefresh();
   };
 
-  const filteredMessages = messages.filter(m =>
-    (!selectedLabel || m.labelName === selectedLabel)
-  );
+  const filteredMessages = messages.filter(m => {
+  if (!selectedLabel) return true;
+
+  if (selectedLabel === 'Starred') {
+    return m.starred === true;
+  }
+
+  return m.labelName === selectedLabel;
+});
+
 
   // Use the simplified LabelManager component
   const { handleMoveToLabel } = LabelManager({
@@ -416,6 +445,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
               onToggleSelect={toggleSelectMessage}
               onMailClick={handleMailClick}
               onCompleteDraft={handleCompleteDraft}
+              onToggleStar={handleToggleStar}
             />
           )}
 

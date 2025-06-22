@@ -7,7 +7,8 @@ function MessageList({
   senderCache, 
   onToggleSelect, 
   onMailClick,
-  onCompleteDraft 
+  onCompleteDraft,
+  onToggleStar 
 }) {
   return (
     <div className="message-list list-group" role="list" tabIndex="0">
@@ -21,6 +22,7 @@ function MessageList({
           onToggleSelect={onToggleSelect}
           onMailClick={onMailClick}
           onCompleteDraft={onCompleteDraft}
+          onToggleStar={onToggleStar}
         />
       ))}
     </div>

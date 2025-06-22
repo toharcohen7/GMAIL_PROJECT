@@ -17,6 +17,16 @@ const useLabels = () => {
                 const response = await FetchWithAuth(buildApiUrl('api/labels'));
                 if (response.ok) {
                     const data = await response.json();
+
+                    const hasStarred = data.some(label => label.name === 'Starred');
+                    if (!hasStarred) {
+                        data.unshift({
+                            name: 'Starred',
+                            iconClass: 'bi bi-star-fill',
+                            countBadge: 0
+                        });
+                    }
+
                     setLabels(data);
                 } else {
                     console.error('Failed to fetch labels');
@@ -25,6 +35,7 @@ const useLabels = () => {
                 console.error('Error fetching labels:', error);
             }
         }
+
 
         fetchLabels();
     }, []);
@@ -32,18 +43,28 @@ const useLabels = () => {
     return { labels, setLabels };
 };
 
-function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
+function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange }) {
     const { labels, setLabels } = useLabels();
     const [showModal, setShowModal] = useState(false);
     const [editLabelData, setEditLabelData] = useState(null);
     const [selectedLabelName, setSelectedLabelName] = useState("Received");
-    
+
     useEffect(() => {
         async function fetchLabels() {
             try {
                 const response = await FetchWithAuth(buildApiUrl('api/labels'));
                 if (response.ok) {
                     const data = await response.json();
+
+                    const hasStarred = data.some(label => label.name === 'Starred');
+                    if (!hasStarred) {
+                        data.unshift({
+                            name: 'Starred',
+                            iconClass: 'bi bi-star-fill',
+                            countBadge: 0
+                        });
+                    }
+
                     setLabels(data);
                 } else {
                     console.error('Failed to fetch labels');
@@ -52,6 +73,7 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
                 console.error('Error fetching labels:', error);
             }
         }
+
 
         if (refreshTrigger) {
             fetchLabels();
@@ -162,8 +184,8 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
         setShowModal(true);
     };
 
-    const systemLabels = labels.slice(0, 4);
-    const userLabels = labels.slice(4);
+    const systemLabels = labels.slice(0, 5);
+    const userLabels = labels.slice(5);
 
     return (
         <div className="sidebar">
@@ -173,13 +195,14 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange  }) {
                         key={`system-${key}`}
                         name={label.name}
                         iconClass={label.iconClass}
-                        badgeCount={label.countBadge || 0}
+                        {...(label.name !== 'Starred' && { badgeCount: label.countBadge || 0 })}
                         onLabelClick={() => {
                             setSelectedLabelName(label.name);
                             onLabelSelect(label.name);
                         }}
                         isSelected={label.name === selectedLabelName}
                     />
+
                 ))}
             </ol>
             <div className="label-divider d-flex justify-content-between align-items-center px-2">

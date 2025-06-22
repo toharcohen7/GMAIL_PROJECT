@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import './SystemLabel.css';
 import BlacklistRemoveButton from '../Buttons/BlacklistRemoveButton/BlacklistRemoveButton';
 
-function SystemLabel({name, badgeCount, iconClass, onLabelClick, isSelected}) {
+function SystemLabel({ name, badgeCount, iconClass, onLabelClick, isSelected }) {
   const [isHovered, setIsHovered] = useState(false);
   const isSpamLabel = name.toLowerCase() === 'spam';
 
   return (
-    <div 
+    <div
       className={`list-group-item d-flex justify-content-between align-items-center ${isSelected ? 'active' : ''}`}
       onClick={onLabelClick}
       onMouseEnter={() => setIsHovered(true)}
@@ -17,14 +17,17 @@ function SystemLabel({name, badgeCount, iconClass, onLabelClick, isSelected}) {
         {iconClass && <i className={`${iconClass} me-2`}></i>}
         <span>{name}</span>
       </div>
-      
+
       <div>
         {isSpamLabel && isHovered ? (
           <BlacklistRemoveButton />
         ) : (
-          <span className="badge bg-secondary">{badgeCount}</span>
+          typeof badgeCount === 'number' && (
+            <span className="badge bg-secondary">{badgeCount}</span>
+          )
         )}
       </div>
+
     </div>
   );
 }
