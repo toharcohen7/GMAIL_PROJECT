@@ -479,6 +479,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
           setOffset={setOffset}
           loadMessages={loadMessages}
           hasMoreMessages={hasMoreMessages}
+          selectedLabel={selectedLabel}
         />
 
         <div className="inbox-content card-body p-0">

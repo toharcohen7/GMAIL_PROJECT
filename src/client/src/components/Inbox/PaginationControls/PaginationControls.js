@@ -1,10 +1,17 @@
 import React from 'react';
 import './PaginationControls.css';
+import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
+import { buildApiUrl } from '../../../config/api';
 
-function PaginationControls({ offset, setOffset, loadMessages }) {
-  const handleNext = () => {
-    setOffset(prevOffset => prevOffset + 50);
-    loadMessages();
+function PaginationControls({ offset, setOffset, loadMessages, numMessages, selectedLabel }) {
+  const handleNext = async () => {
+    const res = await FetchWithAuth(buildApiUrl(`/api/mails?labelName=${encodeURIComponent(selectedLabel)}&offset=${offset + 50}`));
+    if (!res.ok) throw new Error('Failed to load messages');
+    const data = await res.json();
+    if (data.length > 0) {
+      setOffset(prevOffset => prevOffset + 50);
+      loadMessages();
+    }
   };
 
   const handlePrevious = () => {
@@ -24,6 +31,9 @@ function PaginationControls({ offset, setOffset, loadMessages }) {
       >
         <i className="bi bi-chevron-left"></i>
       </button>
+      <span className="offset-display ml-2 mt-2">
+        Page {(offset / 50) + 1}
+      </span>
       <button
         className="btn btn-circle btn-light ml-3 mt-1"
         aria-label="Next"

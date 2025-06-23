@@ -19,6 +19,7 @@ function InboxHeader({
   setOffset,
   loadMessages,
   hasMoreMessages,
+  selectedLabel
 }) {
   // Don't show label button for Sent or Draft sections
   const canChangeLabels = currentLabel !== 'Sent' && currentLabel !== 'Draft';
@@ -106,6 +107,8 @@ function InboxHeader({
           setOffset={setOffset}
           loadMessages={loadMessages}
           hasMoreMessages={hasMoreMessages}
+          numMessages={messages.length}
+          selectedLabel={selectedLabel}
         />
       </div>
     </div>
