@@ -107,7 +107,6 @@ function InboxHeader({
           setOffset={setOffset}
           loadMessages={loadMessages}
           hasMoreMessages={hasMoreMessages}
-          numMessages={messages.length}
           selectedLabel={selectedLabel}
         />
       </div>

@@ -3,7 +3,7 @@ import './PaginationControls.css';
 import { FetchWithAuth } from '../../FetchWithAuth/FetchWithAuth';
 import { buildApiUrl } from '../../../config/api';
 
-function PaginationControls({ offset, setOffset, loadMessages, numMessages, selectedLabel }) {
+function PaginationControls({ offset, setOffset, loadMessages, selectedLabel }) {
   const handleNext = async () => {
     const res = await FetchWithAuth(buildApiUrl(`/api/mails?labelName=${encodeURIComponent(selectedLabel)}&offset=${offset + 50}`));
     if (!res.ok) throw new Error('Failed to load messages');
