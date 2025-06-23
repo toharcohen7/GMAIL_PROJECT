@@ -1,9 +1,17 @@
+version: '3.8'
+
 services:
   base:
     build:
       context: .
+      dockerfile: Dockerfile
     image: gmail_project
     command: sleep infinity
+    volumes:
+      - .:/usr/src/mytest
+      - /usr/src/mytest/node_modules
+      - /usr/src/mytest/src/server/node_modules
+      - /usr/src/mytest/src/client/node_modules
 
   server:
     image: gmail_project
@@ -21,7 +29,7 @@ services:
   node:
     image: gmail_project
     container_name: gmail_node
-    command: node /usr/src/mytest/src/app.js ${NODE_PORT} ${SERVER_PORT} ${SERVER_HOST}
+    command: node /usr/src/mytest/src/server/app.js ${NODE_PORT} ${SERVER_PORT} ${SERVER_HOST}
     ports:
       - "${NODE_PORT}:${NODE_PORT}"
     environment:
@@ -35,13 +43,13 @@ services:
     image: gmail_project
     container_name: gmail_client
     working_dir: /usr/src/mytest/src/client
-    # Use development mode for flexible environment variables
     command: npm start
     ports:
       - "3000:3000"
     environment:
-      # This is the key change - dynamically set API URL
       - REACT_APP_API_URL=http://localhost:${NODE_PORT}
-      - CHOKIDAR_USEPOLLING=true  # For file watching in Docker
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_HOST=0.0.0.0
+      - WDS_SOCKET_PORT=0
     depends_on:
       - node

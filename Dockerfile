@@ -10,18 +10,30 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /usr/src/mytest
 
-# Copy and install Node.js server dependencies
-COPY src/package*.json ./src/
-WORKDIR /usr/src/mytest/src
+# Create directory structure explicitly
+RUN mkdir -p src/server src/client
+
+# Copy root package.json if it exists
+COPY package*.json ./
+
+# Copy server package.json (required)
+COPY src/server/package.json ./src/server/
+
+# Copy client package.json
+COPY src/client/package.json ./src/client/
+
+# Note: We're not trying to copy package-lock.json files that might not exist
+
+# Install root dependencies if package.json exists
+RUN if [ -f package.json ]; then npm install; fi
+
+# Install server dependencies
+WORKDIR /usr/src/mytest/src/server
 RUN npm install
 
-# Copy and install React client dependencies
-COPY src/client/package*.json ./client/
+# Install client dependencies
 WORKDIR /usr/src/mytest/src/client
 RUN npm install
-
-# Optional: Install global npm packages (e.g., nodemon)
-RUN npm install -g nodemon
 
 # Go back to root and copy all files
 WORKDIR /usr/src/mytest
