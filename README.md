@@ -40,7 +40,7 @@ GPDTH-218-branch-for-milestone-3
 Milestone 4 branch:
 
 ```sh
-GPDTH-309-branch-for-milestone-4
+GPDTH-323-branch-for-milestone-4
 ```
 
 ## Building with Docker
@@ -216,35 +216,37 @@ GMAIL_PROJECT_D.T.H/
 │   │   ├── .gitignore               # Git ignore file for React client
 │   │   ├── package.json             # React client dependencies
 │   │   ├── src/                     # React source code
-│   │   │   ├── components/          # Reusable UI components
-│   │   │   │   ├── Inbox/           # Inbox-related components
-│   │   │   │   ├── SideBar/         # Sidebar and label management
-│   │   │   │   ├── TopBar/          # Top navigation bar
-│   │   │   │   ├── SignUp/          # Sign-up form components
-│   │   │   │   ├── SignIn/          # Sign-in form components
-│   │   │   │   ├── FetchWithAuth/   # Authenticator component
-│   │   │   │   ├── Styles/          # Styles component
-│   │   │   │   
-│   │   │   ├── pages/  
-│   │   │   │   ├── SignUp/          # Sign-up page
-│   │   │   │   ├── SignIn/          # Sign-in page
-│   │   │   │   ├── MainPage/        # Main application page
-│   │   │   │   ├── WelcomePage/     # Welcome page
-│   │   │   ├── utils/               # Utility functions
-│   │   │   ├── config/              # Configuration files (e.g., API URLs)
-│   │   │   ├── index.js             # Application entry point
-│   │   │   ├── App.js               # Main application component
+│   │       ├── components/          # Reusable UI components
+│   │       │   ├── Inbox/           # Inbox-related components
+│   │       │   ├── SideBar/         # Sidebar and label management
+│   │       │   ├── TopBar/          # Top navigation bar
+│   │       │   ├── SignUp/          # Sign-up form components
+│   │       │   ├── SignIn/          # Sign-in form components
+│   │       │   ├── FetchWithAuth/   # Authenticator component
+│   │       │   ├── Styles/          # Styles component
+│   │       │   
+│   │       ├── pages/  
+│   │       │   ├── SignUp/          # Sign-up page
+│   │       │   ├── SignIn/          # Sign-in page
+│   │       │   ├── MainPage/        # Main application page
+│   │       │   ├── WelcomePage/     # Welcome page
+│   │       │
+│   │       ├── utils/               # Utility functions
+│   │       ├── config/              # Configuration files (e.g., API URLs)
+│   │       ├── index.js             # Application entry point
+│   │       ├── App.js               # Main application component
 │   │
 │   ├── blacklist/                   # C++ Bloom Filter server implementation
 │   │   ├── cpp/                     # C++ source files
 │   │   ├── hpp/                     # C++ header files
 │   │   ├── client.py                # Python client for testing the server
 │   │
-│   ├── controllers/                 # Node.js controllers for handling API logic
-│   ├── models/                      # Node.js models for database and application logic
-│   ├── routes/                      # Node.js routes for API endpoints
-│   │── app.js                       # Main Node.js server file
-│   │── package.json                 # Node.js server dependencies
+│   ├── server/ 
+│       ├── controllers/                 # Node.js controllers for handling API logic
+│       ├── models/                      # Node.js models for database and application logic
+│       ├── routes/                      # Node.js routes for API endpoints
+│       │── app.js                       # Main Node.js server file
+│       │── package.json                 # Node.js server dependencies
 │
 ├── images/                          # Project images for documentation  
 ├── .env                             # Environment variables for the project
