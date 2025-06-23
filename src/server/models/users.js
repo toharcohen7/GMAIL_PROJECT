@@ -1,5 +1,5 @@
-const Labels = require('../models/labels')
-const Mails = require('../models/mails')
+const Labels = require('./labels')
+const Mails = require('./mails')
 
 
 let idCounter = 0;

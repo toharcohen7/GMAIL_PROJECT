@@ -222,7 +222,12 @@ GMAIL_PROJECT_D.T.H/
 │   │   │   │   ├── TopBar/          # Top navigation bar
 │   │   │   │   ├── SignUp/          # Sign-up form components
 │   │   │   │   ├── SignIn/          # Sign-in form components
-│   │   │   ├── pages/               # Page-level components
+│   │   │   │   ├── FetchWithAuth/   # Authenticator component
+│   │   │   │   ├── Styles/          # Styles component
+│   │   │   │   
+│   │   │   ├── pages/  
+│   │   │   │   ├── SignUp/          # Sign-up page
+│   │   │   │   ├── SignIn/          # Sign-in page
 │   │   │   │   ├── MainPage/        # Main application page
 │   │   │   │   ├── WelcomePage/     # Welcome page
 │   │   │   ├── utils/               # Utility functions

@@ -1,5 +1,5 @@
-const Blacklist = require('../models/blacklist');
-const Labels = require('../models/labels');
+const Blacklist = require('./blacklist.js');
+const Labels = require('./labels.js');
 
 let mailIdCounter = 0; // Global counter for unique mail IDs
 const userMails = new Map(); // Map that stores each user's mails as an array (sent/received)
@@ -10,8 +10,6 @@ const userMails = new Map(); // Map that stores each user's mails as an array (s
  */
 const get50Mails = (userId, offset = 0, labelName = null) => {
   let mails = userMails.get(userId);
-
-  console.log(`Retrieving mails for user ${userId} with offset ${offset} and labelName ${labelName}`);
 
   if (labelName !== null && labelName !== 'Starred') {
     mails = mails.filter(mail => mail.labelName === labelName);
@@ -162,7 +160,7 @@ const updateMail = (userId, mailId, updates) => {
  */
 
 const searchQueryInMails = (userId, query) => {
-  const Users = require('../models/users');
+  const Users = require('./users.js');
   const allMails = userMails.get(userId);
 
   return allMails.filter(mail => {
@@ -213,7 +211,7 @@ const getRecivers = (userId, mailId) => {
 const sendMail = async (receiversNames, mail) => {
 
   // Import Users model to get user IDs. this is done here to avoid circular dependencies.
-  const Users = require('../models/users.js'); 
+  const Users = require('./users.js'); 
 
   mail.mailStatus = 'Sent';     // Mark as sent
   mail.labelName = 'Sent';     // Set label to "Sent"

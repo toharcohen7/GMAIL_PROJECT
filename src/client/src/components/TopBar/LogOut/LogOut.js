@@ -5,6 +5,8 @@ function LogOut() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        document.body.classList.remove('dark-mode');
+        
         localStorage.clear();
         navigate('/signin');
     };

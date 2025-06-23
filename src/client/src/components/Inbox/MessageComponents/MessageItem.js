@@ -26,6 +26,9 @@ function MessageItem({
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
+  if (isStarred) {
+    console.log('This message is starred.');
+  }
 
   return (
     <div

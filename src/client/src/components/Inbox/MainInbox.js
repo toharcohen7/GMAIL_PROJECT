@@ -25,6 +25,8 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   const [selectedMail, setSelectedMail] = useState(null);
   const [senderCache, setSenderCache] = useState(new Map());
   const [draftToEdit, setDraftToEdit] = useState(null);
+  const [offset, setOffset] = useState(0);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
 
   const navigate = useNavigate();
 
@@ -82,18 +84,20 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     setIsLoading(true);
     setError(null);
     try {
-      let offset = 0;
       const res = await FetchWithAuth(buildApiUrl(`/api/mails?labelName=${encodeURIComponent(selectedLabel)}&offset=${offset}`));
       if (!res.ok) throw new Error('Failed to load messages');
       const data = await res.json();
       setMessages(data);
       setSelectedMessages(new Set());
       loadSenderNames(data);
+
+      // Check if there are more messages to load
+      setHasMoreMessages(data.length === 50); // Assuming 50 messages per page
     } catch (e) {
       setError('Failed to load messages. Please try again.');
     }
     setIsLoading(false);
-  }, [currentUser, loadSenderNames]);
+  }, [currentUser, offset, selectedLabel, loadSenderNames]);
 
 
   useEffect(() => {
@@ -141,7 +145,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       try {
         let data = [];
 
-        let offset = 0;
         const res = await FetchWithAuth(
           searchQuery
             ? buildApiUrl(`/api/mails/search/${encodeURIComponent(searchQuery)}`)
@@ -164,7 +167,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     };
 
     fetchMessages();
-  }, [searchQuery, selectedLabel, onRefresh, currentUser, loadSenderNames]);
+  }, [searchQuery, selectedLabel, onRefresh, currentUser, loadSenderNames, offset]);
 
   const selectAllMessages = () => setSelectedMessages(new Set(filteredMessages.map(msg => msg.id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
@@ -213,28 +216,28 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   };
 
   const handleToggleStar = async (mailId) => {
-  const message = messages.find(m => m.id === mailId);
-  if (!message) return;
+    const message = messages.find(m => m.id === mailId);
+    if (!message) return;
 
-  const updatedStar = !message.starred;
+    const updatedStar = !message.starred;
 
-  try {
-    const res = await FetchWithAuth(buildApiUrl(`api/mails/${mailId}`), {
-      method: 'PATCH',
-      body: JSON.stringify({ starred: updatedStar }),
-    });
+    try {
+      const res = await FetchWithAuth(buildApiUrl(`api/mails/${mailId}`), {
+        method: 'PATCH',
+        body: JSON.stringify({ starred: updatedStar }),
+      });
 
-    if (res && res.ok) {
-      setMessages(prev =>
-        prev.map(m => m.id === mailId ? { ...m, starred: updatedStar } : m)
-      );
-    } else {
-      console.error('Failed to update star status');
+      if (res && res.ok) {
+        setMessages(prev =>
+          prev.map(m => m.id === mailId ? { ...m, starred: updatedStar } : m)
+        );
+      } else {
+        console.error('Failed to update star status');
+      }
+    } catch (err) {
+      console.error('Error updating star status:', err);
     }
-  } catch (err) {
-    console.error('Error updating star status:', err);
-  }
-};
+  };
 
 
   const handleMarkAsUnread = async () => {
@@ -266,69 +269,69 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   };
 
   const handleDeleteSelected = async () => {
-  if (!currentUser) return;
+    if (!currentUser) return;
 
-  try {
-    const updatedMessages = await Promise.all(
-      messages.map(async (mail) => {
-        if (!selectedMessages.has(mail.id)) return mail;
+    try {
+      const updatedMessages = await Promise.all(
+        messages.map(async (mail) => {
+          if (!selectedMessages.has(mail.id)) return mail;
 
-        if (mail.labelName === 'Trash') {
-          await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
-            method: 'DELETE'
+          if (mail.labelName === 'Trash') {
+            await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+              method: 'DELETE'
+            });
+            return null;
+          }
+
+          const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+            method: 'PATCH',
+            body: JSON.stringify({ labelName: 'Trash' })
           });
-          return null;
-        }
 
-        const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
-          method: 'PATCH',
-          body: JSON.stringify({ labelName: 'Trash' })
-        });
+          if (res && res.ok) {
+            return { ...mail, labelName: 'Trash' };
+          }
 
-        if (res && res.ok) {
-          return { ...mail, labelName: 'Trash' };
-        }
+          return mail;
+        })
+      );
 
-        return mail;
-      })
-    );
+      setMessages(updatedMessages.filter(Boolean));
+      setSelectedMessages(new Set());
+      if (onRefresh) onRefresh();
 
-    setMessages(updatedMessages.filter(Boolean));
-    setSelectedMessages(new Set());
-    if (onRefresh) onRefresh();
-
-  } catch (e) {
-    console.error('Failed to delete or move messages to trash:', e);
-    setError('Failed to process deletion.');
-  }
-};
+    } catch (e) {
+      console.error('Failed to delete or move messages to trash:', e);
+      setError('Failed to process deletion.');
+    }
+  };
 
 
   const handleDeleteSingleMessage = async (id) => {
-  if (!currentUser) return;
+    if (!currentUser) return;
 
-  const mail = messages.find(m => m.id === id);
-  if (!mail) return;
+    const mail = messages.find(m => m.id === id);
+    if (!mail) return;
 
-  try {
-    if (mail.labelName === 'Trash') {
-      await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' });
-    } else {
-      await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {
-        method: 'PATCH',
-        body: JSON.stringify({ labelName: 'Trash' })
-      });
+    try {
+      if (mail.labelName === 'Trash') {
+        await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' });
+      } else {
+        await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {
+          method: 'PATCH',
+          body: JSON.stringify({ labelName: 'Trash' })
+        });
+      }
+
+      await loadMessages();
+      if (onRefresh) onRefresh();
+      setSelectedMail(null);
+
+    } catch (e) {
+      console.error('Failed to delete message:', e);
+      setError('Failed to delete message');
     }
-
-    await loadMessages();
-    if (onRefresh) onRefresh();
-    setSelectedMail(null);
-
-  } catch (e) {
-    console.error('Failed to delete message:', e);
-    setError('Failed to delete message');
-  }
-};
+  };
 
 
   const handleMarkAsSpam = async () => {
@@ -436,14 +439,14 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   };
 
   const filteredMessages = messages.filter(m => {
-  if (!selectedLabel) return true;
+    if (!selectedLabel) return true;
 
-  if (selectedLabel === 'Starred') {
-    return m.starred === true;
-  }
+    if (selectedLabel === 'Starred') {
+      return m.starred === true;
+    }
 
-  return m.labelName === selectedLabel;
-});
+    return m.labelName === selectedLabel;
+  });
 
 
   // Use the simplified LabelManager component
@@ -472,6 +475,11 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
           onMarkAsSpam={handleMarkAsSpam}
           onMoveToLabel={handleMoveToLabel}
           currentLabel={selectedLabel}
+          offset={offset} 
+          setOffset={setOffset}
+          loadMessages={loadMessages}
+          hasMoreMessages={hasMoreMessages}
+          selectedLabel={selectedLabel}
         />
 
         <div className="inbox-content card-body p-0">
@@ -508,6 +516,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
             onSuccess={handleDraftSent}
           />
         )}
+        
       </div>
     </div>
   ) : null;
