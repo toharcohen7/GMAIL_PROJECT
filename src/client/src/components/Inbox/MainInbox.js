@@ -7,7 +7,7 @@ import './MainInbox.css';
 import { getUserDetails } from './InboxUtilityFunc/UserDataExt';
 import InboxHeader from './InboxHeader/InboxHeader';
 import MessageList from './MessageComponents/MessageList';
-import MailDetail from './MailDetail';
+import MailDetail from './MailDetail/MailDetail';
 import DraftEditor from './DraftEditor/DraftEditor';
 import LoadingState from './InboxStateComponentes/LoadingState';
 import ErrorState from './InboxStateComponentes/ErrorState';
@@ -55,10 +55,8 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
         .map(async (senderId) => {
           try {
             const userDetails = await getUserDetails(senderId);
-            if (userDetails && userDetails.firstName && userDetails.lastName) {
-              return [senderId, `${userDetails.firstName} ${userDetails.lastName}`];
-            } else if (userDetails && userDetails.email) {
-              return [senderId, userDetails.email];
+            if (userDetails && userDetails.userName) {
+              return [senderId, userDetails.userName];
             } else {
               return [senderId, 'Unknown Sender'];
             }
