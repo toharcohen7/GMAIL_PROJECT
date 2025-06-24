@@ -155,6 +155,8 @@ This project is designed to build and run inside Docker containers. It uses GCC,
      - The button becomes visible when hovering over the spam label.
      - The URLs added to the blacklist are those that appeared in emails reported as spam by users.
 
+> **Note**: The blacklist will identify URLs based on the patterns specified in the instructions from previous milestones, such as `www.example.com`.
+
    - **View Inbox**:  
      - Navigate to the **Recived Label** to view your emails.  
      - Use the search bar or filters to find specific emails, and click on an email to view its details.
