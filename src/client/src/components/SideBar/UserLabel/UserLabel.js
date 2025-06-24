@@ -55,14 +55,14 @@ function UserLabel({ name, iconClass, badgeCount, onActionClick, onLabelClick, i
             onClick={onLabelClick}
         >
             <div className="d-flex align-items-center label-text-wrapper">
-                <i className={`${iconClass} me-3`}></i>
+                <i className={`${iconClass} me-2`}></i>
                 <span className="fw-bold">{name}</span>
             </div>
 
             {hovered ? (
                 <div className="position-relative" ref={menuRef}>
                     <button
-                        className="btn btn-sm rounded-circle hover-label-action"
+                        className="btn mx-3 btn-sm rounded-circle hover-label-action"
                         onClick={handleActionClick}
                     >
                         <i className="bi bi-three-dots-vertical"></i>
@@ -80,7 +80,7 @@ function UserLabel({ name, iconClass, badgeCount, onActionClick, onLabelClick, i
                     )}
                 </div>
             ) : (
-                <span className="badge hover-badge rounded-pill">{badgeCount}</span>
+                <span className="badge mx-3 hover-badge rounded-pill">{badgeCount}</span>
             )}
         </li>
     );

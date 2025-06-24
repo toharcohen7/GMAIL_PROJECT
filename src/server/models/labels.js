@@ -36,15 +36,20 @@ const deleteLabel = (userId, labelName) => {
  * Updates the name of a label by its name for a specific user.
  */
 const updateLabel = (userId, labelName, updates) => {
+
+  const Mails = require('./mails.js');
   const userLabels = labels.get(userId).data;
 
   const label = userLabels.find(label => labelName === label.name);
   if (label && updates.name !== undefined) {
     label.name = updates.name;
+    // Update all mails with this label
+    Mails.UpdateMailsToEditLabel(userId, labelName, updates.name);
   }
   if (label && updates.iconClass !== undefined) {
     label.iconClass = updates.iconClass;
   }
+
 };
 /**
  * Initializes the label structure for a new user.

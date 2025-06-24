@@ -18,15 +18,23 @@ function SystemLabel({ name, badgeCount, iconClass, onLabelClick, isSelected }) 
         <span>{name}</span>
       </div>
 
-      <div>
-        {isSpamLabel && isHovered ? (
-          <BlacklistRemoveButton />
+      <div className="label-action-slot">
+        {isSpamLabel ? (
+          <>
+            <span className={`badge bg-secondary ${isHovered ? 'hidden' : ''}`}>
+              {badgeCount}
+            </span>
+            <div className={`remove-btn-wrapper ${isHovered ? 'visible' : ''}`}>
+              <BlacklistRemoveButton />
+            </div>
+          </>
         ) : (
           typeof badgeCount === 'number' && (
             <span className="badge bg-secondary">{badgeCount}</span>
           )
         )}
       </div>
+
 
     </div>
   );

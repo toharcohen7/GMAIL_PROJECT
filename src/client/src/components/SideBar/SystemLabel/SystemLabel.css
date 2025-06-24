@@ -25,3 +25,41 @@
     color: black;
     font-size: 12px;
 }
+
+.label-action-slot {
+  position: relative;
+  width: 40px; /* שנה לפי הגודל של הכפתור/באדג' */
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label-action-slot .badge,
+.label-action-slot .remove-btn-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.label-action-slot .hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.label-action-slot .remove-btn-wrapper {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.label-action-slot .visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+

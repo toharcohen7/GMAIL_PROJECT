@@ -270,6 +270,15 @@ function removeMailsFromLable(userId, labelName) {
   }
 }
 
+function UpdateMailsToEditLabel(userId, oldLabelName, newLabelName) {
+  const mails = userMails.get(userId);
+  for (const mail of mails) {
+    if (mail.labelName === oldLabelName) {
+      mail.labelName = newLabelName;
+    }
+  }
+}
+
 // Export all controller functions for external use
 module.exports = {
   get50Mails,
@@ -279,6 +288,7 @@ module.exports = {
   updateMail,
   searchQueryInMails,
   initMailsForUser,
+  UpdateMailsToEditLabel,
   getMailStatus,
   getRecivers,
   removeMailsFromLable

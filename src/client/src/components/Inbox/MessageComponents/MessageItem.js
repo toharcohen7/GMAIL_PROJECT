@@ -12,7 +12,6 @@ function MessageItem({
   onToggleStar
 }) {
   const isRead = message.onRead;
-  const isStarred = message.starred;
   const isDraft = message.labelName === 'Draft';
 
   // Handler to open draft editor without triggering message click
@@ -25,10 +24,6 @@ function MessageItem({
     if (!text) return '';
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
-
-  if (isStarred) {
-    console.log('This message is starred.');
-  }
 
   return (
     <div

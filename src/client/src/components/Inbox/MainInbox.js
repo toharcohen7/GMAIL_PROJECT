@@ -145,6 +145,16 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       try {
         let data = [];
 
+        if (!searchQuery) {
+          // Check if the selected label exists
+          const labelExists = await checkLabelExists(selectedLabel);
+          if (!labelExists) {
+            console.warn(`Label "${selectedLabel}" does not exist, skipping fetch.`);
+            setIsLoading(false);
+            return;
+          }
+        }
+
         const res = await FetchWithAuth(
           searchQuery
             ? buildApiUrl(`/api/mails/search/${encodeURIComponent(searchQuery)}`)
@@ -168,6 +178,17 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
 
     fetchMessages();
   }, [searchQuery, selectedLabel, onRefresh, currentUser, loadSenderNames, offset]);
+
+  // Function to check if a label exists
+  const checkLabelExists = async (labelName) => {
+    try {
+      const res = await FetchWithAuth(buildApiUrl(`/api/labels/${encodeURIComponent(labelName)}`));
+      return res.ok;
+    } catch (err) {
+      console.error(`Error checking label existence:`, err);
+      return false;
+    }
+  };
 
   const selectAllMessages = () => setSelectedMessages(new Set(filteredMessages.map(msg => msg.id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
@@ -475,7 +496,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
           onMarkAsSpam={handleMarkAsSpam}
           onMoveToLabel={handleMoveToLabel}
           currentLabel={selectedLabel}
-          offset={offset} 
+          offset={offset}
           setOffset={setOffset}
           loadMessages={loadMessages}
           hasMoreMessages={hasMoreMessages}
@@ -516,7 +537,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
             onSuccess={handleDraftSent}
           />
         )}
-        
+
       </div>
     </div>
   ) : null;

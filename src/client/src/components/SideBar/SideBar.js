@@ -118,6 +118,9 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange }) {
             if (action === "delete") {
                 if (window.confirm(`Are you sure you want to delete label "${labelName}"?`)) {
                     await deleteLabel(labelName);
+                    console.log(`Label "${labelName}" deleted successfully.`);
+                    await onLabelSelect("Received");
+                    setSelectedLabelName("Received");
                 }
             } else if (action === "edit") {
                 const labelToEdit = labels.find(label => label.name === labelName);
@@ -163,6 +166,8 @@ function SideBar({ onLabelSelect, refreshTrigger, onLabelsChange }) {
                     ));
                     setShowModal(false);
                     setEditLabelData(null);
+                    setSelectedLabelName(newLabelName);
+                    onLabelSelect(newLabelName);
                     if (onLabelsChange) onLabelsChange();
                 } else if (response.status === 409) {
                     alert("Label name already exists. Please choose a different name.");
