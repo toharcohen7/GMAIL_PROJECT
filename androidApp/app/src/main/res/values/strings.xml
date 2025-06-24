@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GMAIL_APP_D.T.H</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_btn">LOGIN</string>
+    <string name="app_logo">AppLogo</string>
+    <string name="login_click_to_signup">Don\'t have an account? Sign Up now!</string>
 </resources>
