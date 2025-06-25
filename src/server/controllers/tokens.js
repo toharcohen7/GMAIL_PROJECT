@@ -1,6 +1,6 @@
-const tokens = require('../models/tokens')
+const tokens = require('../services/tokens')
 
-exports.signIn = (req, res) => {
+exports.signIn = async (req, res) => {
   // Check if the user ID is provided and is a valid number
   if (isThereExtraFields(req, ["userName", "password"])) {
   return res.status(400).json({ error: 'No extra fields allowed' });
@@ -10,7 +10,7 @@ exports.signIn = (req, res) => {
   if (!userName || !password) 
       return res.status(400).json({ error: 'User name and password are required' })
 
-  const jwtToken = tokens.signIn(userName, password);
+  const jwtToken = await tokens.signIn(userName, password);
     if (!jwtToken)
       return res.status(401).json({ error: 'Invalid user name or password' });
   
