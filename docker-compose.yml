@@ -52,3 +52,14 @@ services:
       - WDS_SOCKET_PORT=0
     depends_on:
       - node
+
+  mongo:
+    image: mongo:latest
+    container_name: gmail_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
