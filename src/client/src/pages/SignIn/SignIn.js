@@ -32,6 +32,7 @@ function SignIn() {
       }
 
       const data = await response.json();
+      console.log("TOKEN RESPONSE:", data); // ← כאן תראה מה באמת חזרת
       localStorage.setItem("token", data.token);
 
       // Fetch user data with FetchWithAuth

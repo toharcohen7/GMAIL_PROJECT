@@ -27,13 +27,14 @@ services:
   node:
     image: gmail_project
     container_name: gmail_node
-    command: node /usr/src/mytest/src/server/app.js ${NODE_PORT} ${SERVER_PORT} ${SERVER_HOST}
+    command: node /usr/src/mytest/src/server/app.js ${NODE_PORT} ${SERVER_PORT} ${SERVER_HOST} ${MONGO_CONNECTION}
     ports:
       - "${NODE_PORT}:${NODE_PORT}"
     environment:
       - NODE_PORT=${NODE_PORT}
       - SERVER_PORT=${SERVER_PORT}  
       - SERVER_HOST=${SERVER_HOST}
+      - MONGO_CONNECTION=${MONGO_CONNECTION}
     depends_on:
       - server
 

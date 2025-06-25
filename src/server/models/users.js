@@ -1,71 +1,15 @@
-const Labels = require('./labels')
-const Mails = require('./mails')
+const Mongoose = require('mongoose');
+const { Schema } = Mongoose;
 
+const UserSchema = new Schema({
+    userName: { type: String, required: true, unique: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    password: { type: String, required: true },
+    gender: { type: String, required: true },
+    birthDate: { type: Date, required: true },
+    image: { type: String, required: true },
+});
 
-let idCounter = 0;
-const users = [];
-
-/**
- * Retrieves a user by ID.
- * Returns basic information without exposing the password.
- */
-const getUser = (userId) => {
-    const user = users.find(u => u.id === userId);
-    if (!user) 
-        return undefined;
-    return {
-        id: user.id,
-        userName: user.userName,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        gender: user.gender,
-        birthDate: user.birthDate,
-        image: user.image
-  };
-};
-/**
- * Creates a new user if the username is not already taken.
- * Also initializes default labels (like "unlabeled") for the new user.
- * Returns the created user object or undefined if username exists.
- */
-const createUser = (userName, password,firstName,lastName,gender,birthDate, image) => {
-    if (users.find(u => u.userName === userName)) {
-        return undefined; // Username already exists
-    }
-    const newUser = {id: ++idCounter, userName, password, firstName, lastName, gender, birthDate, image};
-    users.push(newUser);
-    Labels.initLabelsForUser(newUser.id);
-    Mails.initMailsForUser(newUser.id);
-    return newUser;
-};
-/**
- * Authenticates a user by username and password.
- * Returns the user ID if login is successful, or undefined otherwise.
- */
-const signIn = (userName, password) => {
-    const user = users.find(u => u.userName === userName && u.password === password);
-    if (!user) {
-        return undefined;
-    }
-    return {
-        id: user.id
-    }
-}
-
-const getIdFromUserName = (userName) => {
-    const user = users.find(u => u.userName === userName);
-    return user ? user.id : undefined;
-}
-
-const getUserNameFromId = (userId) => {
-    const user = users.find(u => u.id === userId);
-    return user ? user.userName : undefined;
-}
-
-module.exports = {
-    getUser,
-    createUser,
-    signIn,
-    getIdFromUserName,
-    getUserNameFromId
-};
+const User = Mongoose.model('User', UserSchema);
+module.exports = User;

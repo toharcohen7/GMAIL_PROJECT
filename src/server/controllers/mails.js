@@ -1,6 +1,9 @@
-const Mails = require('../models/mails')
-const Users = require('../models/users');
-const Labels = require('../models/labels');
+const Mails = require('../services/mails')
+const Users = require('../services/users');
+const Labels = require('../services/labels');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+
 
 /**
  * Returns the all mails of the current user.
@@ -12,7 +15,7 @@ exports.get50Mails = async (req, res) => {
     return res.status(400).json({ error: 'No extra fields allowed' });
   }
 
-  const userId = getUserIdFromHeaders(req, res);
+  const userId = await getUserIdFromHeaders(req, res);
   if (userId === undefined) {
     return res; // Error response already sent in helper function
   }
@@ -28,7 +31,7 @@ exports.get50Mails = async (req, res) => {
     labelName = String(labelName);
   }
 
-  if (labelName && !Labels.getLabelByName(userId, labelName) && labelName !== 'Starred') {
+  if (labelName && labelName !== 'Starred' && !(await Labels.getLabelByName(userId, labelName))) {
     return res.status(404).json({ error: 'Label not found' });
   }
 
@@ -37,7 +40,7 @@ exports.get50Mails = async (req, res) => {
 
   // Map each mail to return only necessary fields
   const filtered = mails.map(mail => {
-    const { id,
+    const { _id,
             mailStatus, 
             labelName,
             senderId, 
@@ -49,10 +52,10 @@ exports.get50Mails = async (req, res) => {
             formattedTime, 
             timestamp } = mail;
 
-    return { id, 
+    return { id: _id.toString(), 
              mailStatus, 
              labelName, 
-             senderId, 
+             senderId: senderId.toString(), 
              receiversNames, 
              subject, 
              content, 
@@ -69,19 +72,19 @@ exports.get50Mails = async (req, res) => {
  * Creates a new mail.
  * Validates fields, checks for blacklisted links, and stores the mail for sender and receiver.
  */
-exports.createMail = (req, res) => {
+exports.createMail = async (req, res) => {
 
   if (isThereExtraFields(req, [])) {
     return res.status(400).json({ error: 'No extra fields allowed' });
   }
 
-  const userId = getUserIdFromHeaders(req, res);
+  const userId = await getUserIdFromHeaders(req, res);
   if (userId === undefined) {
     return res; // Error response already sent in helper function
   }
 
   // Create new draft mail for the user
-  const newMail = Mails.createMail(userId);  
+  const newMail = await Mails.createMail(userId);  
 
   res.status(201).json(newMail).end();
 }
@@ -90,25 +93,28 @@ exports.createMail = (req, res) => {
  * Retrieves a specific mail by its ID for the current user.
  * Only returns relevant fields.
  */
-exports.getMailById = (req, res) => {
+exports.getMailById = async (req, res) => {
 
   if (isThereExtraFields(req, [])) {
     return res.status(400).json({ error: 'No extra fields allowed' });
   }
 
-  const userId = getUserIdFromHeaders(req, res);
+  const userId = await getUserIdFromHeaders(req, res);
   if (userId === undefined) {
     return res; // Error response already sent in helper function
   }
 
-  const mailId = getMailIdFromParams(req, res, userId);
+  const mailId = await getMailIdFromParams(req, res, userId);
   if (mailId === undefined) {
     return res; // Error response already sent in helper function
   }
 
-  const mail = Mails.getMailById(userId, mailId);
-  const { id, mailStatus, senderId, receiversNames, subject, content, starred, onRead, formattedTime } = mail;
-  let labelName = Labels.getLabelByName(userId, mail.labelName).name;
+  const mail = await Mails.getMailById(userId, mailId);
+  const { _id, mailStatus, senderId, receiversNames, subject, content, starred, onRead, formattedTime } = mail;
+  const id = _id.toString();
+
+  const label = await Labels.getLabelByName(userId, mail.labelName);
+  const labelName = label.name;
 
   res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, starred, onRead, time: formattedTime });
 }
@@ -117,24 +123,24 @@ exports.getMailById = (req, res) => {
  * Deletes a specific mail from the user's sent or received list.
  * Does not affect the other party.
  */
-exports.deleteMail = (req, res) => {
+exports.deleteMail = async (req, res) => {
 
   if (isThereExtraFields(req, [])) {
     return res.status(400).json({ error: 'No extra fields allowed' });
   }
 
-  const userId = getUserIdFromHeaders(req, res);
+  const userId = await getUserIdFromHeaders(req, res);
   if (userId === undefined) {
     return res; // Error response already sent in helper function
   }
   
-  const mailId = getMailIdFromParams(req, res, userId);
+  const mailId = await getMailIdFromParams(req, res, userId);
   if (mailId === undefined) {
     return res; // Error response already sent in helper function
   }
 
   // Perform delete operation
-  Mails.deleteMail(userId, mailId);
+  await Mails.deleteMail(userId, mailId);
 
   return res.status(204).end();
 }
@@ -150,21 +156,21 @@ exports.deleteMail = (req, res) => {
 exports.updateMail = async (req, res) => {
   const updates = req.body;
 
-  const userId = getUserIdFromHeaders(req, res);
+  const userId = await getUserIdFromHeaders(req, res);
   if (userId === undefined) {
     return res; // Error response already sent in helper function
   }
 
-  const mailId = getMailIdFromParams(req, res, userId);
+  const mailId = await getMailIdFromParams(req, res, userId);
   if (mailId === undefined) {
     return res; // Error response already sent in helper function
   }
 
   // Check if the mail is still a draft
-  if (Mails.getMailStatus(userId, mailId) === 'Draft') {
-    return changeDraftMail(userId, mailId, updates, req, res);
+  if (await Mails.getMailStatus(userId, mailId) === 'Draft') {
+    return await changeDraftMail(userId, mailId, updates, req, res);
   } else {
-    return changeUnDraftedMail(userId, mailId, updates, req, res);
+    return await changeUnDraftedMail(userId, mailId, updates, req, res);
   }
 };
 
@@ -182,18 +188,23 @@ async function changeUnDraftedMail(userId, mailId, updates, req, res) {
 
   if(updates.labelName !== undefined){
 
-    if (!Labels.getLabelByName(userId, updates.labelName)) {
-      return res.status(404).json({ error: 'Label not found' });
-    }   
     if ('Draft' === updates.labelName) {
       return res.status(400).json({ error: 'Cannot change label to Draft' });
     }   
-    if ('Sent' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Sent') {
+
+    if (!(await Labels.getLabelByName(userId, updates.labelName))) {
+      return res.status(404).json({ error: 'Label not found' });
+    }   
+
+    const mailStatus = await Mails.getMailStatus(userId, mailId);
+
+    if ('Sent' === updates.labelName && mailStatus !== 'Sent') {
       return res.status(400).json({ error: 'Cannot change the label of a received mail to Sent' });
     }   
-    if ('Received' === updates.labelName && Mails.getMailStatus(userId, mailId) !== 'Received') {
+    if ('Received' === updates.labelName && mailStatus !== 'Received') {
       return res.status(400).json({ error: 'Cannot change the label of a sent mail to Received' });
     }
+
   }
 
   await Mails.updateMail(userId, mailId, updates);
@@ -230,7 +241,7 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
       let notFoundArr = [];
 
       for (const receiverName of updates.receiversNames) {
-        if (!isReceiversNameUser(receiverName) && !notFoundArr.includes(receiverName)) {
+        if (!await isReceiversNameUser(receiverName) && !notFoundArr.includes(receiverName)) {
           notFoundArr.push(receiverName);
         }
       }
@@ -242,7 +253,8 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
   }
 
   // If sending, validate that there are receivers
-  let recivers = (updates.receiversNames !== undefined) ? updates.receiversNames : Mails.getRecivers(userId, mailId);
+  let recivers = (updates.receiversNames !== undefined) ? updates.receiversNames : 
+                                                          await Mails.getRecivers(userId, mailId);
   if (recivers.length === 0 && updates.labelName === 'Sent') {
     return res.status(400).json({ error: 'Cannot send mail without a receiver' });
   }
@@ -260,13 +272,13 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
  * Searches for a query string in both subject and content
  * of all sent and received mails of the current user.
  */
-exports.searchQueryInMails = (req, res) => {
+exports.searchQueryInMails = async (req, res) => {
 
   if(isThereExtraFields(req, [])) {
     return res.status(400).json({ error: 'No extra fields allowed' });
   }
 
-  const userId = getUserIdFromHeaders(req, res);
+  const userId = await getUserIdFromHeaders(req, res);
   if (userId === undefined) {
     return res; // Error response already sent in helper function
   }
@@ -276,25 +288,26 @@ exports.searchQueryInMails = (req, res) => {
     return res.status(400).json({ error: 'query is required' });
   }
 
-  return res.status(200).json(Mails.searchQueryInMails(userId, query));
+  return res.status(200).json(await Mails.searchQueryInMails(userId, query));
 }
 
 // ─── Helper Functions ───────────────────────────────────────────────────────────
 
 // Validates if a given receiver ID belongs to a user
-function isReceiversNameUser(receiverName) {
-  return Users.getIdFromUserName(receiverName) !== undefined;
+async function isReceiversNameUser(receiverName) {
+  const userId = await Users.getIdFromUserName(receiverName);
+  return userId !== undefined;
 }
 
 // Extracts and validates the user ID from request headers
-function getUserIdFromHeaders(req, res) {
-  const userId = parseInt(req.headers['user-id']);
-  if (!userId) {
-    res.status(400).json({ error: 'Missing user-id header' });
+async function getUserIdFromHeaders(req, res) {
+  const userId = req.headers['user-id'];
+  if (!userId || !ObjectId.isValid(userId)) {
+    res.status(400).json({ error: 'Missing or invalid user-id header' });
     return undefined;
   }
 
-  if (Users.getUser(userId) === undefined) {
+  if (await Users.getUser(userId) === undefined) {
     res.status(404).json({ error: 'User not found' });
     return undefined;
   }
@@ -303,14 +316,14 @@ function getUserIdFromHeaders(req, res) {
 }
 
 // Extracts and validates the mail ID from request parameters
-function getMailIdFromParams(req, res, userId) {
-  const mailId = parseInt(req.params.id);
-  if (!mailId) {
+async function getMailIdFromParams(req, res, userId) {
+  const mailId = req.params.id;
+  if (!mailId || !ObjectId.isValid(mailId)) {
     res.status(400).json({ error: 'mail-id must be provided' });
     return undefined;
   }
 
-  const mail = Mails.getMailById(userId, mailId);
+  const mail = await Mails.getMailById(userId, mailId);
   if (!mail) {
     res.status(404).json({ error: 'Mail not found' });
     return undefined;
