@@ -1,29 +1,35 @@
-const Users = require('../models/users')
-const Tokens = require('../models/tokens');
+const Users = require('../services/users')
+const Tokens = require('../services/tokens');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
-exports.getCurrentUser = (req, res) => {
+exports.getCurrentUser = async (req, res) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.sendStatus(401);
 
   const token = authHeader.split(' ')[1];
-  const decoded = Tokens.verifyToken(token);
+  const decoded = await Tokens.verifyToken(token);
   if (!decoded) return res.sendStatus(403);
 
-  const user = Users.getUser(decoded.id);
+  const user = await Users.getUser(decoded.id);
   if (!user) return res.sendStatus(404);
 
   res.json(user);
 };
 
-exports.getUserById= (req, res) => {
+exports.getUserById= async (req, res) => {
 
     // Check if the user ID is provided and is a valid number
     if (isThereExtraFields(req, [])) {
     return res.status(400).json({ error: 'No extra fields allowed' });
     }
 
-    const userId = parseInt(req.params.id);
-    const user = Users.getUser(userId);
+    const userId = req.params.id;
+    if (!ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    const user = await Users.getUser(userId);
     if(!user)
         return res.status(404).json({error: 'User not found'});
     res.json(user);
@@ -32,7 +38,7 @@ exports.getUserById= (req, res) => {
  * Creates a new user if the username is not already taken.
  * Also initializes default labels for the user.
  */
-exports.createUser = (req, res) => {
+exports.createUser = async (req, res) => {
 
     const requiredFields = ['userName', 'password', 'confirmPassword', 'firstName', 'lastName', 'gender', 'birthDate', 'image'];
 
@@ -62,12 +68,12 @@ exports.createUser = (req, res) => {
 
     const { userName, password, firstName, lastName, gender, birthDate , image} = req.body;
 
-    const newUser = Users.createUser(userName, password, firstName, lastName, gender, birthDate, image);
+    const newUser = await Users.createUser(userName, password, firstName, lastName, gender, birthDate, image);
     if (!newUser) {
         return res.status(400).json({ error: 'userName already exists' });
     }
     
-    res.status(201).location(`/api/users/${newUser.id}`).json(newUser);
+    res.status(201).location(`/api/users/${newUser._id}`).json(newUser);
 };
 //
 // ─── Helper Functions ───────────────────────────────────────────────────────────

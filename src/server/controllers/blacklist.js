@@ -1,4 +1,4 @@
-const Blacklist = require('../models/blacklist');
+const Blacklist = require('../services/blacklist');
 
 exports.addBlacklist = async (req, res) => {
 
