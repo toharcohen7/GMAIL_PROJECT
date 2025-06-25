@@ -88,20 +88,18 @@
             android:layout_margin="2dp"/>
 
         <TextView
-            android:id="@+id/signUpLink"
+            android:id="@+id/tv_sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:minHeight="48dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             android:text="@string/login_click_to_signup"
             android:textColor="@color/blue"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:focusable="true" />
+
 
     </LinearLayout>
 

@@ -28,4 +28,4 @@ app.use('/api/tokens', tokensRoutes);
 app.use('/api/labels', labelsRoutes);
 app.use('/api/blacklist', blacklistRoutes);
 
-app.listen(Config.APP_PORT);
+app.listen(Config.APP_PORT, '0.0.0.0');
