@@ -79,6 +79,7 @@
             android:minHeight="48dp" />
 
         <Button
+            android:id="@+id/signInButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -86,6 +87,7 @@
             android:text="@string/login_btn"
             android:textColor="@color/black"
             android:layout_margin="2dp"/>
+
 
         <TextView
             android:id="@+id/tv_sign_up"
