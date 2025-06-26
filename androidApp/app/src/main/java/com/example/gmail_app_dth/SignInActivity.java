@@ -2,13 +2,19 @@ package com.example.gmail_app_dth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 
 public class SignInActivity extends AppCompatActivity {
+
+    private com.example.gmail_app_dth.SignInViewModel signInViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,10 +22,33 @@ public class SignInActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_in);
 
+        EditText etUserName = findViewById(R.id.editTextText);
+        EditText etPassword = findViewById(R.id.editTextTextPassword);
+        Button btnSignIn = findViewById(R.id.signInButton);
+        TextView tvSignUp = findViewById(R.id.tv_sign_up);
 
-        TextView signUpLink = findViewById(R.id.tv_sign_up);
+        signInViewModel = new ViewModelProvider(this).get(com.example.gmail_app_dth.SignInViewModel.class);
 
-        signUpLink.setOnClickListener(v -> {
+        btnSignIn.setOnClickListener(v -> {
+            String userName = etUserName.getText().toString().trim();
+            String password = etPassword.getText().toString();
+
+
+            SignInRequest request = new SignInRequest(userName, password);
+            signInViewModel.signIn(request);
+        });
+
+        signInViewModel.getLoginStatus().observe(this, status -> {
+            if (status.equals("success")) {
+                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, WelcomeActivity.class));
+                finish();
+            } else {
+                Toast.makeText(this, status, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        tvSignUp.setOnClickListener(v -> {
             Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
             startActivity(intent);
         });
