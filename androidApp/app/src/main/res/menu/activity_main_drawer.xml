@@ -5,16 +5,34 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />
+            android:id="@+id/nav_stared"
+            android:icon="@drawable/ic_menu_stared_foreground"
+            android:title="@string/menu_stared" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_draft"
+            android:icon="@drawable/ic_menu_draft_foreground"
+            android:title="@string/menu_draft" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_sent"
+            android:icon="@drawable/ic_menu_sent_foreground"
+            android:title="@string/menu_sent" />
+        <item
+            android:id="@+id/nav_spam"
+            android:icon="@drawable/ic_menu_spam_foreground"
+            android:title="@string/menu_spam" />
+        <item
+            android:id="@+id/nav_received"
+            android:icon="@drawable/ic_menu_recieved_foreground"
+            android:title="@string/menu_received" />
+        <item
+            android:id="@+id/nav_tarsh"
+            android:icon="@drawable/ic_menu_trash_foreground"
+            android:title="@string/menu_tarsh" />
+        <item
+            android:id="@+id/nav_labels_header"
+            android:title="Labels"
+            android:icon="@drawable/ic_add_small"
+            android:checkable="false" />
+
     </group>
 </menu>

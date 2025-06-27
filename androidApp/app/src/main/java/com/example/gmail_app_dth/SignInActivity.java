@@ -41,7 +41,7 @@ public class SignInActivity extends AppCompatActivity {
         signInViewModel.getLoginStatus().observe(this, status -> {
             if (status.equals("success")) {
                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, WelcomeActivity.class));
+                startActivity(new Intent(this,MainInboxActivity.class ));
                 finish();
             } else {
                 Toast.makeText(this, status, Toast.LENGTH_LONG).show();

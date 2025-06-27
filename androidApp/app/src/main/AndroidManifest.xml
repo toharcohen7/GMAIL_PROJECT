@@ -25,7 +25,7 @@
         android:theme="@style/Theme.GMAIL_APP_DTH"
         tools:targetApi="31">
         <activity
-            android:name=".ui.MainInboxActivity"
+            android:name=".MainInboxActivity"
             android:exported="false"
             android:label="@string/title_activity_main_inbox"
             android:theme="@style/Theme.GMAIL_APP_DTH.NoActionBar" />

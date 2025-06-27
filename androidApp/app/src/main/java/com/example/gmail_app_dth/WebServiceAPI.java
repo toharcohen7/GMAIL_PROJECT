@@ -13,4 +13,8 @@ public interface WebServiceAPI {
     @POST("api/tokens")
     Call<ResponseBody> signIn(@Body SignInRequest request);
 
+    @POST("/api/labels")
+    Call<Void> createLabel(@Body LabelRequest request);
+
+
 }
