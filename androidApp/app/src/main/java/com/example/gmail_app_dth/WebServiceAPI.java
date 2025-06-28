@@ -41,5 +41,10 @@ public interface WebServiceAPI {
     @GET("users/{id}")
     Call<UserResponse> getUserById(@Path("id") String userId);
 
+    @GET("mails/search/{query}")
+    Call<List<Mail>> searchMails(@Path("query") String query);
+
+
+
 
 }
