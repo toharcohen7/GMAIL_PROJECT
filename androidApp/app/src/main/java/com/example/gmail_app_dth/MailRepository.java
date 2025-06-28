@@ -1,5 +1,7 @@
 package com.example.gmail_app_dth;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -67,5 +69,31 @@ public class MailRepository {
             }
         });
     }
+
+    public void searchMails(String query, MutableLiveData<List<Mail>> liveData) {
+        Log.d("SEARCH_REPO", "Calling API with: " + query);
+        api.searchMails(query).enqueue(new Callback<List<Mail>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
+                Log.d("SEARCH_REPO", "Response status: " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("SEARCH_REPO", "Results count: " + response.body().size());
+                    liveData.postValue(response.body());
+                } else {
+                    liveData.postValue(Collections.emptyList());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Mail>> call, @NonNull Throwable t) {
+                Log.e("SEARCH_REPO", "Failure: " + t.getMessage());
+                liveData.postValue(Collections.emptyList());
+            }
+        });
+    }
+
+
+
+
 
 }

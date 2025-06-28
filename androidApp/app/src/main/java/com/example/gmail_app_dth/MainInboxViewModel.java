@@ -3,12 +3,14 @@ package com.example.gmail_app_dth;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainInboxViewModel extends AndroidViewModel {
@@ -26,11 +28,27 @@ public class MainInboxViewModel extends AndroidViewModel {
         return toastMessage;
     }
 
+    private String currentLabel = "Received"; // ברירת מחדל
+
+    public void setCurrentLabel(String label) {
+        currentLabel = label;
+    }
+
+    public String getCurrentLabel() {
+        return currentLabel;
+    }
+
     public MainInboxViewModel(@NonNull Application application) {
         super(application);
 
         SharedPreferences prefs = application.getSharedPreferences("auth", Context.MODE_PRIVATE);
         String userId = prefs.getString("userId", null);
+
+        if (userId == null || userId.isEmpty()) {
+            Log.e("MAIL_VM", "⚠️ userId is null or empty – this will cause 401 Unauthorized");
+        } else {
+            Log.d("MAIL_VM", "✅ userId loaded: " + userId);
+        }
 
         labelRepository = new LabelRepository(application.getApplicationContext());
 
@@ -81,5 +99,32 @@ public class MainInboxViewModel extends AndroidViewModel {
                     toastMessage.postValue("Failed to update star status");
                 });
     }
+    public void searchMails(String query) {
+        mailRepository.searchMails(query, new MutableLiveData<List<Mail>>() {
+            @Override
+            public void postValue(List<Mail> allResults) {
+                List<Mail> filtered = new ArrayList<>();
+
+                for (Mail mail : allResults) {
+                    // תווית רגילה
+                    if (currentLabel.equals(mail.getLabelName())) {
+                        filtered.add(mail);
+                    }
+
+                    // טיפול מיוחד ב־Starred
+                    if (currentLabel.equals("Starred") && mail.isStarred()) {
+                        filtered.add(mail);
+                    }
+                }
+
+                mailsLiveData.postValue(filtered);
+            }
+        });
+    }
+
+
+
+
+
 
 }

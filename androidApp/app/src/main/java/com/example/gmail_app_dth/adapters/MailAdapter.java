@@ -53,15 +53,15 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
     public void onBindViewHolder(@NonNull MailViewHolder holder, int position) {
         Mail mail = mailList.get(position);
 
-        // שם ותמונה
+        // 🧠 שם ותמונה
         String senderId = mail.getSenderId();
         UserResponse sender = UserCache.get(senderId);
 
         if (sender != null) {
-            holder.sender.setText(sender.getUserName());
+            holder.sender.setText(sender.getUserName() != null ? sender.getUserName() : "Unknown");
             Glide.with(context)
                     .load(sender.getImage())
-                    .placeholder(R.drawable.dashed_circle)
+                    .placeholder(R.drawable.ic_user_placeholder_foreground)
                     .circleCrop()
                     .into(holder.imageIcon);
         } else {
@@ -69,10 +69,12 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
             listener.onRequestSenderInfo(senderId, holder);
         }
 
-        holder.subject.setText(mail.getSubject());
-        holder.content.setText(mail.getContent());
-        holder.date.setText(formatDateOrTime(mail.getTime()));
+        // ✅ הגנה על subject, content, time
+        holder.subject.setText(mail.getSubject() != null ? mail.getSubject() : "(no subject)");
+        holder.content.setText(mail.getContent() != null ? mail.getContent() : "");
+        holder.date.setText(mail.getTime() != null ? formatDateOrTime(mail.getTime()) : "");
 
+        // כוכב
         holder.starButton.setImageResource(
                 mail.isStarred() ? R.drawable.ic_full_star_smaller_foreground : R.drawable.ic_empty_star_foreground
         );
@@ -83,6 +85,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
             notifyItemChanged(holder.getAdapterPosition());
         });
     }
+
 
     @Override
     public int getItemCount() {
