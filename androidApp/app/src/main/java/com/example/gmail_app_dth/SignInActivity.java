@@ -35,7 +35,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
             SignInRequest request = new SignInRequest(userName, password);
-            signInViewModel.signIn(request);
+            signInViewModel.signIn(request, this);
         });
 
         signInViewModel.getLoginStatus().observe(this, status -> {

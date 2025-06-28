@@ -13,6 +13,10 @@ const get50Mails = async (userId, offset = 0, labelName = null) => {
     mails = mails.filter(mail => mail.labelName === labelName);
   }
 
+  if( labelName === 'Starred') {
+    mails = mails.filter(mail => mail.starred === true);
+  }
+  
   return mails.sort((a, b) => b.timestamp - a.timestamp).slice(offset, offset + 50);
 };
 

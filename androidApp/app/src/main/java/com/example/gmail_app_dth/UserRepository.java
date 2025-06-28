@@ -1,5 +1,7 @@
 package com.example.gmail_app_dth;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,7 +21,7 @@ public class UserRepository {
 
     public UserRepository() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://7539-79-181-175-112.ngrok-free.app") // חשוב! "localhost" = המחשב שלך, ב־Emulator כותבים 10.0.2.2
+                .baseUrl("https://7539-79-181-175-112.ngrok-free.app/api/") // חשוב! "localhost" = המחשב שלך, ב־Emulator כותבים 10.0.2.2
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -63,7 +65,7 @@ public class UserRepository {
         void onError(String errorMessage);
     }
 
-    public void signIn(SignInRequest request, LoginCallback callback) {
+    public void signIn(SignInRequest request, Context context, LoginCallback callback) {
         Call<ResponseBody> call = webServiceAPI.signIn(request);
         call.enqueue(new Callback<>() {
             @Override
@@ -74,8 +76,20 @@ public class UserRepository {
                             String json = body.string();
                             JSONObject obj = new JSONObject(json);
                             String token = obj.optString("token", null);
-                            if (!token.isEmpty()) {
-                                callback.onSuccess(token);
+
+                            if (token != null && !token.isEmpty()) {
+                                // אחרי התחברות מוצלחת → נשלוף את המשתמש
+                                fetchUserData(token, context, new UserDataCallback() {
+                                    @Override
+                                    public void onSuccess(UserResponse user) {
+                                        callback.onSuccess(token); // או אפשר לשלוח גם את ה־user אם תרצה
+                                    }
+
+                                    @Override
+                                    public void onError(String errorMessage) {
+                                        callback.onError(errorMessage);
+                                    }
+                                });
                             } else {
                                 callback.onError("Missing token in response.");
                             }
@@ -110,11 +124,64 @@ public class UserRepository {
         });
     }
 
+
     public interface LoginCallback {
         void onSuccess(String token);
         void onError(String errorMessage);
     }
 
+    public void fetchUserData(String token, Context context, UserDataCallback callback) {
+        String authHeader = "Bearer " + token;
 
+        webServiceAPI.getCurrentUser(authHeader).enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    UserResponse user = response.body();
+
+                    // שמירה ב־SharedPreferences
+                    SharedPreferences prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
+                    prefs.edit()
+                            .putString("token", token)
+                            .putString("userId", user.getId())
+                            .putString("userName", user.getUserName())
+                            .putString("firstName", user.getFirstName())
+                            .putString("lastName", user.getLastName())
+                            .putString("gender", user.getGender())
+                            .putString("birthDate", user.getBirthDate())
+                            .putString("image", user.getImage())
+                            .apply();
+
+                    callback.onSuccess(user); // מעביר את המשתמש חזרה אם צריך
+                } else {
+                    callback.onError("Failed to fetch user data");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+                callback.onError("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getUserById(String userId, UserDataCallback callback) {
+        webServiceAPI.getUserById(userId).enqueue(new Callback<UserResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<UserResponse> call, @NonNull Response<UserResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body());
+                } else {
+                    callback.onError("User not found");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserResponse> call, @NonNull Throwable t) {
+                callback.onError("Network error: " + t.getMessage());
+            }
+        });
+    }
 
 }
+
