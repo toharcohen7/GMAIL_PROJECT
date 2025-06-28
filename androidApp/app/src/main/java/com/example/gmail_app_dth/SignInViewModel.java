@@ -23,11 +23,11 @@ public class SignInViewModel extends AndroidViewModel {
         return loginStatus;
     }
 
-    public void signIn(SignInRequest request) {
-        repository.signIn(request, new UserRepository.LoginCallback() {
+    public void signIn(SignInRequest request, Context context) {
+        repository.signIn(request, context, new UserRepository.LoginCallback() {
             @Override
             public void onSuccess(String token) {
-                saveToken(token);
+                // saveToken(token); ← לא חובה, נשמר כבר בתוך fetchUserData
                 loginStatus.postValue("success");
             }
 
@@ -38,9 +38,4 @@ public class SignInViewModel extends AndroidViewModel {
         });
     }
 
-    private void saveToken(String token) {
-        SharedPreferences prefs = getApplication()
-                .getSharedPreferences("auth", Context.MODE_PRIVATE);
-        prefs.edit().putString("token", token).apply();
-    }
 }

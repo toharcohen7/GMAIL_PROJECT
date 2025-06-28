@@ -1,12 +1,12 @@
 package com.example.gmail_app_dth;
 
-public class LabelRequest {
+public class Label {
+    private String id;
     private String name;
     private String iconClass;
 
-    public LabelRequest(String name, String iconClass) {
-        this.name = name;
-        this.iconClass = iconClass;
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -17,4 +17,3 @@ public class LabelRequest {
         return iconClass;
     }
 }
-
