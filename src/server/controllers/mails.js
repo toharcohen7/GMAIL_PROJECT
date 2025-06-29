@@ -112,11 +112,12 @@ exports.getMailById = async (req, res) => {
   const mail = await Mails.getMailById(userId, mailId);
   const { _id, mailStatus, senderId, receiversNames, subject, content, starred, onRead, formattedTime } = mail;
   const id = _id.toString();
+  const senderIdStr = senderId.toString();
 
   const label = await Labels.getLabelByName(userId, mail.labelName);
   const labelName = label.name;
 
-  res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, starred, onRead, time: formattedTime });
+  res.json({ id, mailStatus, labelName, senderId: senderIdStr, receiversNames, subject, content, starred, onRead, time: formattedTime });
 }
 
 /**
@@ -302,8 +303,9 @@ async function isReceiversNameUser(receiverName) {
 // Extracts and validates the user ID from request headers
 async function getUserIdFromHeaders(req, res) {
   const userId = req.headers['user-id'];
-  if (!userId || !ObjectId.isValid(userId)) {
-    res.status(400).json({ error: 'Missing or invalid user-id header' });
+  if (!userId) {
+    res.status(400).json({ error: 'Missing or invalid user-id header'});
+    console.log('Missing or invalid user-edwefwefwefew header:', userId);
     return undefined;
   }
 

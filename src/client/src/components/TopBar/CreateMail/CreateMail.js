@@ -33,7 +33,7 @@ function CreateMail({ onSuccess }) {
         if (!res.ok) throw new Error('Failed to create draft');
 
         const data = await res.json();
-        id = data.id;
+        id = data._id;
         setDraftId(id);
       }
 
@@ -75,7 +75,7 @@ function CreateMail({ onSuccess }) {
 
         const data = await res.json();
         id = data._id;
-        setDraftId(data._id);
+        setDraftId(id);
       }
 
       const sendRes = await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {

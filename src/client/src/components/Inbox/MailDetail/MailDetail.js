@@ -29,7 +29,7 @@ function MailDetail({ message, onClose, onDelete }) {
         <div className="mail-detail-header">
           <h5 className="mb-0">{message.subject || 'No Subject'}</h5>
           <div className="d-flex gap-2">
-            <button className="btn btn-outline-danger btn-sm" onClick={() => onDelete(message.id)}>
+            <button className="btn btn-outline-danger btn-sm" onClick={() => onDelete(message._id)}>
               <i className="bi bi-trash me-1"></i>Delete
             </button>
             <button className="btn btn-outline-secondary btn-sm" onClick={onClose}>
