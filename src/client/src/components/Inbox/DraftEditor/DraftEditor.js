@@ -48,7 +48,7 @@ function DraftEditor({ draft, onClose, onSuccess }) {
         return;
       }
       
-      const response = await FetchWithAuth(buildApiUrl(`api/mails/${draft._id}`), {
+      const response = await FetchWithAuth(buildApiUrl(`api/mails/${draftId}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

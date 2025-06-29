@@ -143,14 +143,17 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       try {
         let data = [];
 
+        // Check if the selected label exists
         if (!searchQuery) {
-          // Check if the selected label exists
+          if( selectedLabel && selectedLabel !== 'Starred') {
+            // If the label is not 'Starred', check if it exists
           const labelExists = await checkLabelExists(selectedLabel);
           if (!labelExists) {
             console.warn(`Label "${selectedLabel}" does not exist, skipping fetch.`);
             setIsLoading(false);
             return;
           }
+        }
         }
 
         const res = await FetchWithAuth(
@@ -338,6 +341,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       } else {
         await FetchWithAuth(buildApiUrl(`/api/mails/${_id}`), {
           method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ labelName: 'Trash' })
         });
       }
@@ -358,7 +362,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     try {
       // Get the full message objects for selected messages
       const selectedData = messages.filter(msg => selectedMessages.has(msg._id));
-      console.log("Selected messages for spam:", selectedData);
 
       // Improved regex that matches URLs with or without http/https prefix
       const urlRegex = /(https?:\/\/)?([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}/gi;
@@ -373,8 +376,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
         contentMatches.forEach(url => urls.add(url));
       });
 
-      console.log("URLs found to blacklist:", Array.from(urls));
-
       // Add URLs to blacklist
       if (urls.size > 0) {
         for (const url of urls) {
@@ -384,7 +385,11 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ url })
             });
-            console.log(`URL ${url} blacklist result:`, response);
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error(`Failed to blacklist URL ${url}:`, errorData);
+              continue; // Skip to the next URL if this one fails
+            }
           } catch (error) {
             console.error(`Error blacklisting URL ${url}:`, error);
           }
