@@ -3,4 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#2196F3</color>
+    <color name="mail_read_bg">#FFFFFF</color>
+    <color name="mail_unread_bg">#E3F2FD</color>
+    <color name="selection_blue">#0000FF</color>
 </resources>

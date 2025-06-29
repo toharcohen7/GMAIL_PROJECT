@@ -1,34 +1,35 @@
 package com.example.gmail_app_dth.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.gmail_app_dth.Mail;
 import com.example.gmail_app_dth.R;
 import com.example.gmail_app_dth.UserCache;
-import com.example.gmail_app_dth.UserResponse;
-import com.example.gmail_app_dth.MailInteractionListener;
+import com.example.gmail_app_dth.entities.Mail;
+import com.example.gmail_app_dth.entities.User;
+import com.example.gmail_app_dth.interfaces.MailInteractionListener;
 import com.example.gmail_app_dth.MailViewHolder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
 
     private final Context context;
     private final List<Mail> mailList = new ArrayList<>();
     private final MailInteractionListener listener;
+
+    private final Set<String> selectedMailIds = new HashSet<>();
+    private boolean selectionMode = false;
 
     public MailAdapter(Context context, MailInteractionListener listener) {
         this.context = context;
@@ -53,9 +54,41 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
     public void onBindViewHolder(@NonNull MailViewHolder holder, int position) {
         Mail mail = mailList.get(position);
 
-        // 🧠 שם ותמונה
+        View mailContainer = holder.itemView.findViewById(R.id.mail_container);
+
+        // רקע לפי מצב קריאה או בחירה
+        if (selectionMode && selectedMailIds.contains(mail.getId())) {
+            mailContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.selection_blue));
+        } else {
+            int bgColor = mail.isOnRead()
+                    ? ContextCompat.getColor(context, R.color.mail_read_bg)
+                    : ContextCompat.getColor(context, R.color.mail_unread_bg);
+            mailContainer.setBackgroundColor(bgColor);
+        }
+
+        // לחיצה קצרה
+        holder.itemView.setOnClickListener(v -> {
+            if (selectionMode) {
+                toggleSelection(mail.getId());
+            } else {
+                listener.onMailClicked(mail);
+            }
+        });
+
+        // לחיצה ארוכה – מפעילה מצב בחירה
+        holder.itemView.setOnLongClickListener(v -> {
+            if (!selectionMode) {
+                selectionMode = true;
+                selectedMailIds.add(mail.getId());
+                notifyDataSetChanged();
+                listener.onSelectionStarted();
+            }
+            return true;
+        });
+
+        // שם ותמונה
         String senderId = mail.getSenderId();
-        UserResponse sender = UserCache.get(senderId);
+        User sender = UserCache.get(senderId);
 
         if (sender != null) {
             holder.sender.setText(sender.getUserName() != null ? sender.getUserName() : "Unknown");
@@ -69,12 +102,10 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
             listener.onRequestSenderInfo(senderId, holder);
         }
 
-        // ✅ הגנה על subject, content, time
         holder.subject.setText(mail.getSubject() != null ? mail.getSubject() : "(no subject)");
         holder.content.setText(mail.getContent() != null ? mail.getContent() : "");
         holder.date.setText(mail.getTime() != null ? formatDateOrTime(mail.getTime()) : "");
 
-        // כוכב
         holder.starButton.setImageResource(
                 mail.isStarred() ? R.drawable.ic_full_star_smaller_foreground : R.drawable.ic_empty_star_foreground
         );
@@ -86,11 +117,43 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
         });
     }
 
+    private void toggleSelection(String mailId) {
+        if (selectedMailIds.contains(mailId)) {
+            selectedMailIds.remove(mailId);
+        } else {
+            selectedMailIds.add(mailId);
+        }
+
+        if (selectedMailIds.isEmpty()) {
+            selectionMode = false;
+            listener.onSelectionCanceled();
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public List<Mail> getSelectedMails() {
+        List<Mail> selected = new ArrayList<>();
+        for (Mail mail : mailList) {
+            if (selectedMailIds.contains(mail.getId())) {
+                selected.add(mail);
+            }
+        }
+        return selected;
+    }
+
+    public void clearSelection() {
+        selectedMailIds.clear();
+        selectionMode = false;
+        notifyDataSetChanged();
+        listener.onSelectionCanceled();
+    }
 
     @Override
     public int getItemCount() {
         return mailList.size();
     }
+
     SimpleDateFormat serverFormat = new SimpleDateFormat("MMM dd, yyyy, HH:mm", Locale.ENGLISH);
     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
@@ -108,15 +171,14 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
                             now.get(Calendar.DAY_OF_YEAR) == mailCal.get(Calendar.DAY_OF_YEAR);
 
             if (isToday) {
-                return timeFormat.format(mailDate); // תציג שעה בלבד
+                return timeFormat.format(mailDate);
             } else {
-                return dateFormat.format(mailDate); // תציג תאריך בלי שנה
+                return dateFormat.format(mailDate);
             }
 
         } catch (ParseException e) {
-            return rawTime; // fallback במקרה של שגיאה
+            return rawTime;
         }
     }
-
 
 }

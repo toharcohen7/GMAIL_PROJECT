@@ -1,0 +1,157 @@
+package com.example.gmail_app_dth.home;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.gmail_app_dth.R;
+import com.example.gmail_app_dth.UserCache;
+import com.example.gmail_app_dth.adapters.MailAdapter;
+import com.example.gmail_app_dth.entities.Mail;
+import com.example.gmail_app_dth.entities.User;
+import com.example.gmail_app_dth.interfaces.MailInteractionListener;
+import com.example.gmail_app_dth.interfaces.UserDataCallback;
+import com.example.gmail_app_dth.viewmodel.MailViewModel;
+import com.example.gmail_app_dth.MailViewHolder;
+import com.example.gmail_app_dth.databinding.FragmentHomeBinding;
+import com.example.gmail_app_dth.repository.UserRepository;
+import com.example.gmail_app_dth.activity.MainInboxActivity;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+public class HomeFragment extends Fragment {
+
+    private FragmentHomeBinding binding;
+    private MailViewModel viewModel;
+    private MailAdapter mailAdapter;
+    private final UserRepository userRepository = new UserRepository();
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        viewModel = new ViewModelProvider(requireActivity()).get(MailViewModel.class);
+
+        mailAdapter = new MailAdapter(requireContext(), new MailInteractionListener() {
+            @Override
+            public void onStarClicked(Mail mail) {
+                viewModel.toggleStar(mail);
+            }
+
+            @Override
+            public void onRequestSenderInfo(String senderId, MailViewHolder holder) {
+                userRepository.getUserById(senderId, new UserDataCallback() {
+                    @Override
+                    public void onSuccess(User user) {
+                        UserCache.put(senderId, user);
+                        holder.sender.setText(user.getUserName());
+                        Glide.with(requireContext())
+                                .load(user.getImage())
+                                .placeholder(R.drawable.dashed_circle)
+                                .circleCrop()
+                                .into(holder.imageIcon);
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        holder.sender.setText("Unknown");
+                    }
+                });
+            }
+
+            @Override
+            public void onMailClicked(Mail mail) {
+                showMailPreviewDialog(mail);
+                viewModel.markMailAsRead(mail);
+            }
+
+            @Override
+            public void onSelectionStarted() {
+                ((MainInboxActivity) requireActivity()).showBulkActionBar();
+            }
+
+            @Override
+            public void onSelectionCanceled() {
+                ((MainInboxActivity) requireActivity()).hideBulkActionBar();
+            }
+        });
+
+        RecyclerView recyclerView = binding.mailList;
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(mailAdapter);
+
+        viewModel.getMailsLiveData().observe(getViewLifecycleOwner(), mails -> {
+            mailAdapter.setData(mails);
+        });
+
+        return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+
+    private void showMailPreviewDialog(Mail mail) {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_mail_preview, null);
+
+        TextView subjectView = dialogView.findViewById(R.id.dialog_mail_subject);
+        TextView fromView = dialogView.findViewById(R.id.dialog_mail_sender);
+        TextView dateView = dialogView.findViewById(R.id.dialog_mail_date);
+        TextView contentView = dialogView.findViewById(R.id.dialog_mail_content);
+
+        subjectView.setText(mail.getSubject());
+
+        User sender = UserCache.get(mail.getSenderId());
+        if (sender != null) {
+            String fullName = sender.getFirstName() + " " + sender.getLastName();
+            fromView.setText(HtmlCompat.fromHtml("<b>From:</b> " + fullName + " &lt;" + sender.getUserName() + "&gt;", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        } else {
+            fromView.setText(HtmlCompat.fromHtml("<b>From:</b> Unknown", HtmlCompat.FROM_HTML_MODE_LEGACY));
+        }
+
+        dateView.setText(formatFullDate(mail.getTime()));
+        contentView.setText(mail.getContent());
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setPositiveButton("Close", null)
+                .show();
+    }
+
+    private String formatFullDate(String rawTime) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("MMM dd, yyyy, HH:mm", Locale.ENGLISH);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("d.M.yyyy, HH:mm:ss", Locale.getDefault());
+            Date date = inputFormat.parse(rawTime);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return rawTime;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+}

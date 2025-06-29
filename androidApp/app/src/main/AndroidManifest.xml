@@ -25,12 +25,12 @@
         android:theme="@style/Theme.GMAIL_APP_DTH"
         tools:targetApi="31">
         <activity
-            android:name=".MainInboxActivity"
+            android:name=".activity.MainInboxActivity"
             android:exported="false"
             android:label="@string/title_activity_main_inbox"
             android:theme="@style/Theme.GMAIL_APP_DTH.NoActionBar" />
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".activity.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,10 +39,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignUpActivity"
+            android:name=".activity.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".activity.SignInActivity"
             android:exported="false" />
     </application>
 
