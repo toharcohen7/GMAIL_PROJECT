@@ -18,7 +18,7 @@ public class AuthInterceptor implements Interceptor {
         Request original = chain.request();
 
         Request newRequest = original.newBuilder()
-                .header("user-id", userId) // ← זה בדיוק מה שהשרת שלך מחפש
+                .header("user-id", userId)
                 .build();
 
         return chain.proceed(newRequest);

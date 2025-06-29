@@ -37,5 +37,5 @@
     <string name="menu_sent">Sent</string>
     <string name="menu_spam">Spam</string>
     <string name="menu_received">Received</string>
-    <string name="menu_tarsh">Tarsh</string>
+    <string name="menu_trash">Trash</string>
 </resources>
