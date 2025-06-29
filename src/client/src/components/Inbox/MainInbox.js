@@ -143,14 +143,17 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       try {
         let data = [];
 
+        // Check if the selected label exists
         if (!searchQuery) {
-          // Check if the selected label exists
+          if( selectedLabel && selectedLabel !== 'Starred') {
+            // If the label is not 'Starred', check if it exists
           const labelExists = await checkLabelExists(selectedLabel);
           if (!labelExists) {
             console.warn(`Label "${selectedLabel}" does not exist, skipping fetch.`);
             setIsLoading(false);
             return;
           }
+        }
         }
 
         const res = await FetchWithAuth(
@@ -188,12 +191,12 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     }
   };
 
-  const selectAllMessages = () => setSelectedMessages(new Set(filteredMessages.map(msg => msg.id)));
+  const selectAllMessages = () => setSelectedMessages(new Set(filteredMessages.map(msg => msg._id)));
   const deselectAllMessages = () => setSelectedMessages(new Set());
-  const toggleSelectMessage = (id) => {
+  const toggleSelectMessage = (_id) => {
     setSelectedMessages(prev => {
       const newSet = new Set(prev);
-      newSet.has(id) ? newSet.delete(id) : newSet.add(id);
+      newSet.has(_id) ? newSet.delete(_id) : newSet.add(_id);
       return newSet;
     });
   };
@@ -210,8 +213,8 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     try {
       const updatedMessages = await Promise.all(
         messages.map(async (mail) => {
-          if (selectedMessages.has(mail.id) && !mail.onRead) {
-            const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+          if (selectedMessages.has(mail._id) && !mail.onRead) {
+            const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail._id}`), {
               method: 'PATCH',
               body: JSON.stringify({ onRead: true })
             });
@@ -235,7 +238,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   };
 
   const handleToggleStar = async (mailId) => {
-    const message = messages.find(m => m.id === mailId);
+    const message = messages.find(m => m._id === mailId);
     if (!message) return;
 
     const updatedStar = !message.starred;
@@ -248,7 +251,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
 
       if (res && res.ok) {
         setMessages(prev =>
-          prev.map(m => m.id === mailId ? { ...m, starred: updatedStar } : m)
+          prev.map(m => m._id === mailId ? { ...m, starred: updatedStar } : m)
         );
       } else {
         console.error('Failed to update star status');
@@ -263,8 +266,8 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     try {
       const updatedMessages = await Promise.all(
         messages.map(async (mail) => {
-          if (selectedMessages.has(mail.id) && mail.onRead) {
-            const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+          if (selectedMessages.has(mail._id) && mail.onRead) {
+            const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail._id}`), {
               method: 'PATCH',
               body: JSON.stringify({ onRead: false })
             });
@@ -293,16 +296,16 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     try {
       const updatedMessages = await Promise.all(
         messages.map(async (mail) => {
-          if (!selectedMessages.has(mail.id)) return mail;
+          if (!selectedMessages.has(mail._id)) return mail;
 
           if (mail.labelName === 'Trash') {
-            await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+            await FetchWithAuth(buildApiUrl(`/api/mails/${mail._id}`), {
               method: 'DELETE'
             });
             return null;
           }
 
-          const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail.id}`), {
+          const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail._id}`), {
             method: 'PATCH',
             body: JSON.stringify({ labelName: 'Trash' })
           });
@@ -326,18 +329,19 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   };
 
 
-  const handleDeleteSingleMessage = async (id) => {
+  const handleDeleteSingleMessage = async (_id) => {
     if (!currentUser) return;
 
-    const mail = messages.find(m => m.id === id);
+    const mail = messages.find(m => m._id === _id);
     if (!mail) return;
 
     try {
       if (mail.labelName === 'Trash') {
-        await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), { method: 'DELETE' });
+        await FetchWithAuth(buildApiUrl(`/api/mails/${_id}`), { method: 'DELETE' });
       } else {
-        await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {
+        await FetchWithAuth(buildApiUrl(`/api/mails/${_id}`), {
           method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ labelName: 'Trash' })
         });
       }
@@ -357,8 +361,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     if (!currentUser) return;
     try {
       // Get the full message objects for selected messages
-      const selectedData = messages.filter(msg => selectedMessages.has(msg.id));
-      console.log("Selected messages for spam:", selectedData);
+      const selectedData = messages.filter(msg => selectedMessages.has(msg._id));
 
       // Improved regex that matches URLs with or without http/https prefix
       const urlRegex = /(https?:\/\/)?([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}/gi;
@@ -373,8 +376,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
         contentMatches.forEach(url => urls.add(url));
       });
 
-      console.log("URLs found to blacklist:", Array.from(urls));
-
       // Add URLs to blacklist
       if (urls.size > 0) {
         for (const url of urls) {
@@ -384,7 +385,11 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ url })
             });
-            console.log(`URL ${url} blacklist result:`, response);
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error(`Failed to blacklist URL ${url}:`, errorData);
+              continue; // Skip to the next URL if this one fails
+            }
           } catch (error) {
             console.error(`Error blacklisting URL ${url}:`, error);
           }
@@ -392,15 +397,15 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
       }
 
       // Mark messages as spam
-      for (const id of selectedMessages) {
+      for (const _id of selectedMessages) {
         try {
-          await FetchWithAuth(buildApiUrl(`api/mails/${id}`), {
+          await FetchWithAuth(buildApiUrl(`api/mails/${_id}`), {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ labelName: 'Spam' })
           });
         } catch (error) {
-          console.error(`Error marking message ${id} as spam:`, error);
+          console.error(`Error marking message ${_id} as spam:`, error);
         }
       }
 
@@ -419,11 +424,11 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
 
     if (!msg.onRead) {
       setMessages(msgs =>
-        msgs.map(m => m.id === msg.id ? { ...m, onRead: true } : m)
+        msgs.map(m => m._id === msg._id ? { ...m, onRead: true } : m)
       );
 
       try {
-        await FetchWithAuth(buildApiUrl(`/api/mails/${msg.id}`), {
+        await FetchWithAuth(buildApiUrl(`/api/mails/${msg._id}`), {
           method: 'PATCH',
           body: JSON.stringify({ onRead: true })
         });
@@ -439,7 +444,7 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
   // Add handler for completing drafts
   const handleCompleteDraft = async (draft) => {
     try {
-      const res = await FetchWithAuth(buildApiUrl(`/api/mails/${draft.id}`));
+      const res = await FetchWithAuth(buildApiUrl(`/api/mails/${draft._id}`));
       if (!res.ok) throw new Error('Failed to fetch updated draft');
       const freshDraft = await res.json();
       setDraftToEdit(freshDraft);

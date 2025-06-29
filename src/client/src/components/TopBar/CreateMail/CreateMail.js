@@ -15,6 +15,7 @@ function CreateMail({ onSuccess }) {
   const openCard = () => setShowCard(true);
 
   const closeCard = async () => {
+
     if (!to && !subject && !body) {
       setShowCard(false);
       setError('');
@@ -29,11 +30,10 @@ function CreateMail({ onSuccess }) {
           method: 'POST',
         });
 
-        if (!res) return;
-        if (!res.ok) throw new Error('Failed to create draft');
+        if (!res || !res.ok) throw new Error('Failed to create draft');
 
         const data = await res.json();
-        id = data.id;
+        id = data._id;
         setDraftId(id);
       }
 
@@ -48,7 +48,8 @@ function CreateMail({ onSuccess }) {
         }),
       });
     } catch (err) {
-      console.log('Draft save error:', err);
+      setError(err.message || 'An error occurred while saving the draft.');
+      return;
     }
 
     setShowCard(false);
@@ -70,12 +71,11 @@ function CreateMail({ onSuccess }) {
           method: 'POST',
         });
 
-        if (!res) return;
-        if (!res.ok) throw new Error('Failed to create draft');
+        if (!res || !res.ok) throw new Error('Failed to create draft');
 
         const data = await res.json();
         id = data._id;
-        setDraftId(data._id);
+        setDraftId(id);
       }
 
       const sendRes = await FetchWithAuth(buildApiUrl(`/api/mails/${id}`), {
@@ -102,6 +102,7 @@ function CreateMail({ onSuccess }) {
       if (onSuccess) onSuccess(); // Notify parent component of success
     } catch (err) {
       setError(err.message || 'An error occurred while sending the mail.');
+      return;
     }
   };
 

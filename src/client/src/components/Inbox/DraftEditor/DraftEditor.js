@@ -9,7 +9,7 @@ function DraftEditor({ draft, onClose, onSuccess }) {
   const [content, setContent] = useState(draft.content || '');
   const [error, setError] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const [draftId] = useState(draft.id);
+  const [draftId] = useState(draft._id);
 
 
   const saveDraft = async () => {
@@ -24,7 +24,7 @@ function DraftEditor({ draft, onClose, onSuccess }) {
         body: JSON.stringify({
           receiversNames: receivers,
           subject,
-          content
+          content,
         }),
       });
 
@@ -48,7 +48,7 @@ function DraftEditor({ draft, onClose, onSuccess }) {
         return;
       }
       
-      const response = await FetchWithAuth(buildApiUrl(`api/mails/${draft.id}`), {
+      const response = await FetchWithAuth(buildApiUrl(`api/mails/${draftId}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

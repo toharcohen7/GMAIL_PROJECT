@@ -30,7 +30,7 @@ function MessageItem({
       className={`message-item list-group-item list-group-item-action d-flex align-items-center ${isRead ? 'read' : 'fw-bold unread'} ${isSelected ? 'active' : ''}`}
       role="listitem"
       tabIndex={0}
-      data-message-id={message.id}
+      data-message-id={message._id}
       data-index={index}
       onClick={(e) => onMailClick(message, e)}
       style={{ cursor: 'pointer' }}
@@ -39,10 +39,10 @@ function MessageItem({
         <input
           type="checkbox"
           className="form-check-input"
-          id={`msg-${message.id}`}
+          id={`msg-${message._id}`}
           aria-label="Select this message"
           checked={isSelected}
-          onChange={() => onToggleSelect(message.id)}
+          onChange={() => onToggleSelect(message._id)}
           onClick={e => e.stopPropagation()}
         />
       </div>
@@ -52,7 +52,7 @@ function MessageItem({
           className="btn btn-link p-0 ms-2"
           onClick={(e) => {
             e.stopPropagation();
-            onToggleStar(message.id);
+            onToggleStar(message._id);
           }}
           aria-label="Toggle star"
         >

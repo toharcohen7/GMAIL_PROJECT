@@ -46,7 +46,7 @@ const createMail = async (senderId) => {
       timeZone: 'Asia/Jerusalem'
     }),
     starred: false,
-    onRead: false
+    onRead: true // Initially marked as read for the sender
   });
 
   await newMailForSender.save(); // Save the new mail to the database
@@ -257,7 +257,7 @@ const sendMail = async (receiversNames, mail) => {
 
 async function removeMailsFromLabel(userId, labelName) {
   // Remove all mails with the specified labelName from the user's mail list
-  const mails = await Mail.find({ userId: userId, labelName: labelName }).lean();
+  const mails = await Mail.find({ userId: userId, labelName: labelName });
   
   for ( const mail of mails) {
     // If the mail is unread, decrement the label count
@@ -265,14 +265,14 @@ async function removeMailsFromLabel(userId, labelName) {
       await LabelsService.decreaseLabelCountBadgeByOne(userId, mail.labelName);
     }
 
-    // Delete the mail from the user's mailbox
-    await Mail.deleteOne({ userId: userId, _id: mail._id });
-
     // Reset the labelName to mailStatus for the deleted mail
     mail.labelName = mail.mailStatus;
+
     if(mail.onRead === false) {
       await LabelsService.addLabelCountBadgeByOne(userId, mail.labelName); // Increment count for the new label
     }
+
+    mail.save(); // Save the changes to the mail
   }
 }
 

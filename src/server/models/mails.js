@@ -4,7 +4,7 @@ const { Schema } = Mongoose;
 const MailSchema = new Schema({
   userId: { type: Mongoose.Schema.Types.ObjectId, required: true },
   mailStatus: { type: String, required: true, default: 'draft' },
-  senderId: { type: String, required: true },
+  senderId: { type: Mongoose.Schema.Types.ObjectId, required: true },
   receiversNames: { type: [String], default: [] },
   subject: { type: String, default: '' }, // Empty by default
   content: { type: String, default: '' }, // Empty by default

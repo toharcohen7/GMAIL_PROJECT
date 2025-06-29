@@ -1,16 +1,4 @@
 services:
-  base:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: gmail_project
-    command: sleep infinity
-    volumes:
-      - .:/usr/src/mytest
-      - /usr/src/mytest/node_modules
-      - /usr/src/mytest/src/server/node_modules
-      - /usr/src/mytest/src/client/node_modules
-
   server:
     image: gmail_project
     container_name: gmail_server
@@ -21,8 +9,6 @@ services:
       - SERVER_PORT=${SERVER_PORT}
       - BF_SIZE=${BF_SIZE}
       - HASH_COUNTS=${HASH_COUNTS}
-    depends_on:
-      - base
 
   node:
     image: gmail_project

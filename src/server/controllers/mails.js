@@ -52,7 +52,7 @@ exports.get50Mails = async (req, res) => {
             formattedTime, 
             timestamp } = mail;
 
-    return { id: _id.toString(), 
+    return { _id: _id.toString(), 
              mailStatus, 
              labelName, 
              senderId: senderId.toString(), 
@@ -110,13 +110,29 @@ exports.getMailById = async (req, res) => {
   }
 
   const mail = await Mails.getMailById(userId, mailId);
-  const { _id, mailStatus, senderId, receiversNames, subject, content, starred, onRead, formattedTime } = mail;
-  const id = _id.toString();
+  const { _id,
+          mailStatus,
+          senderId,
+          receiversNames,
+          subject,
+          content,
+          starred,
+          onRead,
+          formattedTime } = mail;
 
   const label = await Labels.getLabelByName(userId, mail.labelName);
   const labelName = label.name;
 
-  res.json({ id, mailStatus, labelName, senderId, receiversNames, subject, content, starred, onRead, time: formattedTime });
+  res.json({ _id : _id.toString(),
+            mailStatus,
+            labelName,
+            senderId: senderId.toString(),
+            receiversNames,
+            subject,
+            content,
+            starred,
+            onRead,
+            time: formattedTime });
 }
 
 /**
@@ -223,9 +239,8 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
     return res.status(400).json({ error: 'At least one field must be provided' });
   }
 
-
   // Prevent changing label to non-Sent for drafts
-  if (updates.labelName !== undefined && updates.labelName !== 'Sent') {
+  if (updates.labelName !== undefined && updates.labelName !== 'Sent' && updates.labelName !== 'Trash') {
     return res.status(400).json({ error: 'Cannot change the label of an unsent mail' });
   }
 
@@ -301,9 +316,9 @@ async function isReceiversNameUser(receiverName) {
 
 // Extracts and validates the user ID from request headers
 async function getUserIdFromHeaders(req, res) {
-  const userId = req.headers['user-id'];
-  if (!userId || !ObjectId.isValid(userId)) {
-    res.status(400).json({ error: 'Missing or invalid user-id header' });
+  const userId = await req.headers['user-id'];
+  if (!userId) {
+    res.status(400).json({ error: 'Missing or invalid user-id header'});
     return undefined;
   }
 

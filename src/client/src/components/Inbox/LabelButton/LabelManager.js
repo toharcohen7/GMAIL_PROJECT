@@ -15,8 +15,8 @@ const LabelManager = ({
     if (!currentUser || selectedMessages.size === 0) return;
     
     try {
-      const movePromises = Array.from(selectedMessages).map(id =>
-        FetchWithAuth(buildApiUrl(`api/mails/${id}`), {
+      const movePromises = Array.from(selectedMessages).map(_id =>
+        FetchWithAuth(buildApiUrl(`api/mails/${_id}`), {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ labelName })
