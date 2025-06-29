@@ -140,10 +140,15 @@ const updateMail = async (userId, mailId, updates) => {
   // If label is being changed (e.g., sending), process accordingly
   if (updates.labelName !== undefined) {
     
-    // Decrement Draft label count
+    // If moving from Draft to Sent or Trash, decrement Draft label count
     if (mail.labelName === 'Draft' && (updates.labelName === 'Sent' || updates.labelName === 'Trash')) {
     await LabelsService.decreaseLabelCountBadgeByOne(userId, 'Draft'); // Decrement Draft label count
-  }
+    }
+
+    // Increment Draft label count if moving to Draft from Trash
+    if (mail.labelName === 'Trash' && updates.labelName === 'Draft') {
+    await LabelsService.addLabelCountBadgeByOne(userId, 'Draft'); // Increment Draft label count
+    }
 
     // If changing from draft to sent, create mail copies for receivers
     if (mail.labelName === 'Draft' && updates.labelName === 'Sent') {
