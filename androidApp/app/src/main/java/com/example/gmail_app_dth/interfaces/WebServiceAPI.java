@@ -60,6 +60,10 @@ public interface WebServiceAPI {
     @POST("blacklist")
     Call<Void> addToBlacklist(@Body Map<String, String> body);
 
+    @POST("mails")
+    Call<Mail> createMail();
 
+    @PATCH("mails/{id}")
+    Call<Void> updateMail(@Path("id") String mailId, @Body MailUpdateRequest request);
 
 }

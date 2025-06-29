@@ -12,10 +12,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.gmail_app_dth.repository.MailRepository;
 import com.example.gmail_app_dth.entities.Mail;
+import com.example.gmail_app_dth.requests.MailUpdateRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -168,6 +171,27 @@ public class MailViewModel extends AndroidViewModel {
         }
     }
 
+    public void deleteMailsById(List<String> mailIds) {
+        AtomicInteger counter = new AtomicInteger(mailIds.size());
+
+        for (String mailId : mailIds) {
+            mailRepository.deleteMail(mailId,
+                    () -> {
+                        if (counter.decrementAndGet() == 0) {
+                            fetchMailsByLabel(currentLabel);
+                            toastMessage.postValue("Deleted successfully");
+                        }
+                    },
+                    () -> {
+                        if (counter.decrementAndGet() == 0) {
+                            fetchMailsByLabel(currentLabel);
+                        }
+                        toastMessage.postValue("Some deletions failed");
+                    }
+            );
+        }
+    }
+
     public void markAsSpam(List<Mail> mails) {
         AtomicInteger counter = new AtomicInteger(mails.size());
 
@@ -219,6 +243,24 @@ public class MailViewModel extends AndroidViewModel {
 
         return links;
     }
+
+    public void createMail(Consumer<String> onSuccess, Runnable onError) {
+        mailRepository.createMail(onSuccess, onError);
+    }
+
+    public void updateMailAsDraft(String mailId, String subject, String content) {
+        mailRepository.updateMailAsDraft(mailId, subject, content,
+                () -> toastMessage.postValue("Draft saved"),
+                () -> toastMessage.postValue("Failed to save draft"));
+    }
+
+    public void sendMail(String mailId, String to, String subject, String content) {
+        mailRepository.sendMail(mailId, to, subject, content,
+                () -> toastMessage.postValue("Mail sent"),
+                () -> toastMessage.postValue("Failed to send mail"));
+    }
+
+
 
 
 }

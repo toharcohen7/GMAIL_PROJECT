@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
@@ -42,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -68,12 +71,15 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         binding = ActivityMainInboxBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMainInbox.toolbar);
+        binding.appBarMainInbox.fab.setOnClickListener(v -> {
+            showCreateMailDialog();
+        });
+
 
         labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
         mailViewModel = new ViewModelProvider(this).get(MailViewModel.class);
 
         setupNavigationDrawer();
-        setupFabButton();
         observeLabels();
         observeLabelCreation();
         setupBulkActionButtons();
@@ -95,14 +101,6 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void setupFabButton() {
-        binding.appBarMainInbox.fab.setOnClickListener(view ->
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show()
-        );
     }
 
     private void observeLabels() {
@@ -496,6 +494,55 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
 
         return new ArrayList<>();
     }
+    private void showCreateMailDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_create_mail, null);
+        EditText editReceivers = dialogView.findViewById(R.id.edit_receivers);
+        EditText editSubject = dialogView.findViewById(R.id.edit_subject);
+        EditText editContent = dialogView.findViewById(R.id.edit_content);
+
+        mailViewModel.createMail(mailId -> {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("New Mail")
+                    .setView(dialogView)
+                    .setPositiveButton("Send", null)
+                    .setNegativeButton("Cancel", (d, w) -> {
+                        String to = editReceivers.getText().toString().trim();
+                        String subject = editSubject.getText().toString().trim();
+                        String content = editContent.getText().toString().trim();
+
+                        boolean isEmpty = to.isEmpty() && subject.isEmpty() && content.isEmpty();
+
+                        if (isEmpty) {
+                            mailViewModel.deleteMailsById(Collections.singletonList(mailId));
+                        } else {
+                            mailViewModel.updateMailAsDraft(mailId, subject, content);
+                        }
+                    })
+                    .create();
+
+            dialog.setOnShowListener(dlg -> {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                    String to = editReceivers.getText().toString().trim();
+                    String subject = editSubject.getText().toString().trim();
+                    String content = editContent.getText().toString().trim();
+
+                    if (to.isEmpty()) {
+                        Toast.makeText(this, "Recipient is required", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    mailViewModel.sendMail(mailId, to, subject, content);
+                    dialog.dismiss();
+                });
+            });
+
+            dialog.show();
+        }, () -> {
+            Toast.makeText(this, "Failed to create mail", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
 
 
 

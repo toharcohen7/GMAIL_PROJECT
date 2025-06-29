@@ -10,10 +10,12 @@ import com.example.gmail_app_dth.requests.MailUpdateRequest;
 import com.example.gmail_app_dth.interfaces.WebServiceAPI;
 import com.example.gmail_app_dth.entities.Mail;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -59,7 +61,7 @@ public class MailRepository {
     }
 
     public void updateStarStatus(String mailId, boolean newStatus, Runnable onSuccess, Runnable onError) {
-        MailUpdateRequest request = new MailUpdateRequest(newStatus, null, null); // null ל־onRead
+        MailUpdateRequest request = new MailUpdateRequest(newStatus, null, null,null,null,null); // null ל־onRead
         api.updateMails(mailId, request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
@@ -101,7 +103,7 @@ public class MailRepository {
     }
 
     public void updateMailReadStatus(String mailId, boolean newStatus, Runnable onSuccess, Runnable onError) {
-        MailUpdateRequest request = new MailUpdateRequest(null, newStatus, null); // null ל־starred
+        MailUpdateRequest request = new MailUpdateRequest(null, newStatus, null,null,null,null); // null ל־starred
         api.updateMails(mailId, request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
@@ -120,7 +122,7 @@ public class MailRepository {
     }
 
     public void updateLabel(String mailId, String labelName, Runnable onSuccess, Runnable onError) {
-        MailUpdateRequest request = new MailUpdateRequest(null, null, labelName); // null ל־starred ו־onRead
+        MailUpdateRequest request = new MailUpdateRequest(null, null, labelName,null,null,null); // null ל־starred ו־onRead
         api.updateMails(mailId, request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
@@ -175,6 +177,69 @@ public class MailRepository {
             }
         });
     }
+
+
+    public void createMail(Consumer<String> onSuccess, Runnable onError) {
+        api.createMail().enqueue(new Callback<Mail>() {
+            @Override
+            public void onResponse(@NonNull Call<Mail> call, @NonNull Response<Mail> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    onSuccess.accept(response.body().getId());
+                } else {
+                    onError.run();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Mail> call, @NonNull Throwable t) {
+                onError.run();
+            }
+        });
+    }
+
+    public void updateMailAsDraft(String mailId, String subject, String content, Runnable onSuccess, Runnable onError) {
+        MailUpdateRequest request = new MailUpdateRequest(
+                null, // starred
+                null, // onRead
+                "Draft", // labelName
+                subject,
+                content,
+                null // receiversNames
+        );
+        updateMail(mailId, request, onSuccess, onError);
+    }
+
+    public void sendMail(String mailId, String to, String subject, String content, Runnable onSuccess, Runnable onError) {
+        List<String> receivers = Arrays.asList(to.split(","));
+        MailUpdateRequest request = new MailUpdateRequest(
+                null, // starred
+                null, // onRead
+                "Sent", // labelName
+                subject,
+                content,
+                receivers
+        );
+        updateMail(mailId, request, onSuccess, onError);
+    }
+
+    private void updateMail(String mailId, MailUpdateRequest request, Runnable onSuccess, Runnable onError) {
+        api.updateMail(mailId, request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    onSuccess.run();
+                } else {
+                    onError.run();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                onError.run();
+            }
+        });
+    }
+
 
 
 
