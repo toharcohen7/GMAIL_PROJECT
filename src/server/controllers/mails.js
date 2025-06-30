@@ -240,7 +240,7 @@ async function changeDraftMail(userId, mailId, updates, req, res) {
   }
 
   // Prevent changing label to non-Sent for drafts
-  if (updates.labelName !== undefined && updates.labelName !== 'Sent' && updates.labelName !== 'Trash') {
+  if (updates.labelName !== undefined && updates.labelName !== 'Sent' && updates.labelName !== 'Trash' && updates.labelName !== 'Draft') {
     return res.status(400).json({ error: 'Cannot change the label of an unsent mail' });
   }
 
