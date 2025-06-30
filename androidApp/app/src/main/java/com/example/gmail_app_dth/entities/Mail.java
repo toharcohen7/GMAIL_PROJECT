@@ -1,13 +1,16 @@
 package com.example.gmail_app_dth.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity
+@Entity(tableName = "mails")
 public class Mail {
-    @PrimaryKey(autoGenerate = true)
+
+    @PrimaryKey
+    @NonNull
     @SerializedName("_id")
     private String id;
 
@@ -21,7 +24,7 @@ public class Mail {
     private boolean onRead;
     private String time;
 
-    // Getters
+    @NonNull
     public String getId() { return id; }
     public String getMailStatus() { return mailStatus; }
     public String getLabelName() { return labelName; }
@@ -33,15 +36,10 @@ public class Mail {
     public boolean isOnRead() { return onRead; }
     public String getTime() { return time; }
 
-    public void setStarred(boolean starred) {
-        this.starred = starred;
-    }
+    public void setId(@NonNull String id) { this.id = id; }
+    public void setStarred(boolean starred) { this.starred = starred; }
+    public void setOnRead(boolean onRead) { this.onRead = onRead; }
+    public void setLabelName(String labelName) { this.labelName = labelName; }
 
-    public void setOnRead(boolean onRead) {
-        this.onRead = onRead;
-    }
-
-    public void setLabelName(String labelName) {
-        this.labelName = labelName;
-    }
+    // ניתן להוסיף סטים נוספים בעת הצורך
 }

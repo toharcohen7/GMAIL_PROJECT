@@ -2,60 +2,51 @@ package com.example.gmail_app_dth.entities;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 
-@Entity
+@Entity(tableName = "users")
 public class User {
 
-    @PrimaryKey(autoGenerate = true)
-    private String _id;
+    @PrimaryKey
+    @NonNull
+    private String id; // חייב להיות @NonNull ב־Room אם הוא PrimaryKey מחרוזת
     private String userName;
     private String firstName;
     private String lastName;
     private String gender;
     private String birthDate;
-    private String image;
+    private String image; // נשמר כ־Base64 string
 
-
-    // גטרים
-    public String getId() {
-        return _id;
+    public User(String id, String userName, String firstName, String lastName, String gender, String birthDate, String image) {
+        this.id = id;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.image = image;
     }
 
-    public String getUserName() {
-        return userName;
-    }
+    // Getters and Setters
+    @NonNull
+    public String getId() { return id; }
+    public void setId(@NonNull String id) { this.id = id; }
 
-    public String getFirstName() {
-        return firstName;
-    }
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
 
-    public String getGender() {
-        return gender;
-    }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public String getBirthDate() {
-        return birthDate;
-    }
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
-    public String getImage() {
-        return image;
-    }
+    public String getBirthDate() { return birthDate; }
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
 
-    @Override
-    public String toString() {
-        return "UserResponse{" +
-                "id='" + _id + '\'' +
-                ", userName='" + userName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", gender='" + gender + '\'' +
-                ", birthDate='" + birthDate + '\'' +
-                ", image='" + image + '\'' +
-                '}';
-    }
-
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 }

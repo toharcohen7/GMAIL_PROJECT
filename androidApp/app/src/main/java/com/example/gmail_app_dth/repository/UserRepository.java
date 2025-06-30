@@ -6,13 +6,16 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.gmail_app_dth.requests.SignInRequest;
-import com.example.gmail_app_dth.interfaces.UserDataCallback;
-import com.example.gmail_app_dth.requests.UserRegistrationRequest;
 import com.example.gmail_app_dth.entities.User;
+import com.example.gmail_app_dth.interfaces.UserDataCallback;
 import com.example.gmail_app_dth.interfaces.WebServiceAPI;
+import com.example.gmail_app_dth.requests.SignInRequest;
+import com.example.gmail_app_dth.requests.UserRegistrationRequest;
 
 import org.json.JSONObject;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -24,14 +27,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UserRepository {
 
     private final WebServiceAPI webServiceAPI;
+    private final com.example.gmail_app_dth.dao.UserDao userDao;
+    private final ExecutorService executor;
 
-    public UserRepository() {
+    public UserRepository(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://7d6d-79-181-175-112.ngrok-free.app/api/") // חשוב! "localhost" = המחשב שלך, ב־Emulator כותבים 10.0.2.2
+                .baseUrl("https://7d6d-79-181-175-112.ngrok-free.app/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         webServiceAPI = retrofit.create(WebServiceAPI.class);
+
+        AppDatabase db = LocalDatabase.getInstance(context);
+        userDao = db.userDao();
+        executor = Executors.newSingleThreadExecutor();
     }
 
     public void register(UserRegistrationRequest request, RegistrationCallback callback) {
@@ -56,8 +65,6 @@ public class UserRepository {
                     }
                 }
             }
-
-
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
@@ -84,11 +91,11 @@ public class UserRepository {
                             String token = obj.optString("token", null);
 
                             if (token != null && !token.isEmpty()) {
-                                // אחרי התחברות מוצלחת → נשלוף את המשתמש
                                 fetchUserData(token, context, new UserDataCallback() {
                                     @Override
                                     public void onSuccess(User user) {
-                                        callback.onSuccess(token); // או אפשר לשלוח גם את ה־user אם תרצה
+                                        insert(user); // שמירה מקומית ב-Room
+                                        callback.onSuccess(token);
                                     }
 
                                     @Override
@@ -130,7 +137,6 @@ public class UserRepository {
         });
     }
 
-
     public interface LoginCallback {
         void onSuccess(String token);
         void onError(String errorMessage);
@@ -158,7 +164,8 @@ public class UserRepository {
                             .putString("image", user.getImage())
                             .apply();
 
-                    callback.onSuccess(user); // מעביר את המשתמש חזרה אם צריך
+                    insert(user); // שמירה מקומית
+                    callback.onSuccess(user);
                 } else {
                     callback.onError("Failed to fetch user data");
                 }
@@ -172,22 +179,33 @@ public class UserRepository {
     }
 
     public void getUserById(String userId, UserDataCallback callback) {
-        webServiceAPI.getUserById(userId).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    callback.onSuccess(response.body());
-                } else {
-                    callback.onError("User not found");
-                }
-            }
+        executor.execute(() -> {
+            User localUser = userDao.getById(userId);
+            if (localUser != null) {
+                callback.onSuccess(localUser);
+            } else {
+                webServiceAPI.getUserById(userId).enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            User user = response.body();
+                            insert(user); // שמירה מקומית
+                            callback.onSuccess(user);
+                        } else {
+                            callback.onError("User not found");
+                        }
+                    }
 
-            @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                callback.onError("Network error: " + t.getMessage());
+                    @Override
+                    public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                        callback.onError("Network error: " + t.getMessage());
+                    }
+                });
             }
         });
     }
 
+    private void insert(User user) {
+        executor.execute(() -> userDao.insert(user));
+    }
 }
-
