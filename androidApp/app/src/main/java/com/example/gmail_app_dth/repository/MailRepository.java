@@ -34,7 +34,7 @@ public class MailRepository {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://7539-79-181-175-112.ngrok-free.app/api/")
+                .baseUrl("https://7d6d-79-181-175-112.ngrok-free.app/api/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

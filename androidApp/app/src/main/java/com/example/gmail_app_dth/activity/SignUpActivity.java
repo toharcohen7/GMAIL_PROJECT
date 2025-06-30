@@ -194,14 +194,16 @@ public class SignUpActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             Glide.with(this).load(bitmap).circleCrop().into(uploadPhotoButton);
 
-
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
             byte[] byteArray = stream.toByteArray();
 
-            base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP); // פחות תווים מ־DEFAULT
+            base64Image = "data:image/jpeg;base64," + base64;
+
         } catch (Exception e) {
-            Log.e("UserRepository", "Error while parsing error response", e);
+            Log.e("UserRepository", "Error while parsing image", e);
         }
     }
+
 }

@@ -225,24 +225,19 @@ public class MailViewModel extends AndroidViewModel {
         if (content == null) return links;
 
         Pattern urlPattern = Pattern.compile(
-                "(?:^|\\s)(?:(?:file:///?" +
-                        "|(?:[a-zA-Z][a-zA-Z0-9+.-]*):\\/\\/)" +
-                        "?(?:localhost" +
-                        "|(?:\\d{1,3}\\.){3}\\d{1,3}" +
-                        "|(?:[a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})" +
-                        "(?::\\d+)?(?:\\/\\S)?" +
-                        ")(?=\\s|$)",
+                "(?:^|\\s)((?:(?:file:///?)|(?:[a-zA-Z][a-zA-Z0-9+.-]*):\\/\\/)?(?:localhost|(?:\\d{1,3}\\.){3}\\d{1,3}|(?:[a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})(?::\\d+)?(?:\\/\\S*)?)",
                 Pattern.CASE_INSENSITIVE
         );
 
         Matcher matcher = urlPattern.matcher(content);
 
         while (matcher.find()) {
-            links.add(matcher.group(1));
+            links.add(matcher.group().trim());
         }
 
         return links;
     }
+
 
     public void createMail(Consumer<String> onSuccess, Runnable onError) {
         mailRepository.createMail(onSuccess, onError);

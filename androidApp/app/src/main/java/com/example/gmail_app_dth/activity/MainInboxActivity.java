@@ -29,6 +29,7 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.gmail_app_dth.ImageUtils;
 import com.example.gmail_app_dth.R;
 import com.example.gmail_app_dth.UserCache;
 import com.example.gmail_app_dth.adapters.MailAdapter;
@@ -288,23 +289,22 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 .getString("image", null);
         if (imageBase64 != null) {
             try {
-                byte[] imageBytes = android.util.Base64.decode(imageBase64, android.util.Base64.DEFAULT);
-                Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                Bitmap bitmap = com.example.gmail_app_dth.ImageUtils.decodeBase64Image(imageBase64);
+                if (bitmap != null) {
+                    MenuItem item = menu.findItem(R.id.action_user_info);
+                    ImageView imageView = new ImageView(this);
+                    int size = (int) getResources().getDimension(R.dimen.action_bar_icon_size);
+                    imageView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
 
-                MenuItem item = menu.findItem(R.id.action_user_info);
-                ImageView imageView = new ImageView(this);
-                int size = (int) getResources().getDimension(R.dimen.action_bar_icon_size);
-                imageView.setLayoutParams(new ViewGroup.LayoutParams(size, size));
+                    Glide.with(this)
+                            .load(bitmap)
+                            .placeholder(R.drawable.ic_user_placeholder_foreground)
+                            .circleCrop()
+                            .into(imageView);
 
-                Glide.with(this)
-                        .load(bitmap)
-                        .placeholder(R.drawable.ic_user_placeholder_foreground)
-                        .circleCrop()
-                        .into(imageView);
-
-                item.setActionView(imageView);
-                imageView.setOnClickListener(v -> showUserInfoDialog());
-
+                    item.setActionView(imageView);
+                    imageView.setOnClickListener(v -> showUserInfoDialog());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -377,11 +377,13 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         }
 
         try {
-            byte[] imageBytes = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
-            Bitmap decodedBitmap = android.graphics.BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-            Glide.with(this).load(decodedBitmap).circleCrop()
+            Bitmap decodedBitmap = ImageUtils.decodeBase64Image(image);
+            Glide.with(this)
+                    .load(decodedBitmap)
+                    .circleCrop()
                     .placeholder(R.drawable.ic_user_placeholder_foreground)
                     .into((ImageView) dialogView.findViewById(R.id.user_image));
+
         } catch (Exception e) {
             ((ImageView) dialogView.findViewById(R.id.user_image)).setImageResource(R.drawable.ic_user_placeholder_foreground);
         }
