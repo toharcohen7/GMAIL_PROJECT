@@ -17,6 +17,7 @@
         android:padding="8dp"
         android:background="@android:color/white">
 
+
         <!-- תמונת פרופיל -->
         <ImageView
             android:id="@+id/imageView2"
@@ -57,6 +58,17 @@
                 android:text="hello my name is jerremy i love icecream"
                 android:textSize="12sp" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            android:backgroundTint="@color/blue"
+            android:textColor="@android:color/white"/>
+
 
         <!-- תאריך וכוכב -->
         <LinearLayout

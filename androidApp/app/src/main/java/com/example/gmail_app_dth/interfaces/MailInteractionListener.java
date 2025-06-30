@@ -12,4 +12,5 @@ public interface MailInteractionListener {
 
     void onSelectionStarted();
     void onSelectionCanceled();
+    void onDraftComplete(Mail mail);
 }

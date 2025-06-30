@@ -248,16 +248,19 @@ public class MailViewModel extends AndroidViewModel {
         mailRepository.createMail(onSuccess, onError);
     }
 
-    public void updateMailAsDraft(String mailId, String subject, String content) {
-        mailRepository.updateMailAsDraft(mailId, subject, content,
+    public void updateMailAsDraft(String mailId, String subject, String content, List<String> receivers) {
+        mailRepository.updateMailAsDraft(mailId, subject, content, receivers,
                 () -> toastMessage.postValue("Draft saved"),
                 () -> toastMessage.postValue("Failed to save draft"));
     }
 
     public void sendMail(String mailId, String to, String subject, String content) {
         mailRepository.sendMail(mailId, to, subject, content,
-                () -> toastMessage.postValue("Mail sent"),
-                () -> toastMessage.postValue("Failed to send mail"));
+                () ->{ toastMessage.postValue("Mail sent");
+                        fetchMailsByLabel(currentLabel);}
+                        ,
+                () -> {toastMessage.postValue("Failed to send mail");
+                        fetchMailsByLabel(currentLabel);});
     }
 
 

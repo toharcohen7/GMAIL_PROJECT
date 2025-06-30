@@ -1,7 +1,11 @@
 package com.example.gmail_app_dth.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Mail {
+    @SerializedName("_id")
     private String id;
+
     private String mailStatus;
     private String labelName;
     private String senderId;
@@ -24,7 +28,6 @@ public class Mail {
     public boolean isOnRead() { return onRead; }
     public String getTime() { return time; }
 
-
     public void setStarred(boolean starred) {
         this.starred = starred;
     }
@@ -32,11 +35,8 @@ public class Mail {
     public void setOnRead(boolean onRead) {
         this.onRead = onRead;
     }
+
     public void setLabelName(String labelName) {
         this.labelName = labelName;
     }
-
-
 }
-
-

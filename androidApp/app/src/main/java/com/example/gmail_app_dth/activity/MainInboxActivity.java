@@ -30,11 +30,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.gmail_app_dth.R;
+import com.example.gmail_app_dth.UserCache;
 import com.example.gmail_app_dth.adapters.MailAdapter;
 import com.example.gmail_app_dth.databinding.ActivityMainInboxBinding;
 import com.example.gmail_app_dth.entities.Label;
 import com.example.gmail_app_dth.entities.Mail;
+import com.example.gmail_app_dth.entities.User;
 import com.example.gmail_app_dth.home.HomeFragment;
+import com.example.gmail_app_dth.interfaces.UserDataCallback;
+import com.example.gmail_app_dth.repository.UserRepository;
 import com.example.gmail_app_dth.viewmodel.LabelViewModel;
 import com.example.gmail_app_dth.viewmodel.MailViewModel;
 import com.google.android.material.navigation.NavigationView;
@@ -60,6 +64,8 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
     private LabelViewModel labelViewModel;
 
     private static final int MENU_GROUP_LABELS = 123;
+    private ImageView btnMarkRead, btnMarkUnread, btnSpam, btnTrash, btnMoveToLabel;
+    private ImageView btnUnTrash, btnUnSpam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +77,8 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         binding = ActivityMainInboxBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMainInbox.toolbar);
-        binding.appBarMainInbox.fab.setOnClickListener(v -> {
-            showCreateMailDialog();
-        });
 
+        binding.appBarMainInbox.fab.setOnClickListener(v -> showCreateMailDialog());
 
         labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
         mailViewModel = new ViewModelProvider(this).get(MailViewModel.class);
@@ -85,7 +89,9 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         setupBulkActionButtons();
 
         labelViewModel.fetchLabels();
+
     }
+
 
     private void setupNavigationDrawer() {
         DrawerLayout drawer = binding.drawerLayout;
@@ -134,39 +140,76 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void setupBulkActionButtons() {
-        findViewById(R.id.btn_exit_selection).setOnClickListener(v -> {
-            clearSelectionFromFragment();
-        });
+        btnMarkRead = findViewById(R.id.btn_mark_read);
+        btnMarkUnread = findViewById(R.id.btn_mark_unread);
+        btnSpam = findViewById(R.id.btn_spam);
+        btnTrash = findViewById(R.id.btn_trash);
+        btnMoveToLabel = findViewById(R.id.btn_move_to_label);
+        btnUnTrash = findViewById(R.id.btn_untrash);
+        btnUnSpam = findViewById(R.id.btn_unspam);
 
-        findViewById(R.id.btn_mark_read).setOnClickListener(v -> {
-            clearSelectionAndRun(mails -> mailViewModel.markAllAsRead(mails));
-        });
+        findViewById(R.id.btn_exit_selection).setOnClickListener(v -> clearSelectionFromFragment());
 
-        findViewById(R.id.btn_mark_unread).setOnClickListener(v -> {
-            clearSelectionAndRun(mails -> mailViewModel.markAllAsUnread(mails));
-        });
+        btnMarkRead.setOnClickListener(v -> clearSelectionAndRun(mails -> mailViewModel.markAllAsRead(mails)));
+        btnMarkUnread.setOnClickListener(v -> clearSelectionAndRun(mails -> mailViewModel.markAllAsUnread(mails)));
+        btnSpam.setOnClickListener(v -> clearSelectionAndRun(mails -> mailViewModel.markAsSpam(mails)));
 
-        findViewById(R.id.btn_spam).setOnClickListener(v -> {
-            clearSelectionAndRun(mails -> mailViewModel.markAsSpam(mails));
-        });
+        btnTrash.setOnClickListener(v -> clearSelectionAndRun(mails -> {
+            boolean allInTrash = mails.stream().allMatch(m -> "Trash".equals(m.getLabelName()));
+            if (allInTrash) {
+                mailViewModel.deleteMails(mails);
+            } else {
+                mailViewModel.moveToLabel(mails, "Trash");
+            }
+        }));
 
+        btnMoveToLabel.setOnClickListener(v -> showMoveToLabelMenu());
 
-        findViewById(R.id.btn_trash).setOnClickListener(v -> {
-            clearSelectionAndRun(mails -> {
-                boolean allInTrash = mails.stream().allMatch(m -> "Trash".equals(m.getLabelName()));
-                if (allInTrash) {
-                    mailViewModel.deleteMails(mails); // 🗑 מחיקה סופית
-                } else {
-                    mailViewModel.moveToLabel(mails, "Trash"); // 📥 העברה לטראש
-                }
-            });
-        });
+        btnUnTrash.setOnClickListener(v -> clearSelectionAndRun(mails -> {
+            for (Mail mail : mails) {
+                mailViewModel.moveToLabel(Collections.singletonList(mail), mail.getMailStatus());
+            }
+        }));
 
-        findViewById(R.id.btn_move_to_label).setOnClickListener(v -> {
-            showMoveToLabelMenu();
-        });
-
+        btnUnSpam.setOnClickListener(v -> clearSelectionAndRun(mails -> {
+            for (Mail mail : mails) {
+                mailViewModel.moveToLabel(Collections.singletonList(mail), mail.getMailStatus());
+            }
+        }));
     }
+
+    private void updateBulkActionButtonsVisibility(String label) {
+        btnMarkRead.setVisibility(View.GONE);
+        btnMarkUnread.setVisibility(View.GONE);
+        btnSpam.setVisibility(View.GONE);
+        btnTrash.setVisibility(View.GONE);
+        btnMoveToLabel.setVisibility(View.GONE);
+        if (btnUnTrash != null) btnUnTrash.setVisibility(View.GONE);
+        if (btnUnSpam != null) btnUnSpam.setVisibility(View.GONE);
+
+        switch (label) {
+            case "Sent":
+            case "Draft":
+                btnTrash.setVisibility(View.VISIBLE);
+                break;
+            case "Trash":
+                btnTrash.setVisibility(View.VISIBLE);
+                if (btnUnTrash != null) btnUnTrash.setVisibility(View.VISIBLE);
+                break;
+            case "Spam":
+                btnTrash.setVisibility(View.VISIBLE);
+                if (btnUnSpam != null) btnUnSpam.setVisibility(View.VISIBLE);
+                break;
+            default:
+                btnMarkRead.setVisibility(View.VISIBLE);
+                btnMarkUnread.setVisibility(View.VISIBLE);
+                btnSpam.setVisibility(View.VISIBLE);
+                btnTrash.setVisibility(View.VISIBLE);
+                btnMoveToLabel.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
 
     private void clearSelectionFromFragment() {
         HomeFragment fragment = (HomeFragment) getSupportFragmentManager()
@@ -367,9 +410,11 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         } else if (id == R.id.nav_stared) {
             mailViewModel.setCurrentLabel("Starred");
             mailViewModel.fetchMailsByLabel("Starred");
+            updateBulkActionButtonsVisibility("Starred");
         } else {
             mailViewModel.setCurrentLabel(title);
             mailViewModel.fetchMailsByLabel(title);
+            updateBulkActionButtonsVisibility(title);
         }
 
         binding.drawerLayout.closeDrawers();
@@ -505,22 +550,12 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                     .setTitle("New Mail")
                     .setView(dialogView)
                     .setPositiveButton("Send", null)
-                    .setNegativeButton("Cancel", (d, w) -> {
-                        String to = editReceivers.getText().toString().trim();
-                        String subject = editSubject.getText().toString().trim();
-                        String content = editContent.getText().toString().trim();
-
-                        boolean isEmpty = to.isEmpty() && subject.isEmpty() && content.isEmpty();
-
-                        if (isEmpty) {
-                            mailViewModel.deleteMailsById(Collections.singletonList(mailId));
-                        } else {
-                            mailViewModel.updateMailAsDraft(mailId, subject, content);
-                        }
-                    })
+                    .setNegativeButton("Cancel", null) // נשתמש בו ידנית
                     .create();
 
             dialog.setOnShowListener(dlg -> {
+
+                // כפתור שליחה
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                     String to = editReceivers.getText().toString().trim();
                     String subject = editSubject.getText().toString().trim();
@@ -534,6 +569,25 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                     mailViewModel.sendMail(mailId, to, subject, content);
                     dialog.dismiss();
                 });
+
+                // כפתור ביטול (שמירה כטיוטה או מחיקה)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v -> {
+                    String to = editReceivers.getText().toString().trim();
+                    String subject = editSubject.getText().toString().trim();
+                    String content = editContent.getText().toString().trim();
+
+                    boolean isEmpty = to.isEmpty() && subject.isEmpty() && content.isEmpty();
+
+                    if (isEmpty) {
+                        mailViewModel.deleteMailsById(Collections.singletonList(mailId));
+                    } else {
+                        List<String> receivers = Arrays.asList(to.split("\\s*,\\s*"));
+                        mailViewModel.updateMailAsDraft(mailId, subject, content, receivers);
+
+                    }
+
+                    dialog.dismiss();
+                });
             });
 
             dialog.show();
@@ -541,10 +595,5 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             Toast.makeText(this, "Failed to create mail", Toast.LENGTH_SHORT).show();
         });
     }
-
-
-
-
-
 }
 

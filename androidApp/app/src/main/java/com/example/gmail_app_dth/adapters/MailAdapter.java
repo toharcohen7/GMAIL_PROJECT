@@ -1,12 +1,17 @@
 package com.example.gmail_app_dth.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,23 +22,32 @@ import com.example.gmail_app_dth.entities.Mail;
 import com.example.gmail_app_dth.entities.User;
 import com.example.gmail_app_dth.interfaces.MailInteractionListener;
 import com.example.gmail_app_dth.MailViewHolder;
+import com.example.gmail_app_dth.viewmodel.MailViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
 
     private final Context context;
     private final List<Mail> mailList = new ArrayList<>();
     private final MailInteractionListener listener;
+    private final MailViewModel viewModel;
 
     private final Set<String> selectedMailIds = new HashSet<>();
     private boolean selectionMode = false;
 
-    public MailAdapter(Context context, MailInteractionListener listener) {
+    public MailAdapter(Context context, MailInteractionListener listener, MailViewModel viewModel) {
         this.context = context;
         this.listener = listener;
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -56,7 +70,13 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
 
         View mailContainer = holder.itemView.findViewById(R.id.mail_container);
 
-        // רקע לפי מצב קריאה או בחירה
+        if ("Draft".equals(mail.getLabelName())) {
+            holder.completeButton.setVisibility(View.VISIBLE);
+            holder.completeButton.setOnClickListener(v -> listener.onDraftComplete(mail));
+        } else {
+            holder.completeButton.setVisibility(View.GONE);
+        }
+
         if (selectionMode && selectedMailIds.contains(mail.getId())) {
             mailContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.selection_blue));
         } else {
@@ -66,16 +86,15 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
             mailContainer.setBackgroundColor(bgColor);
         }
 
-        // לחיצה קצרה
         holder.itemView.setOnClickListener(v -> {
             if (selectionMode) {
                 toggleSelection(mail.getId());
-            } else {
+            } else if (!"Draft".equals(mail.getLabelName())) {
                 listener.onMailClicked(mail);
             }
         });
 
-        // לחיצה ארוכה – מפעילה מצב בחירה
+
         holder.itemView.setOnLongClickListener(v -> {
             if (!selectionMode) {
                 selectionMode = true;
@@ -86,20 +105,46 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
             return true;
         });
 
-        // שם ותמונה
         String senderId = mail.getSenderId();
-        User sender = UserCache.get(senderId);
+        String currentUserId = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+                .getString("userId", null);
 
-        if (sender != null) {
-            holder.sender.setText(sender.getUserName() != null ? sender.getUserName() : "Unknown");
-            Glide.with(context)
-                    .load(sender.getImage())
-                    .placeholder(R.drawable.ic_user_placeholder_foreground)
-                    .circleCrop()
-                    .into(holder.imageIcon);
+        if (senderId != null && senderId.equals(currentUserId)) {
+            String base64Image = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+                    .getString("image", null);
+
+            if (base64Image != null && !base64Image.isEmpty()) {
+                byte[] imageBytes = Base64.decode(base64Image, Base64.DEFAULT);
+                Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+
+                Glide.with(context)
+                        .load(bitmap)
+                        .placeholder(R.drawable.ic_user_placeholder_foreground)
+                        .circleCrop()
+                        .into(holder.imageIcon);
+
+            } else {
+                holder.imageIcon.setImageResource(R.drawable.ic_user_placeholder_foreground);
+            }
+
+            holder.sender.setText(context.getSharedPreferences("auth", Context.MODE_PRIVATE)
+                    .getString("userName", "You"));
+
         } else {
-            holder.sender.setText("Loading...");
-            listener.onRequestSenderInfo(senderId, holder);
+            User sender = UserCache.get(senderId);
+            if (sender != null) {
+                holder.sender.setText(sender.getUserName() != null ? sender.getUserName() : "Unknown");
+
+                Glide.with(context)
+                        .load(sender.getImage())
+                        .placeholder(R.drawable.ic_user_placeholder_foreground)
+                        .circleCrop()
+                        .into(holder.imageIcon);
+
+            } else {
+                holder.sender.setText("Unknown");
+                listener.onRequestSenderInfo(senderId, holder);
+            }
         }
 
         holder.subject.setText(mail.getSubject() != null ? mail.getSubject() : "(no subject)");
@@ -180,5 +225,4 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
             return rawTime;
         }
     }
-
 }

@@ -61,8 +61,9 @@ public class MailRepository {
     }
 
     public void updateStarStatus(String mailId, boolean newStatus, Runnable onSuccess, Runnable onError) {
-        MailUpdateRequest request = new MailUpdateRequest(newStatus, null, null,null,null,null); // null ל־onRead
+        MailUpdateRequest request = new MailUpdateRequest(newStatus, null, null,null,null,null);
         api.updateMails(mailId, request).enqueue(new Callback<Void>() {
+
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -197,14 +198,14 @@ public class MailRepository {
         });
     }
 
-    public void updateMailAsDraft(String mailId, String subject, String content, Runnable onSuccess, Runnable onError) {
+    public void updateMailAsDraft(String mailId, String subject, String content, List<String> receivers, Runnable onSuccess, Runnable onError) {
         MailUpdateRequest request = new MailUpdateRequest(
                 null, // starred
                 null, // onRead
-                "Draft", // labelName
+                null, // labelName
                 subject,
                 content,
-                null // receiversNames
+                receivers // receiversNames
         );
         updateMail(mailId, request, onSuccess, onError);
     }
