@@ -10,6 +10,7 @@ public class User {
     private String birthDate;
     private String image;
 
+
     // גטרים
     public String getId() {
         return _id;
@@ -51,4 +52,5 @@ public class User {
                 ", image='" + image + '\'' +
                 '}';
     }
+
 }

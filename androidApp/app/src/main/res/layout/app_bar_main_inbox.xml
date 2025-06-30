@@ -149,6 +149,44 @@
                         android:contentDescription="Move to label"
                         app:tint="@android:color/white" />
                 </FrameLayout>
+                <!-- בתוך LinearLayout עם id=bulk_actions_container (המשך ישיר לקוד שלך) -->
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/btn_untrash"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_remove_from_trash_foreground"
+                        android:contentDescription="Restore from trash"
+                        app:tint="@android:color/white" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/btn_unspam"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_remove_from_spam_foreground"
+                        android:contentDescription="Restore from spam"
+                        app:tint="@android:color/white" />
+                </FrameLayout>
+
             </LinearLayout>
         </RelativeLayout>
 

@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -92,7 +95,15 @@ public class HomeFragment extends Fragment {
             public void onSelectionCanceled() {
                 ((MainInboxActivity) requireActivity()).hideBulkActionBar();
             }
-        });
+
+            @Override
+            public void onDraftComplete(Mail mail) {
+                showCompleteDraftDialog(mail);
+            }
+
+        }, viewModel); // ← הוספת viewModel פה כפרמטר שלישי
+
+
 
         RecyclerView recyclerView = binding.mailList;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -154,4 +165,43 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+    private void showCompleteDraftDialog(Mail mail) {
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_create_mail, null);
+
+        EditText editReceivers = dialogView.findViewById(R.id.edit_receivers);
+        EditText editSubject = dialogView.findViewById(R.id.edit_subject);
+        EditText editContent = dialogView.findViewById(R.id.edit_content);
+
+        // אתחול השדות הקיימים מהטיוטה
+        editReceivers.setText(String.join(", ", mail.getReceiversNames()));
+        editSubject.setText(mail.getSubject());
+        editContent.setText(mail.getContent());
+
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setTitle("Complete Draft")
+                .setView(dialogView)
+                .setPositiveButton("Send", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.setOnShowListener(dlg -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String to = editReceivers.getText().toString().trim();
+                String subject = editSubject.getText().toString().trim();
+                String content = editContent.getText().toString().trim();
+
+                if (to.isEmpty()) {
+                    Toast.makeText(requireContext(), "Recipient is required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                viewModel.sendMail(mail.getId(), to, subject, content);
+                dialog.dismiss();
+            });
+        });
+
+        dialog.show();
+    }
+
+
 }
