@@ -110,19 +110,18 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
                 .getString("userId", null);
 
         if (senderId != null && senderId.equals(currentUserId)) {
+            // המשתמש הנוכחי - טוענים מה SharedPreferences
             String base64Image = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
                     .getString("image", null);
 
-            if (base64Image != null && !base64Image.isEmpty()) {
-                byte[] imageBytes = Base64.decode(base64Image, Base64.DEFAULT);
-                Bitmap bitmap = android.graphics.BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            Bitmap bitmap = com.example.gmail_app_dth.ImageUtils.decodeBase64Image(base64Image);
 
+            if (bitmap != null) {
                 Glide.with(context)
                         .load(bitmap)
                         .placeholder(R.drawable.ic_user_placeholder_foreground)
                         .circleCrop()
                         .into(holder.imageIcon);
-
             } else {
                 holder.imageIcon.setImageResource(R.drawable.ic_user_placeholder_foreground);
             }
@@ -131,21 +130,30 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
                     .getString("userName", "You"));
 
         } else {
+            // משתמש אחר - טוענים מ־UserCache
             User sender = UserCache.get(senderId);
             if (sender != null) {
                 holder.sender.setText(sender.getUserName() != null ? sender.getUserName() : "Unknown");
 
-                Glide.with(context)
-                        .load(sender.getImage())
-                        .placeholder(R.drawable.ic_user_placeholder_foreground)
-                        .circleCrop()
-                        .into(holder.imageIcon);
+                Bitmap bitmap = com.example.gmail_app_dth.ImageUtils.decodeBase64Image(sender.getImage());
+
+                if (bitmap != null) {
+                    Glide.with(context)
+                            .load(bitmap)
+                            .placeholder(R.drawable.ic_user_placeholder_foreground)
+                            .circleCrop()
+                            .into(holder.imageIcon);
+                } else {
+                    holder.imageIcon.setImageResource(R.drawable.ic_user_placeholder_foreground);
+                }
 
             } else {
                 holder.sender.setText("Unknown");
                 listener.onRequestSenderInfo(senderId, holder);
+                holder.imageIcon.setImageResource(R.drawable.ic_user_placeholder_foreground);
             }
         }
+
 
         holder.subject.setText(mail.getSubject() != null ? mail.getSubject() : "(no subject)");
         holder.content.setText(mail.getContent() != null ? mail.getContent() : "");

@@ -27,7 +27,7 @@ public class UserRepository {
 
     public UserRepository() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://7539-79-181-175-112.ngrok-free.app/api/") // חשוב! "localhost" = המחשב שלך, ב־Emulator כותבים 10.0.2.2
+                .baseUrl("https://7d6d-79-181-175-112.ngrok-free.app/api/") // חשוב! "localhost" = המחשב שלך, ב־Emulator כותבים 10.0.2.2
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
