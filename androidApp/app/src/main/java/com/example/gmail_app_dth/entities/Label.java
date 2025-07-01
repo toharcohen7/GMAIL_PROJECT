@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "labels")
 public class Label {
-
+    @SerializedName("_id")
     @PrimaryKey
     @NonNull
     private String id;

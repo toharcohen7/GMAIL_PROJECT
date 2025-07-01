@@ -4,9 +4,11 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "users")
 public class User {
-
+    @SerializedName("_id")
     @PrimaryKey
     @NonNull
     private String id; // חייב להיות @NonNull ב־Room אם הוא PrimaryKey מחרוזת
