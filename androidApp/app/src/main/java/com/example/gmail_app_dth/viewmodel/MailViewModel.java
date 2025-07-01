@@ -10,8 +10,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.gmail_app_dth.repository.MailRepository;
 import com.example.gmail_app_dth.entities.Mail;
+import com.example.gmail_app_dth.repository.MailRepository;
 import com.example.gmail_app_dth.requests.MailUpdateRequest;
 
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 public class MailViewModel extends AndroidViewModel {
 
     private final MailRepository mailRepository;
-    private final MutableLiveData<List<Mail>> mailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
     public LiveData<String> getToastMessage() { return toastMessage; }
 
@@ -40,32 +39,31 @@ public class MailViewModel extends AndroidViewModel {
         String userId = prefs.getString("userId", null);
 
         if (userId == null || userId.isEmpty()) {
-            Log.e("MAIL_VM", "⚠️ userId is null or empty – this will cause 401 Unauthorized");
+            Log.e("MAIL_VM", " userId is null or empty – this will cause 401 Unauthorized");
         } else {
-            Log.d("MAIL_VM", "✅ userId loaded: " + userId);
+            Log.d("MAIL_VM", "userId loaded: " + userId);
         }
 
-        mailRepository = new MailRepository(userId);
+        mailRepository = new MailRepository(userId, application.getApplicationContext());
     }
 
     public LiveData<List<Mail>> getMailsLiveData() {
-        return mailsLiveData;
+        if ("Starred".equals(currentLabel)) {
+            return mailRepository.getStarredMails();
+        } else {
+            return mailRepository.getMailsByLabel(currentLabel);
+        }
     }
 
     public void fetchMailsByLabel(String labelName) {
-        mailRepository.fetchMailsByLabel(labelName, mailsLiveData);
+        mailRepository.fetchMailsByLabel(labelName, new MutableLiveData<>()); // Sync with Room
     }
 
     public void toggleStar(Mail mail) {
         boolean newStatus = !mail.isStarred();
 
         mailRepository.updateStarStatus(mail.getId(), newStatus,
-                () -> {
-                    mail.setStarred(newStatus);
-                    mailsLiveData.postValue(mailsLiveData.getValue());
-
-                    toastMessage.postValue(newStatus ? "This mail is starred" : "Star removed from mail");
-                },
+                () -> toastMessage.postValue(newStatus ? "This mail is starred" : "Star removed from mail"),
                 () -> toastMessage.postValue("Failed to update star status")
         );
     }
@@ -74,10 +72,7 @@ public class MailViewModel extends AndroidViewModel {
         if (mail.isOnRead()) return;
 
         mailRepository.updateMailReadStatus(mail.getId(), true,
-                () -> {
-                    mail.setOnRead(true);
-                    mailsLiveData.postValue(mailsLiveData.getValue());
-                },
+                () -> toastMessage.postValue("Marked as read"),
                 () -> toastMessage.postValue("Failed to mark mail as read")
         );
     }
@@ -90,12 +85,13 @@ public class MailViewModel extends AndroidViewModel {
 
                 for (Mail mail : allResults) {
                     if (currentLabel.equals(mail.getLabelName()) ||
-                            (currentLabel.equals("Starred") && mail.isStarred())) {
+                            ("Starred".equals(currentLabel) && mail.isStarred())) {
                         filtered.add(mail);
                     }
                 }
 
-                mailsLiveData.postValue(filtered);
+                // ניתן להציג את זה דרך MutableLiveData זמני אם רוצים תוצאות חיפוש מיידיות
+                toastMessage.postValue("Found " + filtered.size() + " result(s)");
             }
         });
     }
@@ -104,10 +100,7 @@ public class MailViewModel extends AndroidViewModel {
         for (Mail mail : mails) {
             if (!mail.isOnRead()) {
                 mailRepository.updateMailReadStatus(mail.getId(), true,
-                        () -> {
-                            mail.setOnRead(true);
-                            mailsLiveData.postValue(mailsLiveData.getValue());
-                        },
+                        () -> toastMessage.postValue("Marked as read"),
                         () -> toastMessage.postValue("Failed to mark as read")
                 );
             }
@@ -118,37 +111,32 @@ public class MailViewModel extends AndroidViewModel {
         for (Mail mail : mails) {
             if (mail.isOnRead()) {
                 mailRepository.updateMailReadStatus(mail.getId(), false,
-                        () -> {
-                            mail.setOnRead(false);
-                            mailsLiveData.postValue(mailsLiveData.getValue());
-                        },
+                        () -> toastMessage.postValue("Marked as unread"),
                         () -> toastMessage.postValue("Failed to mark as unread")
                 );
             }
         }
     }
 
+    public void moveToLabel(List<Mail> mails, String labelName) {
+        AtomicInteger counter = new AtomicInteger(mails.size());
 
-        public void moveToLabel(List<Mail> mails, String labelName) {
-            AtomicInteger counter = new AtomicInteger(mails.size());
-
-            for (Mail mail : mails) {
-                mailRepository.updateLabel(mail.getId(), labelName,
-                        () -> {
-                            if (counter.decrementAndGet() == 0) {
-                                // סיימנו לעדכן את כולם – מרעננים
-                                fetchMailsByLabel(currentLabel);
-                            }
-                        },
-                        () -> {
-                            toastMessage.postValue("Failed to move some mails");
-                            if (counter.decrementAndGet() == 0) {
-                                fetchMailsByLabel(currentLabel);
-                            }
+        for (Mail mail : mails) {
+            mailRepository.updateLabel(mail.getId(), labelName,
+                    () -> {
+                        if (counter.decrementAndGet() == 0) {
+                            fetchMailsByLabel(currentLabel);
                         }
-                );
-            }
+                    },
+                    () -> {
+                        toastMessage.postValue("Failed to move some mails");
+                        if (counter.decrementAndGet() == 0) {
+                            fetchMailsByLabel(currentLabel);
+                        }
+                    }
+            );
         }
+    }
 
     public void deleteMails(List<Mail> mails) {
         AtomicInteger counter = new AtomicInteger(mails.size());
@@ -238,7 +226,6 @@ public class MailViewModel extends AndroidViewModel {
         return links;
     }
 
-
     public void createMail(Consumer<String> onSuccess, Runnable onError) {
         mailRepository.createMail(onSuccess, onError);
     }
@@ -251,14 +238,13 @@ public class MailViewModel extends AndroidViewModel {
 
     public void sendMail(String mailId, String to, String subject, String content) {
         mailRepository.sendMail(mailId, to, subject, content,
-                () ->{ toastMessage.postValue("Mail sent");
-                        fetchMailsByLabel(currentLabel);}
-                        ,
-                () -> {toastMessage.postValue("Failed to send mail");
-                        fetchMailsByLabel(currentLabel);});
+                () -> {
+                    toastMessage.postValue("Mail sent");
+                    fetchMailsByLabel(currentLabel);
+                },
+                () -> {
+                    toastMessage.postValue("Failed to send mail");
+                    fetchMailsByLabel(currentLabel);
+                });
     }
-
-
-
-
 }

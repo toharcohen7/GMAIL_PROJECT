@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.room.compiler)
     implementation(libs.room.runtime.android)
+    implementation(libs.room.common.jvm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -54,7 +55,6 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-
 
 
 

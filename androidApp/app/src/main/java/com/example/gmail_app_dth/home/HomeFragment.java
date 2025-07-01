@@ -42,7 +42,8 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private MailViewModel viewModel;
     private MailAdapter mailAdapter;
-    private final UserRepository userRepository = new UserRepository();
+    private UserRepository userRepository;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,6 +51,8 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        userRepository = new UserRepository(requireContext());
 
         viewModel = new ViewModelProvider(requireActivity()).get(MailViewModel.class);
 
@@ -119,6 +122,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel.fetchMailsByLabel(viewModel.getCurrentLabel());
     }
 
 
