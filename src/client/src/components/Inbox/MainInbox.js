@@ -472,7 +472,6 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     return m.labelName === selectedLabel;
   });
 
-
   // Use the simplified LabelManager component
   const { handleMoveToLabel } = LabelManager({
     currentUser,
@@ -482,6 +481,120 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
     setError,
     onRefresh
   });
+
+// Handle removing from trash and moving to previous label 
+const handleRemoveFromTrash = async () => {
+  if (!currentUser) return;
+  
+  try {
+    // Find messages that are in trash and selected
+    const trashMessages = messages.filter(mail => selectedMessages.has(mail._id) && mail.labelName === 'Trash');
+    
+    if (trashMessages.length === 0) return;
+
+    const updatedMessages = await Promise.all(
+      messages.map(async (mail) => {
+        if (!selectedMessages.has(mail._id) || mail.labelName !== 'Trash') return mail;
+
+        // Determine appropriate label
+        let targetLabel = mail.mailStatus;
+        
+        const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail._id}`), {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ labelName: targetLabel })
+        });
+
+        if (res && res.ok) {
+          return { ...mail, labelName: targetLabel };
+        } else {
+          console.error(`Failed to restore mail ${mail._id}:`, await res.text());
+          return mail;
+        }
+      })
+    );
+
+    setMessages(updatedMessages);
+    setSelectedMessages(new Set());
+    if (onRefresh) onRefresh();
+
+  } catch (e) {
+    console.error('Failed to restore messages from trash:', e);
+    setError('Failed to restore messages from trash.');
+  }
+};
+
+
+  const handleRemoveFromSpam = async () => {
+    if (!currentUser) return;
+    
+    try {
+      // Get the full message objects for selected messages that are in Spam
+      const selectedSpamMessages = messages.filter(msg => 
+        selectedMessages.has(msg._id) && msg.labelName === 'Spam'
+      );
+      
+      console.log("Selected messages to restore from spam:", selectedSpamMessages);
+
+      if (selectedSpamMessages.length === 0) return;
+
+      // Extract URLs from both subject and content fields
+      const urlRegex = /(https?:\/\/)?([a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}/gi;
+      const urls = new Set();
+
+      selectedSpamMessages.forEach(msg => {
+        const subjectMatches = msg.subject ? String(msg.subject).match(urlRegex) || [] : [];
+        const contentMatches = msg.content ? String(msg.content).match(urlRegex) || [] : [];
+
+        subjectMatches.forEach(url => urls.add(url));
+        contentMatches.forEach(url => urls.add(url));
+      });
+
+      console.log("URLs found to remove from blacklist:", Array.from(urls));
+
+      // Remove URLs from blacklist
+      if (urls.size > 0) {
+        for (const url of urls) {
+          try {
+            const response = await FetchWithAuth(buildApiUrl(`api/blacklist/${encodeURIComponent(url)}`), {
+              method: 'DELETE'
+            });
+            console.log(`URL ${url} removed from blacklist result:`, response.ok);
+          } catch (error) {
+            console.error(`Error removing URL ${url} from blacklist:`, error);
+          }
+        }
+      }
+
+      // Move messages from Spam to Received
+      const updatedMessages = await Promise.all(
+        messages.map(async (mail) => {
+          if (!selectedMessages.has(mail._id) || mail.labelName !== 'Spam') return mail;
+
+          const res = await FetchWithAuth(buildApiUrl(`/api/mails/${mail._id}`), {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ labelName: 'Received' })
+          });
+
+          if (res && res.ok) {
+            return { ...mail, labelName: 'Received' };
+          } else {
+            console.error(`Failed to restore mail ${mail._id} from spam:`, await res.text());
+            return mail;
+          }
+        })
+      );
+
+      setMessages(updatedMessages);
+      setSelectedMessages(new Set());
+      if (onRefresh) onRefresh();
+
+    } catch (e) {
+      console.error('Failed to restore messages from spam:', e);
+      setError('Failed to restore messages from spam.');
+    }
+  };
 
   return currentUser ? (
     <div className="inbox-wrapper">
@@ -496,7 +609,9 @@ function Inbox({ selectedLabel, searchQuery, onRefresh }) {
           onMarkAsRead={handleMarkAsRead}
           onMarkAsUnread={handleMarkAsUnread}
           onDeleteSelected={handleDeleteSelected}
+          onUndeleteSelected={handleRemoveFromTrash}
           onMarkAsSpam={handleMarkAsSpam}
+          onRemoveFromSpam={handleRemoveFromSpam}
           onMoveToLabel={handleMoveToLabel}
           currentLabel={selectedLabel}
           offset={offset}
