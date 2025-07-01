@@ -94,7 +94,7 @@ public class UserRepository {
                                 fetchUserData(token, context, new UserDataCallback() {
                                     @Override
                                     public void onSuccess(User user) {
-                                        insert(user); // שמירה מקומית ב-Room
+                                        insert(user);
                                         callback.onSuccess(token);
                                     }
 
@@ -151,7 +151,6 @@ public class UserRepository {
                 if (response.isSuccessful() && response.body() != null) {
                     User user = response.body();
 
-                    // שמירה ב־SharedPreferences
                     SharedPreferences prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
                     prefs.edit()
                             .putString("token", token)
@@ -164,7 +163,7 @@ public class UserRepository {
                             .putString("image", user.getImage())
                             .apply();
 
-                    insert(user); // שמירה מקומית
+                    insert(user);
                     callback.onSuccess(user);
                 } else {
                     callback.onError("Failed to fetch user data");
@@ -189,7 +188,7 @@ public class UserRepository {
                     public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             User user = response.body();
-                            insert(user); // שמירה מקומית
+                            insert(user);
                             callback.onSuccess(user);
                         } else {
                             callback.onError("User not found");

@@ -40,6 +40,7 @@ import com.example.gmail_app_dth.entities.User;
 import com.example.gmail_app_dth.home.HomeFragment;
 import com.example.gmail_app_dth.interfaces.UserDataCallback;
 import com.example.gmail_app_dth.repository.UserRepository;
+import com.example.gmail_app_dth.requests.LabelRequest;
 import com.example.gmail_app_dth.viewmodel.LabelViewModel;
 import com.example.gmail_app_dth.viewmodel.MailViewModel;
 import com.google.android.material.navigation.NavigationView;
@@ -121,15 +122,23 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                     MenuItem item = menu.add(MENU_GROUP_LABELS, Menu.NONE, Menu.NONE, label.getName());
                     item.setCheckable(true);
                     item.setIcon(R.drawable.ic_user_label_foreground);
+
+                    binding.navView.post(() -> {
+                        View view = binding.navView.findViewById(item.getItemId());
+                        if (view != null) {
+                            view.setOnLongClickListener(v -> {
+                                showLabelOptionsDialog(label);
+                                return true;
+                            });
+                        }
+                    });
                 }
             }
 
             binding.navView.invalidate();
-
-            // ✨ שינוי כאן:
-            String current = mailViewModel.getCurrentLabel();
-            mailViewModel.fetchMailsByLabel(current);
-            updateBulkActionButtonsVisibility(current);
+            String currentLabel = mailViewModel.getCurrentLabel();
+            mailViewModel.fetchMailsByLabel(currentLabel);
+            updateBulkActionButtonsVisibility(currentLabel);
         });
     }
 
@@ -460,11 +469,9 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         List<Mail> selectedMails = getSelectedMailsFromFragment();
         if (selectedMails.isEmpty()) return;
 
-        // שלב 1: הגבלות בסיסיות
         Set<String> alwaysBlocked = new HashSet<>(Arrays.asList("Draft", "Sent"));
         List<String> allowedStatuses = Arrays.asList("Sent", "Received", "Draft");
 
-        // שלב 2: בדיקת תקינות mailStatus
         for (Mail mail : selectedMails) {
             if (!allowedStatuses.contains(mail.getMailStatus())) {
                 Snackbar.make(findViewById(android.R.id.content), "Unsupported mail status", Snackbar.LENGTH_SHORT).show();
@@ -472,12 +479,11 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             }
         }
 
-        // שלב 3: חסימות לפי mailStatus
         Set<String> blockedPerMail = new HashSet<>();
         for (Mail mail : selectedMails) {
             switch (mail.getMailStatus()) {
                 case "Sent":
-                    blockedPerMail.add("Spam"); // אי אפשר לספאם מיילים שנשלחו
+                    blockedPerMail.add("Spam");
                     break;
                 case "Received":
                     blockedPerMail.add("Sent");
@@ -489,11 +495,10 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             }
         }
 
-        // שלב 4: תווית נוכחית – גם אותה לא ניתן לבחור
         String currentLabel = mailViewModel.getCurrentLabel();
-        blockedPerMail.add(currentLabel); // מונע העברה חזרה לעצמך
+        blockedPerMail.add(currentLabel);
 
-        // שלב 5: סינון התוויות
+
         List<Label> allLabels = labelViewModel.getLabelsLiveData().getValue();
         if (allLabels == null) return;
 
@@ -557,12 +562,12 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                     .setTitle("New Mail")
                     .setView(dialogView)
                     .setPositiveButton("Send", null)
-                    .setNegativeButton("Cancel", null) // נשתמש בו ידנית
+                    .setNegativeButton("Cancel", null)
                     .create();
 
             dialog.setOnShowListener(dlg -> {
 
-                // כפתור שליחה
+
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                     String to = editReceivers.getText().toString().trim();
                     String subject = editSubject.getText().toString().trim();
@@ -577,7 +582,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                     dialog.dismiss();
                 });
 
-                // כפתור ביטול (שמירה כטיוטה או מחיקה)
+
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v -> {
                     String to = editReceivers.getText().toString().trim();
                     String subject = editSubject.getText().toString().trim();
@@ -602,5 +607,51 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             Toast.makeText(this, "Failed to create mail", Toast.LENGTH_SHORT).show();
         });
     }
+    private void showLabelOptionsDialog(Label label) {
+        String[] options = {"Edit", "Delete"};
+
+        new AlertDialog.Builder(this)
+                .setTitle("Label: " + label.getName())
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        showEditLabelDialog(label);
+                    } else if (which == 1) {
+                        deleteLabel(label);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void showEditLabelDialog(Label label) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_label, null);
+        EditText editLabelName = dialogView.findViewById(R.id.editLabelName);
+        editLabelName.setText(label.getName());
+
+        new AlertDialog.Builder(this)
+                .setTitle("Edit Label")
+                .setView(dialogView)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    String newName = editLabelName.getText().toString().trim();
+                    if (!newName.isEmpty()) {
+                        LabelRequest request = new LabelRequest(newName, label.getIconClass());
+                        labelViewModel.editLabel(label.getId(), request);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    private void deleteLabel(Label label) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Label")
+                .setMessage("Are you sure you want to delete \"" + label.getName() + "\"?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    labelViewModel.deleteLabel(label.getId());
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+
 }
 

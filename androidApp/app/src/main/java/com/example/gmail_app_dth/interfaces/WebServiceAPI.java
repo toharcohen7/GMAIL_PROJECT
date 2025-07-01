@@ -41,6 +41,9 @@ public interface WebServiceAPI {
 
     @GET("mails")
     Call<List<Mail>> getMailsByLabel(@Query("labelName") String labelName);
+    @GET("mails")
+    Call<List<Mail>> getMailsByLabel(@Query("labelName") String labelName, @Query("offset") int offset);
+
 
     @PATCH("mails/{id}")
     Call<Void> updateMails(
@@ -65,5 +68,12 @@ public interface WebServiceAPI {
 
     @PATCH("mails/{id}")
     Call<Void> updateMail(@Path("id") String mailId, @Body MailUpdateRequest request);
+
+    @PATCH("labels/{id}")
+    Call<Void> updateLabel(@Path("id") String labelId, @Body LabelRequest request);
+
+    @DELETE("labels/{id}")
+    Call<Void> deleteLabel(@Path("id") String labelId);
+
 
 }

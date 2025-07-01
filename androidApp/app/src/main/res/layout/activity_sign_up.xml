@@ -47,7 +47,6 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="24dp" />
 
-            <!-- Username -->
             <EditText
                 android:id="@+id/userNameEdit"
                 android:layout_width="match_parent"
@@ -60,7 +59,6 @@
                 android:minHeight="48dp"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Password + Confirm -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,7 +91,6 @@
                     android:minHeight="48dp" />
             </LinearLayout>
 
-            <!-- First + Last -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,7 +123,6 @@
                     android:minHeight="48dp" />
             </LinearLayout>
 
-            <!-- Gender + Birthdate -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -162,7 +158,6 @@
 
             </LinearLayout>
 
-            <!-- Upload Photo -->
             <ImageButton
                 android:id="@+id/uploadPhoto"
                 android:layout_width="80dp"
@@ -178,7 +173,6 @@
                 android:focusable="true" />
 
 
-            <!-- Caption -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -188,7 +182,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp" />
 
-            <!-- Sign Up Button -->
             <Button
                 android:id="@+id/signUpButton_ToSignIn"
                 android:layout_width="match_parent"

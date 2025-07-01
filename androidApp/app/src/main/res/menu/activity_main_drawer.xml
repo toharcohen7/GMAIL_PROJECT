@@ -30,7 +30,7 @@
             android:title="@string/menu_trash" />
         <item
             android:id="@+id/nav_labels_header"
-            android:title="Labels"
+            android:title="@string/labels"
             android:icon="@drawable/ic_add_small"
             android:checkable="false" />
 

@@ -13,16 +13,17 @@ public class User {
     @SerializedName("_id")
     @PrimaryKey
     @NonNull
-    private String id; // חייב להיות @NonNull ב־Room אם הוא PrimaryKey מחרוזת
+    private String id;
     private String userName;
     private String firstName;
     private String lastName;
     private String gender;
     private String birthDate;
+
     @SerializedName("image")
     @Expose
     @Ignore
-    private String image; // נשמר כ־Base64 string
+    private String image; 
 
     public User(String id, String userName, String firstName, String lastName, String gender, String birthDate) {
         this.id = id;

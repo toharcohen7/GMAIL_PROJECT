@@ -34,11 +34,20 @@ public class LabelViewModel extends AndroidViewModel {
     }
 
     public void fetchLabels() {
-        labelRepository.fetchLabels(new MutableLiveData<>()); // קריאה לשרת ורענון Room בלבד
+        labelRepository.fetchLabels(new MutableLiveData<>());
     }
 
     public void createLabel(String labelName) {
         LabelRequest request = new LabelRequest(labelName, "default-icon");
         labelRepository.createLabel(request, labelCreationResult);
     }
+
+    public void editLabel(String labelId, LabelRequest request) {
+        labelRepository.editLabel(labelId, request, labelCreationResult);
+    }
+
+    public void deleteLabel(String labelId) {
+        labelRepository.deleteLabel(labelId, labelCreationResult);
+    }
+
 }

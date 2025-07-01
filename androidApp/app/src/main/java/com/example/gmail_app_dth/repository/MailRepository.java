@@ -88,6 +88,7 @@ public class MailRepository {
                             userRepository.getUserById(mail.getSenderId(), new UserDataCallback() {
                                 @Override
                                 public void onSuccess(User user) {}
+
                                 @Override
                                 public void onError(String errorMessage) {
                                     Log.w("MailRepo", "Failed to fetch sender user: " + errorMessage);
@@ -315,5 +316,24 @@ public class MailRepository {
             }
         });
     }
+
+    public void fetchMailsByLabelWithOffset(String labelName, int offset, Consumer<List<Mail>> onSuccess) {
+        api.getMailsByLabel(labelName, offset).enqueue(new Callback<List<Mail>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    onSuccess.accept(response.body());
+                } else {
+                    onSuccess.accept(Collections.emptyList());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Mail>> call, @NonNull Throwable t) {
+                onSuccess.accept(Collections.emptyList());
+            }
+        });
+    }
+
 
 }

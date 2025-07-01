@@ -55,7 +55,6 @@ public class SignUpActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_up);
 
-        // 🧱 קישור לרכיבי UI
         EditText etUserName = findViewById(R.id.userNameEdit);
         EditText etPassword = findViewById(R.id.passwordEdit);
         EditText etConfirmPassword = findViewById(R.id.confirmPasswordEdit);
@@ -75,7 +74,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
 
-        // 🎯 פתיחת DatePicker
         etBirthDate.setInputType(InputType.TYPE_NULL);
         etBirthDate.setFocusable(false);
         etBirthDate.setOnClickListener(v -> {
@@ -97,10 +95,8 @@ public class SignUpActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
-        // 🖼️ לחצן תמונה
         uploadPhotoButton.setOnClickListener(v -> showImageSourceDialog());
 
-        // 📂 פתיחת גלריה
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -110,7 +106,6 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 });
 
-        // 📷 פתיחת מצלמה
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
                 result -> {
@@ -119,7 +114,6 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 });
 
-        // ✅ לחיצה על הרשמה
         btnRegister.setOnClickListener(v -> {
             String userName = etUserName.getText().toString().trim();
             String password = etPassword.getText().toString();
@@ -148,7 +142,6 @@ public class SignUpActivity extends AppCompatActivity {
             userViewModel.register(request);
         });
 
-        // ✅ סטטוס הרשמה
         userViewModel.getRegistrationStatus().observe(this, status -> {
             if (status.equals("success")) {
                 Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show();
@@ -160,7 +153,6 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    // ☑️ דיאלוג בחירת מקור תמונה
     private void showImageSourceDialog() {
         String[] options = {"camera", "gallery"};
 
@@ -187,7 +179,6 @@ public class SignUpActivity extends AppCompatActivity {
         cameraLauncher.launch(cameraImageUri);
     }
 
-    // 🧠 המרת תמונה ל־base64 והצגה
     private void handleImage(Uri imageUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
@@ -198,7 +189,7 @@ public class SignUpActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
             byte[] byteArray = stream.toByteArray();
 
-            String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP); // פחות תווים מ־DEFAULT
+            String base64 = Base64.encodeToString(byteArray, Base64.NO_WRAP);
             base64Image = "data:image/jpeg;base64," + base64;
 
         } catch (Exception e) {
