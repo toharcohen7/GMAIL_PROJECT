@@ -12,8 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.gmail_app_dth.R;
+import com.example.gmail_app_dth.repository.AppDatabase;
+import com.example.gmail_app_dth.repository.LocalDatabase;
 import com.example.gmail_app_dth.requests.SignInRequest;
 import com.example.gmail_app_dth.viewmodel.UserViewModel;
+
+import java.util.Calendar;
+import java.util.concurrent.Executors;
 
 
 public class SignInActivity extends AppCompatActivity {
@@ -23,6 +28,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_sign_in);
 
@@ -44,8 +50,12 @@ public class SignInActivity extends AppCompatActivity {
 
         viewModel.getLoginStatus().observe(this, status -> {
             if (status.equals("success")) {
+                Executors.newSingleThreadExecutor().execute(() ->
+                        LocalDatabase.getInstance(getApplicationContext()).clearAllTables()
+                );
+
                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, MainInboxActivity.class ));
+                startActivity(new Intent(this, MainInboxActivity.class));
                 finish();
             } else {
                 Toast.makeText(this, status, Toast.LENGTH_LONG).show();

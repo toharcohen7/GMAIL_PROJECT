@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -14,10 +15,10 @@ import java.util.List;
 @Dao
 public interface MailDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Mail mail);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Mail> mails);
 
     @Update
@@ -37,4 +38,8 @@ public interface MailDao {
 
     @Query("SELECT * FROM mails WHERE starred = 1 ORDER BY time DESC")
     LiveData<List<Mail>> getStarred();
+
+    @Query("SELECT * FROM mails")
+    List<Mail> getAllImmediate();
+
 }

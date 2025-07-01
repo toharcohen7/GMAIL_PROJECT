@@ -24,7 +24,10 @@ public class MailViewModel extends AndroidViewModel {
 
     private final MailRepository mailRepository;
     private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
+    private final MutableLiveData<List<Mail>> mailsLiveData = new MutableLiveData<>();
+
     public LiveData<String> getToastMessage() { return toastMessage; }
+    public LiveData<List<Mail>> getMailsLiveData() { return mailsLiveData; }
 
     private String currentLabel = "Received";
     public void setCurrentLabel(String label) { currentLabel = label; }
@@ -48,16 +51,15 @@ public class MailViewModel extends AndroidViewModel {
         mailRepository = new MailRepository(userId, application.getApplicationContext());
     }
 
-    public LiveData<List<Mail>> getMailsLiveData() {
-        if ("Starred".equals(currentLabel)) {
-            return mailRepository.getStarredMails();
-        } else {
-            return mailRepository.getMailsByLabel(currentLabel);
-        }
-    }
-
     public void fetchMailsByLabel(String labelName) {
-        mailRepository.fetchMailsByLabel(labelName, new MutableLiveData<>()); // Sync with Room
+        Log.d("MAIL_VM", "Fetching mails for label: " + labelName);
+        currentLabel = labelName;
+        mailRepository.fetchMailsByLabel(labelName, new MutableLiveData<List<Mail>>() {
+            @Override
+            public void postValue(List<Mail> value) {
+                mailsLiveData.postValue(value);
+            }
+        });
     }
 
     public void toggleStar(Mail mail) {
@@ -90,7 +92,7 @@ public class MailViewModel extends AndroidViewModel {
                         filtered.add(mail);
                     }
                 }
-
+                mailsLiveData.postValue(filtered);
                 toastMessage.postValue("Found " + filtered.size() + " result(s)");
             }
         });

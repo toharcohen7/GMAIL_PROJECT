@@ -1,44 +1,126 @@
 package com.example.gmail_app_dth.entities;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
+
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 @Entity(tableName = "mails")
 public class Mail {
-
+    @SerializedName("_id")
     @PrimaryKey
     @NonNull
-    @SerializedName("_id")
     private String id;
 
     private String mailStatus;
-    private String labelName;
     private String senderId;
-    private String[] receiversNames;
+    private List<String> receiversNames;
     private String subject;
     private String content;
     private boolean starred;
     private boolean onRead;
+    private String labelName;
     private String time;
 
+    // Constructor
+    public Mail(@NonNull String id, String mailStatus, String senderId, List<String> receiversNames,
+                String subject, String content, boolean starred, boolean onRead,
+                String labelName, String time) {
+        this.id = id;
+        this.mailStatus = mailStatus;
+        this.senderId = senderId;
+        this.receiversNames = receiversNames;
+        this.subject = subject;
+        this.content = content;
+        this.starred = starred;
+        this.onRead = onRead;
+        this.labelName = labelName;
+        this.time = time;
+    }
+
+    // Getters and setters
     @NonNull
-    public String getId() { return id; }
-    public String getMailStatus() { return mailStatus; }
-    public String getLabelName() { return labelName; }
-    public String getSenderId() { return senderId; }
-    public String[] getReceiversNames() { return receiversNames; }
-    public String getSubject() { return subject; }
-    public String getContent() { return content; }
-    public boolean isStarred() { return starred; }
-    public boolean isOnRead() { return onRead; }
-    public String getTime() { return time; }
+    public String getId() {
+        return id;
+    }
 
-    public void setId(@NonNull String id) { this.id = id; }
-    public void setStarred(boolean starred) { this.starred = starred; }
-    public void setOnRead(boolean onRead) { this.onRead = onRead; }
-    public void setLabelName(String labelName) { this.labelName = labelName; }
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
 
+    public String getMailStatus() {
+        return mailStatus;
+    }
+
+    public void setMailStatus(String mailStatus) {
+        this.mailStatus = mailStatus;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
+    public List<String> getReceiversNames() {
+        return receiversNames;
+    }
+
+    public void setReceiversNames(List<String> receiversNames) {
+        this.receiversNames = receiversNames;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isStarred() {
+        return starred;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
+    }
+
+    public boolean isOnRead() {
+        return onRead;
+    }
+
+    public void setOnRead(boolean onRead) {
+        this.onRead = onRead;
+    }
+
+    public String getLabelName() {
+        return labelName;
+    }
+
+    public void setLabelName(String labelName) {
+        this.labelName = labelName;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }

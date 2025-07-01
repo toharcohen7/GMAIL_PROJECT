@@ -139,7 +139,6 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             String currentLabel = mailViewModel.getCurrentLabel();
             mailViewModel.fetchMailsByLabel(currentLabel);
             updateBulkActionButtonsVisibility(currentLabel);
-
         });
     }
 

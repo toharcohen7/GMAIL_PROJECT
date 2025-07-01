@@ -15,7 +15,7 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
         const data = await response.json();
         // Filter out system labels and current label
         const filteredLabels = data.filter(label =>
-          !['Draft', 'Sent'].includes(label.name) &&
+          !['Draft', 'Sent', 'Trash', 'Spam', 'Starred'].includes(label.name) &&
           label.name !== currentLabel
         );
         setAvailableLabels(filteredLabels);
@@ -67,9 +67,7 @@ const LabelButton = ({ onMoveToLabel, currentLabel }) => {
             top: '100%',
             left: '0',
             minWidth: '200px',
-            zIndex: 1000,
-            maxHeight: '200px',
-            overflowY: 'auto'
+            zIndex: 1000
           }}>
 
           {availableLabels && availableLabels.length > 0 ? (

@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -44,9 +43,11 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-    implementation(libs.room.compiler)
+
+    annotationProcessor(libs.room.compiler)
     implementation(libs.room.runtime.android)
-    implementation(libs.room.common.jvm)
+    implementation(libs.room.common)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -55,7 +56,8 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+}
 
-
-
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
 }

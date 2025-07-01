@@ -12,7 +12,9 @@ function InboxHeader({
   onMarkAsRead,
   onMarkAsUnread,
   onDeleteSelected,
+  onUndeleteSelected,
   onMarkAsSpam,
+  onRemoveFromSpam,
   onMoveToLabel,
   currentLabel,
   offset,
@@ -22,7 +24,9 @@ function InboxHeader({
   selectedLabel
 }) {
   // Don't show label button for Sent or Draft sections
-  const canChangeLabels = currentLabel !== 'Sent' && currentLabel !== 'Draft';
+  const canChangeLabels = currentLabel !== 'Sent' && currentLabel !== 'Draft' && currentLabel !== 'Spam' && currentLabel !== 'Trash' && currentLabel !== 'Starred';
+  const canMoveToSpam = currentLabel !== 'Sent' && currentLabel !== 'Draft' && currentLabel !== 'Spam' && currentLabel !== 'Trash' && currentLabel !== 'Starred';
+  const canChangeReadUnread = currentLabel !== 'Sent' && currentLabel !== 'Draft' && currentLabel !== 'Spam' && currentLabel !== 'Trash' && currentLabel !== 'Starred';
 
   return (
     <div className="inbox-header card-header bg-light d-flex align-items-center justify-content-between">
@@ -66,6 +70,18 @@ function InboxHeader({
                 <i className="bi bi-trash"></i>
               </button>
 
+               {currentLabel === 'Trash' && (
+              <button
+                className="btn btn-circle btn-light"
+                aria-label="Restore from trash"
+                onClick={onUndeleteSelected}
+                title="Restore selected messages"
+              >
+                <i className="bi bi-recycle"></i>
+              </button>
+              )}
+
+              {canMoveToSpam && (
               <button
                 className="btn btn-circle btn-light"
                 aria-label="Mark as spam"
@@ -74,6 +90,18 @@ function InboxHeader({
               >
                 <i className="bi bi-shield-x"></i>
               </button>
+              )}
+
+              {currentLabel === 'Spam' && (
+              <button
+                className="btn btn-circle btn-light"
+                aria-label="Remove from spam"
+                onClick={onRemoveFromSpam}
+                title="Remove from spam"
+              >
+                <i className="bi bi-shield-check"></i>
+              </button>
+              )}
               
               {canChangeLabels && (
                 <LabelButton 
@@ -81,6 +109,8 @@ function InboxHeader({
                   currentLabel={currentLabel}
                 />
               )}
+
+              {canChangeReadUnread && (
               <button
                 className="btn btn-circle btn-light"
                 aria-label="Mark all as read"
@@ -89,6 +119,9 @@ function InboxHeader({
               >
                 <i className="bi bi-envelope-open"></i>
               </button>
+              )}
+
+              {canChangeReadUnread && (
               <button
                 className="btn btn-circle btn-light"
                 aria-label="Mark all as read"
@@ -97,6 +130,7 @@ function InboxHeader({
               >
                 <i className="bi bi-envelope"></i>
               </button>
+              )}
             </>
           )}
         </div>
