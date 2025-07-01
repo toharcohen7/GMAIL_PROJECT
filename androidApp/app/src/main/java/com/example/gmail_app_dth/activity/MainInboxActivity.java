@@ -102,6 +102,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         observeLabels();
         observeLabelCreation();
         setupBulkActionButtons();
+        observeLabelActions();
 
         labelViewModel.fetchLabels();
     }
@@ -153,6 +154,22 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             binding.navView.invalidate();
 
             String currentLabel = mailViewModel.getCurrentLabel();
+
+            // ✅ הצג את כפתור העריכה רק אם התווית באמת קיימת ב־labels
+            boolean currentExists = false;
+            for (Label label : labels) {
+                if (label.getName().equals(currentLabel)) {
+                    currentExists = true;
+                    break;
+                }
+            }
+
+            if (currentExists && isUserLabel(currentLabel, labels)) {
+                fabEditLabel.setVisibility(View.VISIBLE);
+            } else {
+                fabEditLabel.setVisibility(View.GONE);
+            }
+
             mailViewModel.fetchMailsByLabel(currentLabel);
             updateBulkActionButtonsVisibility(currentLabel);
         });
@@ -169,6 +186,39 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 if (success) labelViewModel.fetchLabels();
             }
         });
+    }
+
+    private void observeLabelActions() {
+        labelViewModel.getLabelEditResult().observe(this, success -> {
+            if (success != null) {
+                Snackbar.make(binding.getRoot(),
+                        success ? "Label updated successfully!" : "Failed to update label",
+                        Snackbar.LENGTH_SHORT).show();
+                if (success) labelViewModel.fetchLabels();
+            }
+        });
+
+        labelViewModel.getLabelDeleteResult().observe(this, success -> {
+            if (success != null) {
+                Snackbar.make(binding.getRoot(),
+                        success ? "Label deleted successfully!" : "Failed to delete label",
+                        Snackbar.LENGTH_SHORT).show();
+
+                if (success) {
+                    // מעבר ל־Received
+                    mailViewModel.setCurrentLabel("Received");
+                    mailViewModel.fetchMailsByLabel("Received");
+                    updateBulkActionButtonsVisibility("Received");
+
+                    // ✅ הסתרת כפתור העריכה כי זו תווית מערכת
+                    fabEditLabel.setVisibility(View.GONE);
+
+                    labelViewModel.fetchLabels();
+                }
+            }
+        });
+
+
     }
 
     private void setupBulkActionButtons() {
@@ -659,8 +709,8 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 .setPositiveButton("Save", (dialog, which) -> {
                     String newName = editLabelName.getText().toString().trim();
                     if (!newName.isEmpty()) {
-                        LabelRequest request = new LabelRequest(newName, label.getIconClass());
-                        labelViewModel.editLabel(label.getId(), request);
+                        LabelRequest request = new LabelRequest(newName, null);
+                        labelViewModel.editLabel(label.getName(), request);
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -671,7 +721,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 .setTitle("Delete Label")
                 .setMessage("Are you sure you want to delete \"" + label.getName() + "\"?")
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    labelViewModel.deleteLabel(label.getId());
+                    labelViewModel.deleteLabel(label.getName());
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

@@ -19,6 +19,11 @@ public class LabelViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> labelCreationResult = new MutableLiveData<>();
     private final LiveData<List<Label>> labelsLiveData;
 
+    private final MutableLiveData<Boolean> labelEditResult = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> labelDeleteResult = new MutableLiveData<>();
+
+
+
     public LabelViewModel(@NonNull Application application) {
         super(application);
         labelRepository = new LabelRepository(application.getApplicationContext());
@@ -32,6 +37,12 @@ public class LabelViewModel extends AndroidViewModel {
     public LiveData<Boolean> getLabelCreationResult() {
         return labelCreationResult;
     }
+    public LiveData<Boolean> getLabelEditResult() {
+        return labelEditResult;
+    }
+    public LiveData<Boolean> getLabelDeleteResult() {
+        return labelDeleteResult;
+    }
 
     public void fetchLabels() {
         labelRepository.fetchLabels(new MutableLiveData<>());
@@ -42,12 +53,13 @@ public class LabelViewModel extends AndroidViewModel {
         labelRepository.createLabel(request, labelCreationResult);
     }
 
-    public void editLabel(String labelId, LabelRequest request) {
-        labelRepository.editLabel(labelId, request, labelCreationResult);
+    public void editLabel(String labelName, LabelRequest request) {
+        labelRepository.editLabel(labelName, request, labelEditResult);
     }
 
-    public void deleteLabel(String labelId) {
-        labelRepository.deleteLabel(labelId, labelCreationResult);
+    public void deleteLabel(String labelName) {
+        labelRepository.deleteLabel(labelName, labelDeleteResult);
     }
+
 
 }

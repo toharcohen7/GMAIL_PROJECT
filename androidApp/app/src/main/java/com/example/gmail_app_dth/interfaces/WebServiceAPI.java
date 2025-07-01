@@ -69,11 +69,12 @@ public interface WebServiceAPI {
     @PATCH("mails/{id}")
     Call<Void> updateMail(@Path("id") String mailId, @Body MailUpdateRequest request);
 
-    @PATCH("labels/{id}")
-    Call<Void> updateLabel(@Path("id") String labelId, @Body LabelRequest request);
+    @PATCH("labels/{labelName}")
+    Call<Void> updateLabel(@Path("labelName") String labelName, @Body LabelRequest request);
 
-    @DELETE("labels/{id}")
-    Call<Void> deleteLabel(@Path("id") String labelId);
+    @DELETE("labels/{labelName}")
+    Call<Void> deleteLabel(@Path("labelName") String labelName);
+
 
 
 }

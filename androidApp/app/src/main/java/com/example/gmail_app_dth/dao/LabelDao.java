@@ -32,4 +32,8 @@ public interface LabelDao {
 
     @Query("SELECT * FROM labels")
     LiveData<List<Label>> getAll();
+    @Query("DELETE FROM labels WHERE name = :labelName")
+    void deleteByName(String labelName);
+
+
 }

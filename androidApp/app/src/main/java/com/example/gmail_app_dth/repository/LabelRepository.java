@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -32,6 +33,7 @@ public class LabelRepository {
     private final LabelDao labelDao;
     private final ExecutorService executor;
     private final MutableLiveData<List<Label>> internalLabelLiveData = new MutableLiveData<>();
+
 
     public LabelRepository(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
@@ -76,81 +78,108 @@ public class LabelRepository {
         });
     }
 
-    public void fetchLabels(MutableLiveData<List<Label>> labelsLiveData) {
+    public void fetchLabels(@Nullable MutableLiveData<List<Label>> labelsLiveData) {
         api.getLabels().enqueue(new Callback<List<Label>>() {
             @Override
             public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Label> labels = response.body();
                     saveLabelsToLocal(labels);
-                    labelsLiveData.postValue(labels);
+                    if (labelsLiveData != null) {
+                        labelsLiveData.postValue(labels);
+                    }
                 } else {
-                    labelsLiveData.postValue(Collections.emptyList());
+                    if (labelsLiveData != null) {
+                        labelsLiveData.postValue(Collections.emptyList());
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Label>> call, @NonNull Throwable t) {
-                labelsLiveData.postValue(Collections.emptyList());
+                if (labelsLiveData != null) {
+                    labelsLiveData.postValue(Collections.emptyList());
+                }
             }
         });
     }
+
 
     private void saveLabelsToLocal(List<Label> labels) {
         executor.execute(() -> {
             labelDao.insertAll(labels);
         });
     }
-    public void editLabel(String labelId, LabelRequest request, MutableLiveData<Boolean> result) {
-        api.updateLabel(labelId, request).enqueue(new Callback<Void>() {
+    public void editLabel(String labelName, LabelRequest request, MutableLiveData<Boolean> result) {
+        Log.d("LABEL_REPO", "Calling editLabel. NAME: " + labelName + ", New Name: " + request.getName());
+
+        api.updateLabel(labelName, request).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                Log.d("LABEL_REPO", "editLabel response code: " + response.code());
+
                 boolean success = response.isSuccessful();
-                result.postValue(success);
+
+                // ✅ הגנה אמיתית – לפני כל שימוש ב־result
+                if (result != null) {
+                    result.postValue(success);
+                }
+
                 if (success) {
-                    executor.execute(() -> {
-                        Label updatedLabel = labelDao.getById(labelId);
-                        if (updatedLabel != null) {
-                            updatedLabel.setName(request.getName());
-                            updatedLabel.setIconClass(request.getIconClass());
-                            labelDao.update(updatedLabel);
-                        }
-                    });
                     fetchLabels(null);
+                } else {
+                    Log.e("LABEL_REPO", "editLabel failed. Body: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                result.postValue(false);
+                Log.e("LABEL_REPO", "editLabel request failed: " + t.getMessage());
+
+                if (result != null) {
+                    result.postValue(false);
+                }
             }
         });
     }
 
-    public void deleteLabel(String labelId, MutableLiveData<Boolean> result) {
-        api.deleteLabel(labelId).enqueue(new Callback<Void>() {
+
+
+
+
+    public void deleteLabel(String labelName, MutableLiveData<Boolean> result) {
+        Log.d("LABEL_REPO", "Calling deleteLabel. NAME: " + labelName);
+
+        api.deleteLabel(labelName).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                Log.d("LABEL_REPO", "deleteLabel response code: " + response.code());
+
                 boolean success = response.isSuccessful();
-                result.postValue(success);
+                if (result != null) {
+                    result.postValue(success);
+                }
+
                 if (success) {
                     executor.execute(() -> {
-                        Label labelToDelete = labelDao.getById(labelId);
-                        if (labelToDelete != null) {
-                            labelDao.delete(labelToDelete);
-                        }
+                        labelDao.deleteByName(labelName); // ✅ מוחק מה־Room לפי השם
                     });
                     fetchLabels(null);
+                }
+                 else {
+                    Log.e("LABEL_REPO", "deleteLabel failed. Body: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                result.postValue(false);
+                Log.e("LABEL_REPO", "deleteLabel request failed: " + t.getMessage());
+                if (result != null) {
+                    result.postValue(false);
+                }
             }
         });
     }
-
 
 
     public LiveData<List<Label>> getAllLabels() {
