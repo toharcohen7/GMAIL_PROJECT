@@ -38,4 +38,8 @@ public interface MailDao {
 
     @Query("SELECT * FROM mails WHERE starred = 1 ORDER BY time DESC")
     LiveData<List<Mail>> getStarred();
+
+    @Query("SELECT * FROM mails")
+    List<Mail> getAllImmediate();
+
 }

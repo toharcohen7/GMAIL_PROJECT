@@ -125,9 +125,14 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             }
 
             binding.navView.invalidate();
-            mailViewModel.fetchMailsByLabel("Received");
+
+            // ✨ שינוי כאן:
+            String current = mailViewModel.getCurrentLabel();
+            mailViewModel.fetchMailsByLabel(current);
+            updateBulkActionButtonsVisibility(current);
         });
     }
+
 
     private void observeLabelCreation() {
         labelViewModel.getLabelCreationResult().observe(this, success -> {

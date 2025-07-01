@@ -23,6 +23,7 @@ exports.getLabels = async (req, res) => {
 
     const labels = await Labels.getLabels(userId);
     const labelData = labels.map(label => ({
+      _id: label._id.toString(),
       name: label.name,
       iconClass: label.iconClass,
       countBadge: label.countBadge
@@ -56,7 +57,7 @@ exports.createLabel = async (req, res) => {
 
     const newLabel = await Labels.createLabel(userId, name, iconClass);
     return res.status(201).json({
-      id: newLabel._id.toString(),
+      _id: newLabel._id.toString(),
       userId: newLabel.userId.toString(),
       name: newLabel.name,
       iconClass: newLabel.iconClass

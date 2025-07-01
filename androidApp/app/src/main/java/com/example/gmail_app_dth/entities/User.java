@@ -1,9 +1,11 @@
 package com.example.gmail_app_dth.entities;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "users")
@@ -17,9 +19,12 @@ public class User {
     private String lastName;
     private String gender;
     private String birthDate;
+    @SerializedName("image")
+    @Expose
+    @Ignore
     private String image; // נשמר כ־Base64 string
 
-    public User(String id, String userName, String firstName, String lastName, String gender, String birthDate, String image) {
+    public User(String id, String userName, String firstName, String lastName, String gender, String birthDate) {
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;

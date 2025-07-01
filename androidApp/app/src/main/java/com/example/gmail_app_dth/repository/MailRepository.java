@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -46,7 +47,7 @@ public class MailRepository {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://7d6d-79-181-175-112.ngrok-free.app/api/")
+                .baseUrl("https://383e-79-181-175-112.ngrok-free.app/api/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -59,44 +60,58 @@ public class MailRepository {
         userRepository = new UserRepository(context);
     }
 
-    public void fetchMailsByLabel(String labelName, MutableLiveData<List<Mail>> liveData) {
+    public void fetchMailsByLabel(String labelName, @Nullable MutableLiveData<List<Mail>> liveData) {
         api.getMailsByLabel(labelName).enqueue(new Callback<List<Mail>>() {
             @Override
             public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Mail> mails = response.body();
+                    String finalLabelName = labelName;
+
                     executor.execute(() -> {
+                        // מוודאים שלכל מייל מוגדר labelName לפני שמירה
+                        for (Mail mail : mails) {
+                            mail.setLabelName(finalLabelName);
+                        }
+
+                        // שומרים ל־Room
                         mailDao.insertAll(mails);
 
-                        for (Mail mail : mails) {
-                            String senderId = mail.getSenderId();
-                            userRepository.getUserById(senderId, new UserDataCallback() {
-                                @Override
-                                public void onSuccess(User user) {
-                                    // שמירה ל־Room מתבצעת כבר בתוך getUserById
-                                }
+                        // 🔍 הדפסה ללוג: מה נשמר בפועל בטבלת Room
+                        List<Mail> allMails = mailDao.getAllImmediate(); // ← פונקציה רגילה (לא LiveData)
+                        for (Mail m : allMails) {
+                            Log.d("MAIL_AFTER_INSERT", "mail: " + m.getId() + ", label=" + m.getLabelName());
+                        }
 
+                        // טוענים גם את השולח
+                        for (Mail mail : mails) {
+                            userRepository.getUserById(mail.getSenderId(), new UserDataCallback() {
+                                @Override
+                                public void onSuccess(User user) {}
                                 @Override
                                 public void onError(String errorMessage) {
                                     Log.w("MailRepo", "Failed to fetch sender user: " + errorMessage);
                                 }
                             });
-
                         }
                     });
 
-                    liveData.postValue(mails);
+                    if (liveData != null) liveData.postValue(mails);
                 } else {
-                    liveData.postValue(Collections.emptyList());
+                    if (liveData != null) liveData.postValue(Collections.emptyList());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Mail>> call, @NonNull Throwable t) {
-                liveData.postValue(Collections.emptyList());
+                if (liveData != null) liveData.postValue(Collections.emptyList());
             }
         });
     }
+
+
+
+
 
     public LiveData<List<Mail>> getAllMails() {
         return mailDao.getAll();

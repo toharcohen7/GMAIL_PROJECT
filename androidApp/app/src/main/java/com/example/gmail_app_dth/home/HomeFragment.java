@@ -65,16 +65,22 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRequestSenderInfo(String senderId, MailViewHolder holder) {
                 userRepository.getUserById(senderId, new UserDataCallback() {
+
                     @Override
                     public void onSuccess(User user) {
                         UserCache.put(senderId, user);
-                        holder.sender.setText(user.getUserName());
-                        Glide.with(requireContext())
-                                .load(user.getImage())
-                                .placeholder(R.drawable.dashed_circle)
-                                .circleCrop()
-                                .into(holder.imageIcon);
+
+                        requireActivity().runOnUiThread(() -> {
+                            holder.sender.setText(user.getUserName());
+
+                            Glide.with(requireContext())
+                                    .load(user.getImage())
+                                    .placeholder(R.drawable.dashed_circle)
+                                    .circleCrop()
+                                    .into(holder.imageIcon);
+                        });
                     }
+
 
                     @Override
                     public void onError(String errorMessage) {
