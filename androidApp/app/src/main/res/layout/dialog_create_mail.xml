@@ -13,7 +13,8 @@
             android:id="@+id/edit_receivers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="To"
+            android:autofillHints=""
+            android:hint="@string/to_mail_dialog"
             android:inputType="textEmailAddress|textMultiLine"
             android:maxLines="3" />
 
@@ -21,14 +22,16 @@
             android:id="@+id/edit_subject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Subject"
+            android:autofillHints=""
+            android:hint="@string/subject_mail_dialog"
             android:inputType="textCapSentences" />
 
         <EditText
             android:id="@+id/edit_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Content"
+            android:autofillHints=""
+            android:hint="@string/content_mail_dialog"
             android:inputType="textMultiLine"
             android:minLines="6"
             android:gravity="top"

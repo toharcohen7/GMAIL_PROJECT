@@ -2,16 +2,10 @@ package com.example.gmail_app_dth.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -110,7 +104,6 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
                 .getString("userId", null);
 
         if (senderId != null && senderId.equals(currentUserId)) {
-            // המשתמש הנוכחי - טוענים מה SharedPreferences
             String base64Image = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
                     .getString("image", null);
 
@@ -130,7 +123,6 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
                     .getString("userName", "You"));
 
         } else {
-            // משתמש אחר - טוענים מ־UserCache
             User sender = UserCache.get(senderId);
             if (sender != null) {
                 holder.sender.setText(sender.getUserName() != null ? sender.getUserName() : "Unknown");
@@ -169,6 +161,13 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
             notifyItemChanged(holder.getAdapterPosition());
         });
     }
+
+    public void appendData(List<Mail> newMails) {
+        int start = mailList.size();
+        mailList.addAll(newMails);
+        notifyItemRangeInserted(start, newMails.size());
+    }
+
 
     private void toggleSelection(String mailId) {
         if (selectedMailIds.contains(mailId)) {

@@ -8,12 +8,10 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.gmail_app_dth.entities.User;
 import com.example.gmail_app_dth.repository.UserRepository;
 import com.example.gmail_app_dth.requests.SignInRequest;
 import com.example.gmail_app_dth.requests.UserRegistrationRequest;
 
-import java.util.List;
 
 public class UserViewModel extends AndroidViewModel {
 
@@ -28,7 +26,6 @@ public class UserViewModel extends AndroidViewModel {
         repository = new UserRepository(application.getApplicationContext());
     }
 
-    // התחברות
     public void signIn(SignInRequest request, Context context) {
         repository.signIn(request, context, new UserRepository.LoginCallback() {
             @Override
@@ -47,7 +44,6 @@ public class UserViewModel extends AndroidViewModel {
         return loginStatus;
     }
 
-    // הרשמה
     public void register(UserRegistrationRequest request) {
         repository.register(request, new UserRepository.RegistrationCallback() {
             @Override

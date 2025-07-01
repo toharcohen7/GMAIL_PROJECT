@@ -65,7 +65,7 @@ public class LabelRepository {
                 boolean success = response.isSuccessful();
                 result.postValue(success);
                 if (success) {
-                    fetchLabels(internalLabelLiveData); // רענון ל-Room אחרי יצירה בשרת
+                    fetchLabels(internalLabelLiveData);
                 }
             }
 
@@ -101,6 +101,57 @@ public class LabelRepository {
             labelDao.insertAll(labels);
         });
     }
+    public void editLabel(String labelId, LabelRequest request, MutableLiveData<Boolean> result) {
+        api.updateLabel(labelId, request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                boolean success = response.isSuccessful();
+                result.postValue(success);
+                if (success) {
+                    executor.execute(() -> {
+                        Label updatedLabel = labelDao.getById(labelId);
+                        if (updatedLabel != null) {
+                            updatedLabel.setName(request.getName());
+                            updatedLabel.setIconClass(request.getIconClass());
+                            labelDao.update(updatedLabel);
+                        }
+                    });
+                    fetchLabels(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                result.postValue(false);
+            }
+        });
+    }
+
+    public void deleteLabel(String labelId, MutableLiveData<Boolean> result) {
+        api.deleteLabel(labelId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                boolean success = response.isSuccessful();
+                result.postValue(success);
+                if (success) {
+                    executor.execute(() -> {
+                        Label labelToDelete = labelDao.getById(labelId);
+                        if (labelToDelete != null) {
+                            labelDao.delete(labelToDelete);
+                        }
+                    });
+                    fetchLabels(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                result.postValue(false);
+            }
+        });
+    }
+
+
 
     public LiveData<List<Label>> getAllLabels() {
         return labelDao.getAll();

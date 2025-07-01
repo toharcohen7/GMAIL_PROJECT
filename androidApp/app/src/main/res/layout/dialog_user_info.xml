@@ -10,6 +10,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
+        android:contentDescription="@string/todo"
         android:src="@drawable/ic_user_placeholder_foreground"
         android:layout_marginBottom="16dp" />
 
@@ -17,7 +18,7 @@
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="userName"
+        android:text="@string/username_profile_dialog"
         android:textStyle="bold"
         android:textSize="18sp"
         android:layout_gravity="center"/>
@@ -26,7 +27,7 @@
         android:id="@+id/full_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Full Name"
+        android:text="@string/full_name_profile_dialog"
         android:layout_marginTop="8dp"
         android:layout_gravity="center"/>
 
@@ -34,7 +35,7 @@
         android:id="@+id/gender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gender"
+        android:text="@string/gender_profile_dialog"
         android:layout_marginTop="8dp"
         android:layout_gravity="center"/>
 
@@ -43,7 +44,7 @@
         android:id="@+id/birth_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Birthdate"
+        android:text="@string/birthdate_profile_dialog"
         android:layout_marginTop="8dp"
         android:layout_gravity="center"/>
 </LinearLayout>

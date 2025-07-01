@@ -9,6 +9,7 @@
         android:id="@+id/editLabelName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Label name"
+        android:autofillHints=""
+        android:hint="@string/label_name"
         android:inputType="text" />
 </LinearLayout>

@@ -73,7 +73,6 @@ public class MailRepository {
                             userRepository.getUserById(senderId, new UserDataCallback() {
                                 @Override
                                 public void onSuccess(User user) {
-                                    // שמירה ל־Room מתבצעת כבר בתוך getUserById
                                 }
 
                                 @Override
@@ -300,5 +299,24 @@ public class MailRepository {
             }
         });
     }
+
+    public void fetchMailsByLabelWithOffset(String labelName, int offset, Consumer<List<Mail>> onSuccess) {
+        api.getMailsByLabel(labelName, offset).enqueue(new Callback<List<Mail>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    onSuccess.accept(response.body());
+                } else {
+                    onSuccess.accept(Collections.emptyList());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Mail>> call, @NonNull Throwable t) {
+                onSuccess.accept(Collections.emptyList());
+            }
+        });
+    }
+
 
 }

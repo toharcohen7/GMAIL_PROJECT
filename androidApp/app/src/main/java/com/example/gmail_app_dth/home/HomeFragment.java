@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.gmail_app_dth.R;
@@ -53,7 +53,6 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         userRepository = new UserRepository(requireContext());
-
         viewModel = new ViewModelProvider(requireActivity()).get(MailViewModel.class);
 
         mailAdapter = new MailAdapter(requireContext(), new MailInteractionListener() {
@@ -104,20 +103,49 @@ public class HomeFragment extends Fragment {
                 showCompleteDraftDialog(mail);
             }
 
-        }, viewModel); // ← הוספת viewModel פה כפרמטר שלישי
+        }, viewModel);
 
-
+        SwipeRefreshLayout swipeRefresh = binding.swipeRefresh;
+        swipeRefresh.setOnRefreshListener(() -> {
+            String currentLabel = viewModel.getCurrentLabel();
+            viewModel.resetOffset(); // אפס את offset!
+            viewModel.fetchMailsByLabel(currentLabel);
+        });
 
         RecyclerView recyclerView = binding.mailList;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mailAdapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                        && firstVisibleItemPosition >= 0) {
+                    String label = viewModel.getCurrentLabel();
+                    viewModel.loadMoreMails(label, moreMails -> {
+                        if (!moreMails.isEmpty()) {
+                            mailAdapter.appendData(moreMails);
+                        }
+                    });
+                }
+            }
+        });
 
         viewModel.getMailsLiveData().observe(getViewLifecycleOwner(), mails -> {
             mailAdapter.setData(mails);
+            binding.swipeRefresh.setRefreshing(false);
         });
 
         return root;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -176,7 +204,6 @@ public class HomeFragment extends Fragment {
         EditText editSubject = dialogView.findViewById(R.id.edit_subject);
         EditText editContent = dialogView.findViewById(R.id.edit_content);
 
-        // אתחול השדות הקיימים מהטיוטה
         editReceivers.setText(String.join(", ", mail.getReceiversNames()));
         editSubject.setText(mail.getSubject());
         editContent.setText(mail.getContent());

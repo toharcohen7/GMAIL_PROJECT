@@ -41,5 +41,4 @@ public class Mail {
     public void setOnRead(boolean onRead) { this.onRead = onRead; }
     public void setLabelName(String labelName) { this.labelName = labelName; }
 
-    // ניתן להוסיף סטים נוספים בעת הצורך
 }

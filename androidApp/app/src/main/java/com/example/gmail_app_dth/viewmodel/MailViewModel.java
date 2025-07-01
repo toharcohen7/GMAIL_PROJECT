@@ -12,10 +12,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.gmail_app_dth.entities.Mail;
 import com.example.gmail_app_dth.repository.MailRepository;
-import com.example.gmail_app_dth.requests.MailUpdateRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -31,6 +29,9 @@ public class MailViewModel extends AndroidViewModel {
     private String currentLabel = "Received";
     public void setCurrentLabel(String label) { currentLabel = label; }
     public String getCurrentLabel() { return currentLabel; }
+
+    private int currentOffset = 0;
+    private boolean isLoading = false;
 
     public MailViewModel(@NonNull Application application) {
         super(application);
@@ -90,7 +91,6 @@ public class MailViewModel extends AndroidViewModel {
                     }
                 }
 
-                // ניתן להציג את זה דרך MutableLiveData זמני אם רוצים תוצאות חיפוש מיידיות
                 toastMessage.postValue("Found " + filtered.size() + " result(s)");
             }
         });
@@ -247,4 +247,20 @@ public class MailViewModel extends AndroidViewModel {
                     fetchMailsByLabel(currentLabel);
                 });
     }
+
+    public void resetOffset() {
+        currentOffset = 0;
+    }
+
+    public void loadMoreMails(String labelName, Consumer<List<Mail>> onSuccess) {
+        if (isLoading) return;
+        isLoading = true;
+
+        mailRepository.fetchMailsByLabelWithOffset(labelName, currentOffset, newMails -> {
+            isLoading = false;
+            currentOffset += newMails.size();
+            onSuccess.accept(newMails);
+        });
+    }
+
 }
