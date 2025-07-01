@@ -205,4 +205,15 @@
         android:contentDescription="@string/todo"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_edit_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Edit Label"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_edit_foreground" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

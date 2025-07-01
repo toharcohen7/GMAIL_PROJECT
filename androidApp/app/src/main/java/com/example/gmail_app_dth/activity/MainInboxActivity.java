@@ -21,9 +21,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +45,7 @@ import com.example.gmail_app_dth.repository.UserRepository;
 import com.example.gmail_app_dth.requests.LabelRequest;
 import com.example.gmail_app_dth.viewmodel.LabelViewModel;
 import com.example.gmail_app_dth.viewmodel.MailViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -64,10 +67,11 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
     private ActivityMainInboxBinding binding;
     private MailViewModel mailViewModel;
     private LabelViewModel labelViewModel;
-
+    private FloatingActionButton fabEditLabel;
     private static final int MENU_GROUP_LABELS = 123;
     private ImageView btnMarkRead, btnMarkUnread, btnSpam, btnTrash, btnMoveToLabel;
     private ImageView btnUnTrash, btnUnSpam;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,15 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMainInbox.toolbar);
 
+
+        fabEditLabel = findViewById(R.id.fab_edit_label);
+        fabEditLabel.setOnClickListener(v -> {
+            Label current = getCurrentUserLabel();
+            if (current != null) {
+                showLabelOptionsDialog(current);
+            }
+        });
+
         binding.appBarMainInbox.fab.setOnClickListener(v -> showCreateMailDialog());
 
         labelViewModel = new ViewModelProvider(this).get(LabelViewModel.class);
@@ -91,8 +104,8 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         setupBulkActionButtons();
 
         labelViewModel.fetchLabels();
-
     }
+
 
 
     private void setupNavigationDrawer() {
@@ -104,7 +117,9 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 .setOpenableLayout(drawer)
                 .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main_inbox);
+        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main_inbox);
+        NavController navController = NavHostFragment.findNavController(navHostFragment);
+
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
@@ -136,11 +151,13 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             }
 
             binding.navView.invalidate();
+
             String currentLabel = mailViewModel.getCurrentLabel();
             mailViewModel.fetchMailsByLabel(currentLabel);
             updateBulkActionButtonsVisibility(currentLabel);
         });
     }
+
 
 
     private void observeLabelCreation() {
@@ -433,9 +450,17 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             updateBulkActionButtonsVisibility(title);
         }
 
+        List<Label> labels = labelViewModel.getLabelsLiveData().getValue();
+        if (labels != null && isUserLabel(title, labels)) {
+            fabEditLabel.setVisibility(View.VISIBLE);
+        } else {
+            fabEditLabel.setVisibility(View.GONE);
+        }
+
         binding.drawerLayout.closeDrawers();
         return true;
     }
+
 
     private void showAddLabelDialog() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_label, null);
@@ -652,6 +677,29 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 .show();
     }
 
+    private boolean isUserLabel(String labelName, List<Label> labels) {
+        Set<String> systemLabels = new HashSet<>(Arrays.asList(
+                "draft", "sent", "received", "spam", "trash", "starred"
+        ));
+        String normalized = labelName.trim().toLowerCase();
+        return !systemLabels.contains(normalized);
+    }
+
+    private Label getCurrentUserLabel() {
+        List<Label> allLabels = labelViewModel.getLabelsLiveData().getValue();
+        if (allLabels == null) return null;
+
+        String currentLabel = mailViewModel.getCurrentLabel();
+
+        for (Label label : allLabels) {
+            if (label.getName().equals(currentLabel)) {
+                return label;
+            }
+        }
+        return null;
+    }
+
+
+
 
 }
-

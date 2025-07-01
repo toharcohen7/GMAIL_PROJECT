@@ -42,4 +42,8 @@ public interface MailDao {
     @Query("SELECT * FROM mails")
     List<Mail> getAllImmediate();
 
+    @Query("DELETE FROM mails WHERE labelName = :label")
+    void deleteByLabel(String label);
+
+
 }

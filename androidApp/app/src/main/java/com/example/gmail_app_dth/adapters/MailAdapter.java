@@ -163,10 +163,23 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
     }
 
     public void appendData(List<Mail> newMails) {
+        Set<String> existingIds = new HashSet<>();
+        for (Mail mail : mailList) {
+            existingIds.add(mail.getId());
+        }
+
+        List<Mail> uniqueNewMails = new ArrayList<>();
+        for (Mail mail : newMails) {
+            if (!existingIds.contains(mail.getId())) {
+                uniqueNewMails.add(mail);
+            }
+        }
+
         int start = mailList.size();
-        mailList.addAll(newMails);
-        notifyItemRangeInserted(start, newMails.size());
+        mailList.addAll(uniqueNewMails);
+        notifyItemRangeInserted(start, uniqueNewMails.size());
     }
+
 
 
     private void toggleSelection(String mailId) {

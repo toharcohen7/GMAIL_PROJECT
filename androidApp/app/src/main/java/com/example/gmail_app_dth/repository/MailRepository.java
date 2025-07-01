@@ -69,6 +69,7 @@ public class MailRepository {
                     String finalLabelName = labelName;
 
                     executor.execute(() -> {
+                        mailDao.deleteByLabel(finalLabelName);
                         // מוודאים שלכל מייל מוגדר labelName לפני שמירה
                         for (Mail mail : mails) {
                             mail.setLabelName(finalLabelName);

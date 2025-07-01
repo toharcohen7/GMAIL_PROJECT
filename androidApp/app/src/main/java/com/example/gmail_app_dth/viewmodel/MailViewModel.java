@@ -54,6 +54,9 @@ public class MailViewModel extends AndroidViewModel {
     public void fetchMailsByLabel(String labelName) {
         Log.d("MAIL_VM", "Fetching mails for label: " + labelName);
         currentLabel = labelName;
+        currentOffset = 0;
+        isLoading = false;
+
         mailRepository.fetchMailsByLabel(labelName, new MutableLiveData<List<Mail>>() {
             @Override
             public void postValue(List<Mail> value) {
@@ -61,6 +64,7 @@ public class MailViewModel extends AndroidViewModel {
             }
         });
     }
+
 
     public void toggleStar(Mail mail) {
         boolean newStatus = !mail.isStarred();
