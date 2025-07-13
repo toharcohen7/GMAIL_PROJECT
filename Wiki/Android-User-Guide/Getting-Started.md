@@ -34,24 +34,17 @@ Welcome to the Gmail Project Android App! This guide will help you get started w
 
 The Android app interface is organized into several key areas:
 
-1. **App Bar**: Contains the app title, search icon, and user profile
+1. **App Bar**: Contains the app title, search icon, logout & darkmode buttons and user profile
 2. **Navigation Drawer**: Access system and custom labels (swipe from left edge or tap ☰)
 3. **Email List**: View emails in the currently selected label
 4. **Floating Action Button (FAB)**: Compose new emails
 5. **Bulk Action Bar**: Appears when selecting multiple emails
 
-### Light/Dark Mode
-
-1. Tap the three dots menu in the top-right corner
-2. Select the dark/light mode toggle option
-3. The interface will immediately switch between themes
-4. Your preference is remembered between sessions
-
 ## Basic Email Operations
 
 ### Composing a New Email
 
-1. Tap the floating action button (+) at the bottom right
+1. Tap the floating action button (closed envelop icon) at the bottom right
 2. In the compose dialog:
    - Enter recipient usernames separated by commas
    - Enter a subject line
