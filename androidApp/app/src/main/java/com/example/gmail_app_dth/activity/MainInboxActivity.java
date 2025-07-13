@@ -1,5 +1,6 @@
 package com.example.gmail_app_dth.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -33,15 +34,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.gmail_app_dth.ImageUtils;
 import com.example.gmail_app_dth.R;
-import com.example.gmail_app_dth.UserCache;
 import com.example.gmail_app_dth.adapters.MailAdapter;
 import com.example.gmail_app_dth.databinding.ActivityMainInboxBinding;
 import com.example.gmail_app_dth.entities.Label;
 import com.example.gmail_app_dth.entities.Mail;
-import com.example.gmail_app_dth.entities.User;
 import com.example.gmail_app_dth.home.HomeFragment;
-import com.example.gmail_app_dth.interfaces.UserDataCallback;
-import com.example.gmail_app_dth.repository.UserRepository;
 import com.example.gmail_app_dth.requests.LabelRequest;
 import com.example.gmail_app_dth.viewmodel.LabelViewModel;
 import com.example.gmail_app_dth.viewmodel.MailViewModel;
@@ -58,6 +55,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -71,6 +69,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
     private static final int MENU_GROUP_LABELS = 123;
     private ImageView btnMarkRead, btnMarkUnread, btnSpam, btnTrash, btnMoveToLabel;
     private ImageView btnUnTrash, btnUnSpam;
+    private String pendingEditedLabelName = null;
 
 
     @Override
@@ -119,6 +118,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 .build();
 
         Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main_inbox);
+        assert navHostFragment != null;
         NavController navController = NavHostFragment.findNavController(navHostFragment);
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -155,7 +155,6 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
 
             String currentLabel = mailViewModel.getCurrentLabel();
 
-            // ✅ הצג את כפתור העריכה רק אם התווית באמת קיימת ב־labels
             boolean currentExists = false;
             for (Label label : labels) {
                 if (label.getName().equals(currentLabel)) {
@@ -164,7 +163,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 }
             }
 
-            if (currentExists && isUserLabel(currentLabel, labels)) {
+            if (currentExists && isUserLabel(currentLabel)) {
                 fabEditLabel.setVisibility(View.VISIBLE);
             } else {
                 fabEditLabel.setVisibility(View.GONE);
@@ -194,7 +193,19 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                 Snackbar.make(binding.getRoot(),
                         success ? "Label updated successfully!" : "Failed to update label",
                         Snackbar.LENGTH_SHORT).show();
-                if (success) labelViewModel.fetchLabels();
+
+                if (success && pendingEditedLabelName != null) {
+                    String newName = pendingEditedLabelName;
+
+                    mailViewModel.setCurrentLabel(newName);
+                    mailViewModel.fetchMailsByLabel(newName);
+                    updateBulkActionButtonsVisibility(newName);
+                    fabEditLabel.setVisibility(View.VISIBLE);
+
+                    labelViewModel.fetchLabels();
+
+                    pendingEditedLabelName = null;
+                }
             }
         });
 
@@ -205,21 +216,18 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                         Snackbar.LENGTH_SHORT).show();
 
                 if (success) {
-                    // מעבר ל־Received
                     mailViewModel.setCurrentLabel("Received");
                     mailViewModel.fetchMailsByLabel("Received");
                     updateBulkActionButtonsVisibility("Received");
 
-                    // ✅ הסתרת כפתור העריכה כי זו תווית מערכת
                     fabEditLabel.setVisibility(View.GONE);
 
                     labelViewModel.fetchLabels();
                 }
             }
         });
-
-
     }
+
 
     private void setupBulkActionButtons() {
         btnMarkRead = findViewById(R.id.btn_mark_read);
@@ -294,11 +302,11 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
 
 
     private void clearSelectionFromFragment() {
-        HomeFragment fragment = (HomeFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment_content_main_inbox)
-                .getChildFragmentManager()
-                .getFragments()
-                .get(0);
+        HomeFragment fragment = (HomeFragment) Objects.requireNonNull(getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment_content_main_inbox))
+                        .getChildFragmentManager()
+                        .getFragments()
+                        .get(0);
 
         if (fragment != null && fragment.getView() != null) {
             RecyclerView recyclerView = fragment.getView().findViewById(R.id.mail_list);
@@ -311,11 +319,11 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void clearSelectionAndRun(Consumer<List<Mail>> action) {
-        HomeFragment fragment = (HomeFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment_content_main_inbox)
-                .getChildFragmentManager()
-                .getFragments()
-                .get(0);
+        HomeFragment fragment = (HomeFragment) Objects.requireNonNull(getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment_content_main_inbox))
+                        .getChildFragmentManager()
+                        .getFragments()
+                        .get(0);
 
         if (fragment != null && fragment.getView() != null) {
             RecyclerView recyclerView = fragment.getView().findViewById(R.id.mail_list);
@@ -336,6 +344,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         MenuItem searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
 
+        assert searchView != null;
         searchView.setQueryHint("Search mails...");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -433,6 +442,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         finish();
     }
 
+    @SuppressLint("SetTextI18n")
     private void showUserInfoDialog() {
         SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
         String userName = prefs.getString("userName", "Unknown");
@@ -452,6 +462,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             Date birth = inputFormat.parse(birthDate);
+            assert birth != null;
             ((TextView) dialogView.findViewById(R.id.birth_date)).setText(outputFormat.format(birth));
         } catch (ParseException e) {
             ((TextView) dialogView.findViewById(R.id.birth_date)).setText(birthDate);
@@ -486,7 +497,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        String title = item.getTitle().toString();
+        String title = Objects.requireNonNull(item.getTitle()).toString();
 
         if (id == R.id.nav_labels_header) {
             showAddLabelDialog();
@@ -501,7 +512,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         }
 
         List<Label> labels = labelViewModel.getLabelsLiveData().getValue();
-        if (labels != null && isUserLabel(title, labels)) {
+        if (labels != null && isUserLabel(title)) {
             fabEditLabel.setVisibility(View.VISIBLE);
         } else {
             fabEditLabel.setVisibility(View.GONE);
@@ -609,11 +620,11 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
 
 
     private List<Mail> getSelectedMailsFromFragment() {
-        HomeFragment fragment = (HomeFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.nav_host_fragment_content_main_inbox)
-                .getChildFragmentManager()
-                .getFragments()
-                .get(0);
+        HomeFragment fragment = (HomeFragment) Objects.requireNonNull(getSupportFragmentManager()
+                        .findFragmentById(R.id.nav_host_fragment_content_main_inbox))
+                        .getChildFragmentManager()
+                        .getFragments()
+                        .get(0);
 
         if (fragment != null && fragment.getView() != null) {
             RecyclerView recyclerView = fragment.getView().findViewById(R.id.mail_list);
@@ -678,9 +689,7 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
             });
 
             dialog.show();
-        }, () -> {
-            Toast.makeText(this, "Failed to create mail", Toast.LENGTH_SHORT).show();
-        });
+        }, () -> Toast.makeText(this, "Failed to create mail", Toast.LENGTH_SHORT).show());
     }
     private void showLabelOptionsDialog(Label label) {
         String[] options = {"Edit", "Delete"};
@@ -711,23 +720,24 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
                     if (!newName.isEmpty()) {
                         LabelRequest request = new LabelRequest(newName, null);
                         labelViewModel.editLabel(label.getName(), request);
+
+                        pendingEditedLabelName = newName;
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
     private void deleteLabel(Label label) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Label")
                 .setMessage("Are you sure you want to delete \"" + label.getName() + "\"?")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    labelViewModel.deleteLabel(label.getName());
-                })
+                .setPositiveButton("Delete", (dialog, which) -> labelViewModel.deleteLabel(label.getName()))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private boolean isUserLabel(String labelName, List<Label> labels) {
+    private boolean isUserLabel(String labelName) {
         Set<String> systemLabels = new HashSet<>(Arrays.asList(
                 "draft", "sent", "received", "spam", "trash", "starred"
         ));

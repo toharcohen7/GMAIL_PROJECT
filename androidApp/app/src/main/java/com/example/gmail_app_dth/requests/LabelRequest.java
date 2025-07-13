@@ -1,8 +1,8 @@
 package com.example.gmail_app_dth.requests;
 
 public class LabelRequest {
-    private String name;
-    private String iconClass;
+    private final String name;
+    private final String iconClass; // unused, for server communication usage
 
     public LabelRequest(String name, String iconClass) {
         this.name = name;
@@ -13,8 +13,5 @@ public class LabelRequest {
         return name;
     }
 
-    public String getIconClass() {
-        return iconClass;
-    }
 }
 

@@ -1,5 +1,6 @@
 package com.example.gmail_app_dth.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,6 +82,7 @@ public class HomeFragment extends Fragment {
                     }
 
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onError(String errorMessage) {
                         holder.sender.setText("Unknown");
@@ -109,12 +111,12 @@ public class HomeFragment extends Fragment {
                 showCompleteDraftDialog(mail);
             }
 
-        }, viewModel);
+        });
 
         SwipeRefreshLayout swipeRefresh = binding.swipeRefresh;
         swipeRefresh.setOnRefreshListener(() -> {
             String currentLabel = viewModel.getCurrentLabel();
-            viewModel.resetOffset(); // אפס את offset!
+            viewModel.resetOffset();
             viewModel.fetchMailsByLabel(currentLabel);
         });
 
@@ -192,6 +194,7 @@ public class HomeFragment extends Fragment {
             SimpleDateFormat inputFormat = new SimpleDateFormat("MMM dd, yyyy, HH:mm", Locale.ENGLISH);
             SimpleDateFormat outputFormat = new SimpleDateFormat("d.M.yyyy, HH:mm:ss", Locale.getDefault());
             Date date = inputFormat.parse(rawTime);
+            assert date != null;
             return outputFormat.format(date);
         } catch (ParseException e) {
             return rawTime;
@@ -221,21 +224,19 @@ public class HomeFragment extends Fragment {
                 .setNegativeButton("Cancel", null)
                 .create();
 
-        dialog.setOnShowListener(dlg -> {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                String to = editReceivers.getText().toString().trim();
-                String subject = editSubject.getText().toString().trim();
-                String content = editContent.getText().toString().trim();
+        dialog.setOnShowListener(dlg -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String to = editReceivers.getText().toString().trim();
+            String subject = editSubject.getText().toString().trim();
+            String content = editContent.getText().toString().trim();
 
-                if (to.isEmpty()) {
-                    Toast.makeText(requireContext(), "Recipient is required", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (to.isEmpty()) {
+                Toast.makeText(requireContext(), "Recipient is required", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                viewModel.sendMail(mail.getId(), to, subject, content);
-                dialog.dismiss();
-            });
-        });
+            viewModel.sendMail(mail.getId(), to, subject, content);
+            dialog.dismiss();
+        }));
 
         dialog.show();
     }

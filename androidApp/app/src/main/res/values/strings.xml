@@ -63,4 +63,5 @@
     <string name="sign_out">Sign Out</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="user">User</string>
+    <string name="edit_label">Edit Label</string>
 </resources>

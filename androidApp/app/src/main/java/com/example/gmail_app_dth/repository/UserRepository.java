@@ -32,7 +32,7 @@ public class UserRepository {
 
     public UserRepository(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://383e-79-181-175-112.ngrok-free.app/api/")
+                .baseUrl("https://c69f0021a35e.ngrok-free.app/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -90,7 +90,7 @@ public class UserRepository {
                             JSONObject obj = new JSONObject(json);
                             String token = obj.optString("token", null);
 
-                            if (token != null && !token.isEmpty()) {
+                            if (!token.isEmpty()) {
                                 fetchUserData(token, context, new UserDataCallback() {
                                     @Override
                                     public void onSuccess(User user) {
@@ -145,7 +145,7 @@ public class UserRepository {
     public void fetchUserData(String token, Context context, UserDataCallback callback) {
         String authHeader = "Bearer " + token;
 
-        webServiceAPI.getCurrentUser(authHeader).enqueue(new Callback<User>() {
+        webServiceAPI.getCurrentUser(authHeader).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -183,7 +183,7 @@ public class UserRepository {
             if (localUser != null) {
                 callback.onSuccess(localUser);
             } else {
-                webServiceAPI.getUserById(userId).enqueue(new Callback<User>() {
+                webServiceAPI.getUserById(userId).enqueue(new Callback<>() {
                     @Override
                     public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                         if (response.isSuccessful() && response.body() != null) {

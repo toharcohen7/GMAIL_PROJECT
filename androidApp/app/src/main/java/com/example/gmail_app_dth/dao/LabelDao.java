@@ -27,9 +27,6 @@ public interface LabelDao {
     @Delete
     void delete(Label label);
 
-    @Query("SELECT * FROM labels WHERE id = :id")
-    Label getById(String id);
-
     @Query("SELECT * FROM labels")
     LiveData<List<Label>> getAll();
     @Query("DELETE FROM labels WHERE name = :labelName")

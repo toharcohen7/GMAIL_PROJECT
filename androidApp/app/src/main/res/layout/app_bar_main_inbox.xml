@@ -212,7 +212,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginStart="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        android:contentDescription="Edit Label"
+        android:contentDescription="@string/edit_label"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_edit_foreground" />
 

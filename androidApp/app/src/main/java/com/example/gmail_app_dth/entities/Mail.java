@@ -16,15 +16,15 @@ public class Mail {
     @NonNull
     private String id;
 
-    private String mailStatus;
-    private String senderId;
-    private List<String> receiversNames;
+    private final String mailStatus;
+    private final String senderId;
+    private final List<String> receiversNames;
     private String subject;
     private String content;
     private boolean starred;
     private boolean onRead;
     private String labelName;
-    private String time;
+    private final String time;
 
     // Constructor
     public Mail(@NonNull String id, String mailStatus, String senderId, List<String> receiversNames,
@@ -56,25 +56,14 @@ public class Mail {
         return mailStatus;
     }
 
-    public void setMailStatus(String mailStatus) {
-        this.mailStatus = mailStatus;
-    }
-
     public String getSenderId() {
         return senderId;
-    }
-
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
     }
 
     public List<String> getReceiversNames() {
         return receiversNames;
     }
 
-    public void setReceiversNames(List<String> receiversNames) {
-        this.receiversNames = receiversNames;
-    }
 
     public String getSubject() {
         return subject;
@@ -120,7 +109,4 @@ public class Mail {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
 }

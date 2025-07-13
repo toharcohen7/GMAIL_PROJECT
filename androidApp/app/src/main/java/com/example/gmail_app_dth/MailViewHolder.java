@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.gmail_app_dth.R;
 
 public class MailViewHolder extends RecyclerView.ViewHolder {
     public TextView sender, subject, content, date;

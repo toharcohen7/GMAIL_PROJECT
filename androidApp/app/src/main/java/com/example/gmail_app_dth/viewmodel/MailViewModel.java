@@ -26,7 +26,6 @@ public class MailViewModel extends AndroidViewModel {
     private final MutableLiveData<String> toastMessage = new MutableLiveData<>();
     private final MutableLiveData<List<Mail>> mailsLiveData = new MutableLiveData<>();
 
-    public LiveData<String> getToastMessage() { return toastMessage; }
     public LiveData<List<Mail>> getMailsLiveData() { return mailsLiveData; }
 
     private String currentLabel = "Received";
@@ -57,7 +56,7 @@ public class MailViewModel extends AndroidViewModel {
         currentOffset = 0;
         isLoading = false;
 
-        mailRepository.fetchMailsByLabel(labelName, new MutableLiveData<List<Mail>>() {
+        mailRepository.fetchMailsByLabel(labelName, new MutableLiveData<>() {
             @Override
             public void postValue(List<Mail> value) {
                 mailsLiveData.postValue(value);
@@ -79,13 +78,19 @@ public class MailViewModel extends AndroidViewModel {
         if (mail.isOnRead()) return;
 
         mailRepository.updateMailReadStatus(mail.getId(), true,
-                () -> toastMessage.postValue("Marked as read"),
+                () -> {
+                    mail.setOnRead(true);
+                    updateLiveDataMail(mail);
+                    toastMessage.postValue("Marked as read");
+                },
                 () -> toastMessage.postValue("Failed to mark mail as read")
         );
     }
 
+
+
     public void searchMails(String query) {
-        mailRepository.searchMails(query, new MutableLiveData<List<Mail>>() {
+        mailRepository.searchMails(query, new MutableLiveData<>() {
             @Override
             public void postValue(List<Mail> allResults) {
                 List<Mail> filtered = new ArrayList<>();
@@ -103,26 +108,62 @@ public class MailViewModel extends AndroidViewModel {
     }
 
     public void markAllAsRead(List<Mail> mails) {
+        List<Mail> changed = new ArrayList<>();
+        AtomicInteger counter = new AtomicInteger(mails.size());
+
         for (Mail mail : mails) {
             if (!mail.isOnRead()) {
                 mailRepository.updateMailReadStatus(mail.getId(), true,
-                        () -> toastMessage.postValue("Marked as read"),
-                        () -> toastMessage.postValue("Failed to mark as read")
+                        () -> {
+                            mail.setOnRead(true);
+                            changed.add(mail);
+                            if (counter.decrementAndGet() == 0) {
+                                updateLiveDataMails(changed);
+                                toastMessage.postValue("Marked as read");
+                            }
+                        },
+                        () -> {
+                            if (counter.decrementAndGet() == 0) {
+                                updateLiveDataMails(changed);
+                            }
+                            toastMessage.postValue("Failed to mark some as read");
+                        }
                 );
+            } else {
+                counter.decrementAndGet();
             }
         }
     }
 
+
     public void markAllAsUnread(List<Mail> mails) {
+        List<Mail> changed = new ArrayList<>();
+        AtomicInteger counter = new AtomicInteger(mails.size());
+
         for (Mail mail : mails) {
             if (mail.isOnRead()) {
                 mailRepository.updateMailReadStatus(mail.getId(), false,
-                        () -> toastMessage.postValue("Marked as unread"),
-                        () -> toastMessage.postValue("Failed to mark as unread")
+                        () -> {
+                            mail.setOnRead(false);
+                            changed.add(mail);
+                            if (counter.decrementAndGet() == 0) {
+                                updateLiveDataMails(changed);
+                                toastMessage.postValue("Marked as unread");
+                            }
+                        },
+                        () -> {
+                            if (counter.decrementAndGet() == 0) {
+                                updateLiveDataMails(changed);
+                            }
+                            toastMessage.postValue("Failed to mark some as unread");
+                        }
                 );
+            } else {
+                counter.decrementAndGet();
             }
         }
     }
+
 
     public void moveToLabel(List<Mail> mails, String labelName) {
         AtomicInteger counter = new AtomicInteger(mails.size());
@@ -219,6 +260,7 @@ public class MailViewModel extends AndroidViewModel {
         if (content == null) return links;
 
         Pattern urlPattern = Pattern.compile(
+                // regex used by the blacklist
                 "(?:^|\\s)((?:(?:file:///?)|(?:[a-zA-Z][a-zA-Z0-9+.-]*):\\/\\/)?(?:localhost|(?:\\d{1,3}\\.){3}\\d{1,3}|(?:[a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})(?::\\d+)?(?:\\/\\S*)?)",
                 Pattern.CASE_INSENSITIVE
         );
@@ -268,5 +310,33 @@ public class MailViewModel extends AndroidViewModel {
             onSuccess.accept(newMails);
         });
     }
+
+    private void updateLiveDataMail(Mail updatedMail) {
+        List<Mail> currentList = mailsLiveData.getValue();
+        if (currentList == null) return;
+
+        for (int i = 0; i < currentList.size(); i++) {
+            if (currentList.get(i).getId().equals(updatedMail.getId())) {
+                currentList.set(i, updatedMail);
+                mailsLiveData.postValue(currentList);
+                break;
+            }
+        }
+    }
+    private void updateLiveDataMails(List<Mail> updatedMails) {
+        List<Mail> currentList = mailsLiveData.getValue();
+        if (currentList == null) return;
+
+        for (Mail updated : updatedMails) {
+            for (int i = 0; i < currentList.size(); i++) {
+                if (currentList.get(i).getId().equals(updated.getId())) {
+                    currentList.set(i, updated);
+                    break;
+                }
+            }
+        }
+        mailsLiveData.postValue(currentList);
+    }
+
 
 }

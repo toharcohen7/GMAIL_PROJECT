@@ -8,10 +8,6 @@ import java.util.Map;
 public class UserCache {
     private static final Map<String, User> cache = new HashMap<>();
 
-    public static boolean contains(String userId) {
-        return cache.containsKey(userId);
-    }
-
     public static User get(String userId) {
         return cache.get(userId);
     }
