@@ -2,18 +2,30 @@
 
 ## Overview
 
-This project is part of the Gmail Project, which includes both the server-side backend infrastructure and the React-based frontend. Together, these components create a seamless and secure email management system.
+The Gmail Project is a comprehensive email management system that combines server-side backend infrastructure with a React-based frontend. It offers features such as email management, label creation, blacklist handling, and user authentication.
 
-### Components:
+### Components
 
 - **Blacklist Server (C++):**  
-  Implements backend infrastructure and security by maintaining a persistent Bloom filter to efficiently check and manage blacklisted (bad) URLs.
+  Efficiently manages blacklisted URLs using a persistent Bloom filter.
 
 - **Node.js Gmail Server:**  
-  Provides Gmail-like application logic and REST API endpoints, communicating with the Blacklist server to validate URLs.
+  Provides REST API endpoints and Gmail-like application logic, integrating with the Blacklist server.
 
 - **React Client:**  
-  Provides a user-friendly interface for managing emails, labels, drafts, and blacklisted URLs. The frontend is built using React, Bootstrap, and other modern libraries to ensure responsiveness and scalability.
+  A responsive and scalable user interface for managing emails, labels, drafts, and blacklisted URLs.
+
+- **Android App:**  
+  A mobile application for managing emails, labels, and blacklist functionality on Android devices.
+
+## Documentation
+
+This README provides a brief overview of the project and its components. For detailed and comprehensive guides, visit the [Project Wiki](Wiki/Home.md).
+
+- [Docker Setup Guide](Wiki/Installation/Docker-Setup.md)
+- [Android App Installation Guide](Wiki/Installation/Android-App-Installation-Guide.md)
+- [API Documentation](Wiki/API-Documentation/Authentication.md)
+- [Milestone Details](Wiki/Developer-Guide/Milestones.md)
 
 ## Milestones
 
@@ -90,7 +102,28 @@ This project is designed to build and run inside Docker containers. It uses GCC,
      ```sh
      SERVER_PORT=5555 NODE_PORT=5556 BF_SIZE=16 HASH_COUNTS="3 5 7 11" SERVER_HOST=gmail_server docker-compose up --build
      ```
+>For a more comprehensive guide, visit the [Docker Setup Guide](Wiki/Installation/Docker-Setup.md).
 
+### Running the Android App on an Emulator
+
+1. **Open Android Studio**:  
+   - Launch Android Studio on your computer.
+
+2. **Set Up an Emulator**:  
+   - Click on **AVD Manager** in the toolbar.  
+   - Select **Create Virtual Device**.  
+   - Choose a device (e.g., Pixel 4) and click **Next**.  
+   - Select a system image (Android 7.0 or higher) and click **Next**.  
+   - Name your emulator and click **Finish**.
+
+3. **Run the App**:  
+   - Open the Android project folder in Android Studio.  
+   - Wait for Gradle to sync.  
+   - Select your emulator from the dropdown menu.  
+   - Click the green **Run** button.  
+   - The app will automatically launch in the emulator once installed.
+
+>For a more comprehensive guide, visit the [Android App Installation Guide](Wiki/Installation/Android-App-Installation-Guide.md).
 ---
 
 ## Key Components
