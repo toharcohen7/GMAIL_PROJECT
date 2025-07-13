@@ -47,7 +47,7 @@ public class MailRepository {
                 .addInterceptor(new AuthInterceptor(userId))
                 .build();
 
-        String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
+        String baseUrl = "https://c69f0021a35e.ngrok-free.app" + "/api/";
         Log.d("Retrofit", "Base URL = " + baseUrl);
 
         Retrofit retrofit = new Retrofit.Builder()
