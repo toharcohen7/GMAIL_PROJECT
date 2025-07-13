@@ -32,7 +32,7 @@ public class UserRepository {
 
     public UserRepository(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://c69f0021a35e.ngrok-free.app/api/")
+                .baseUrl("http://${BuildConfig.NODE_HOST}:${BuildConfig.NODE_PORT}/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
