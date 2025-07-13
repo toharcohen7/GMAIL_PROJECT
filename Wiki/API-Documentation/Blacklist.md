@@ -100,6 +100,11 @@ Authorization: Bearer <token>
 - When emails are marked as spam, all URLs found in both subject and content are automatically added to the blacklist
 - When emails are removed from spam, their URLs are automatically removed from the blacklist
 - The Bloom Filter guarantees no false negatives (all blacklisted URLs are detected)
+- **URL Validation Regex:** The server uses the following regex to validate URLs:
+
+```sh
+ ^(?:(?:file:///(?:[A-Za-z]:)?(?:/[^\s])?)|(?:(?:[A-Za-z][A-Za-z0-9+.\-])://)?(?:localhost|(?:[A-Za-z0-9\-]+\.)+[A-Za-z0-9\-]+|(?:\d{1,3}\.){3}\d{1,3})(?::\d+)?(?:/[^\s]*)?)$
+ ```
 
 ## Error Responses
 

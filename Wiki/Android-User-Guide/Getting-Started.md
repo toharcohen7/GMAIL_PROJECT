@@ -38,7 +38,7 @@ The Android app interface is organized into several key areas:
 2. **Navigation Drawer**: Access system and custom labels (swipe from left edge or tap ☰)
 3. **Email List**: View emails in the currently selected label
 4. **Floating Action Button (FAB)**: Compose new emails
-5. **Bulk Action Bar**: Appears when selecting multiple emails
+5. **Bulk Action Bar**: Appears when selecting multiple emails (long-tap on an email to enable multiple selection mode) 
 
 ## Basic Email Operations
 
@@ -72,11 +72,11 @@ The Android app interface is organized into several key areas:
 1. Long-press on an email to enter selection mode
 2. Tap additional emails to select multiple items
 3. Use the action buttons to:
-   - Mark as read/unread (envelope icon)
-   - Star/unstar (star icon)
+   - Mark as read (open envelope icon)
+   - Mark as unread (closed envelope icon)
    - Delete (trash icon)
-   - Move to another label (folder icon)
-   - Mark as spam (shield icon with X)
+   - Move to another label 
+   - Mark as spam (shield icon)
 
 ### Moving Emails Between Labels
 
@@ -101,7 +101,7 @@ The Android app interface is organized into several key areas:
 
 ### Editing and Deleting Labels
 
-1. Long-press on a custom label in the navigation drawer
+1. Tap the floating action button at the bottom left (it will appear only when you are on a user label)
 2. Select "Edit" or "Delete" from the options
 3. Follow the prompts to complete your action
 
@@ -117,7 +117,7 @@ The Android app interface is organized into several key areas:
 ### Marking Emails as Spam
 
 1. Select one or more emails
-2. Tap the shield with X icon
+2. Tap the shield icon
 3. The emails will be moved to the Spam label
 4. URLs in these emails will be automatically added to the blacklist
 
@@ -125,7 +125,7 @@ The Android app interface is organized into several key areas:
 
 1. Navigate to the Spam label in the navigation drawer
 2. Select the email(s) you want to recover
-3. Tap the shield with check icon
+3. Tap the shield with arrow icon
 4. The emails will be moved back to the inbox
 5. URLs in these emails will be removed from the blacklist
 

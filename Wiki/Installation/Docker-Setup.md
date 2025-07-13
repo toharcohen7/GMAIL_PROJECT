@@ -39,7 +39,7 @@ For all configuration options, see the [Configuration Guide](Configuration.md).
    docker-compose up -d
    ```
 
-4. Verify installation:
+4. Verify process build success:
    ```bash
    docker-compose ps
    ```
@@ -53,10 +53,10 @@ For all configuration options, see the [Configuration Guide](Configuration.md).
 ## Container Structure
 
 The Docker setup includes the following containers:
-- Frontend container (JavaScript/CSS)
-- Backend API container (Java)
-- Database container
-- C++ server container for processing
+- Frontend container (React/JavaScript/CSS)
+- Backend API container (Node.js)
+- Database container (MongoDB)
+- C++ Blacklist server
 
 ## Configuration
 

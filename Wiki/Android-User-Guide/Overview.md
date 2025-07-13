@@ -10,7 +10,6 @@ The Gmail Project Android app offers:
 - **Label Organization**: Create custom labels and move emails between labels
 - **Search Functionality**: Search through your emails quickly
 - **Dark/Light Mode**: Toggle between display themes for comfortable viewing
-- **Offline Access**: View cached emails when offline
 - **Spam Protection**: Integration with the server-side blacklist filtering
 - **Draft Management**: Save and edit email drafts
 
@@ -19,9 +18,8 @@ The Gmail Project Android app offers:
 The Android app provides:
 
 - **Intuitive Navigation**: Drawer menu for accessing different labels
-- **Responsive Interface**: Adapts to different screen sizes
 - **Email Composition**: Easy-to-use email creation dialog
-- **Bulk Actions**: Select multiple emails for actions like delete, mark as read, etc.
+- **Bulk Actions**: Select multiple emails for actions like delete, mark as read, etc. (long-tap on an email to enable multiple selection mode)
 - **Profile Management**: View your account information
 
 ## System Requirements
@@ -71,13 +69,3 @@ The Android app integrates with:
 2. **Email Composition**: Tap compose button > Enter recipient, subject, content > Send
 3. **Label Management**: Long-press label > Edit or delete > Save changes
 4. **Spam Handling**: Select email > Mark as spam > URLs automatically blacklisted
-
-## Future Improvements
-
-Potential enhancements for future releases:
-
-- Push notifications for new emails
-- Attachment support
-- Contact management
-- Multiple account support
-- Enhanced offline capabilities

@@ -4,13 +4,13 @@ This document provides a comprehensive overview of the Gmail Project Android app
 
 ## Main Interface Components
 
-The Gmail Project Android app interface is designed with material design principles and consists of several key components:
+The Gmail Project Android app interface is consists of several key components:
 
 ### Home Screen
 
 The home screen is the primary interface you'll interact with and includes:
 
-1. **App Bar**: Contains the app title, search icon, and user profile
+1. **App Bar**: Contains the app title, search icon, logout & darkmode buttons and user profile
 2. **Search Bar**: Quick access to search functionality
 3. **Navigation Drawer Icon**: Access to folders and app menu (☰)
 4. **Email List**: Displays emails in the current label/folder
@@ -40,7 +40,7 @@ The navigation drawer contains:
 
 The email list displays:
 
-1. **Selection Checkbox**: For selecting multiple emails
+1. **Sender Photo**: Photo of the email sender
 2. **Sender Name**: Name of the email sender
 3. **Subject Line**: Email subject with preview text
 4. **Timestamp**: When the email was received
@@ -53,44 +53,35 @@ The email list displays:
 
 When viewing an individual email:
 
-1. **Top Bar**:
-   - Back button
-   - Email actions (star, delete, etc.)
-
-2. **Email Header**:
+   - Close button
    - Sender details
    - Recipients information
    - Subject
    - Timestamp
-
-3. **Email Body**:
    - Message content
-
-4. **Action Options**:
-   - Reply
-   - Forward
-   - Mark as unread
-   - Move to label
 
 ## Navigation Patterns
 
 ### Menu Options
 
-The top-right menu provides access to:
+The top-bar menu provides access to:
 
 1. **User Profile**: View your account information
 2. **Dark/Light Mode Toggle**: Switch between display themes
 3. **Sign Out**: Log out of your account
+4. **search**: Search in emails
 
 ### Bulk Actions
 
 When selecting multiple emails:
 
-1. **Mark as Read/Unread**: Open/closed envelope icons
-2. **Star/Unstar**: Star icon
-3. **Move to Label**: Folder icon
+1. **Mark as Read/Unread**: Open envelope icon
+2. **Mark as Unread**: Closed envelope icon
+3. **Move to Label**: Fat arrow icon
 4. **Delete**: Trash icon
-5. **Mark as Spam**: Shield icon with X
+5. **Mark as Spam**: Shield icon
+
+> **Note:** The available buttons in the bulk action bar may vary depending on the selected label. For example, some actions may not be available in certain labels where they are not applicable.
 
 ## Email Management
 
@@ -104,18 +95,19 @@ When selecting multiple emails:
 
 1. **Mark as Read/Unread**:
    - Select email(s) and tap the envelope icon
-   - Visual indicator (bold text) shows unread status
+   - Visual indicator (Light-Blue backround) shows unread status
 
 2. **Star Important Emails**:
-   - Tap the star icon next to an email
+   - Tap the star icon
    - View starred emails by selecting "Starred" in the navigation drawer
 
 3. **Delete Emails**:
    - Select email(s) and tap the trash icon
    - Deleted emails are moved to the Trash label
+   - To delete emails permanently: Navigate to the Trash label, select the email(s), and delete them from there.
 
 4. **Spam Management**:
-   - Mark as spam: Select email(s) and tap the shield with X icon
+   - Mark as spam: Select email(s) and tap the shield icon
    - Remove from spam: Open the Spam folder, select email(s), tap the shield with check icon
 
 ### Moving Emails Between Labels
@@ -151,16 +143,16 @@ When selecting multiple emails:
 
 ### Editing Labels
 
-1. Long-press on a custom label in the navigation drawer
-2. Select "Edit" from the options
-3. Enter a new name for the label
-4. Tap "Save" to update the label
+1. Tap the floating action button at the bottom left (it will appear only when you are on a user label).
+2. Select "Edit" from the options.
+3. Enter a new name for the label.
+4. Tap "Save" to update the label.
 
 ### Deleting Labels
 
-1. Long-press on a custom label in the navigation drawer
-2. Select "Delete" from the options
-3. Confirm deletion when prompted
+1. Tap the floating action button at the bottom left (it will appear only when you are on a user label).
+2. Select "Delete" from the options.
+3. Confirm deletion when
 
 ## Search Functionality
 
@@ -168,13 +160,6 @@ When selecting multiple emails:
 2. Enter your search terms
 3. Results will display emails matching your search criteria
 4. The search looks for matches in sender name, subject, and content
-
-## Dark/Light Mode
-
-1. Access the menu by tapping the three dots in the top-right corner
-2. Select the dark/light mode toggle option
-3. The app interface will immediately switch between dark and light themes
-4. Your preference is remembered between sessions
 
 ## Profile Information
 
@@ -189,6 +174,5 @@ When selecting multiple emails:
 
 ## Sign Out
 
-1. Access the menu by tapping the three dots in the top-right corner
-2. Select "Sign Out"
-3. You'll be logged out and redirected to the Sign
+1. Tap the "Sign Out" button located on the top bar.
+2. You will be logged out and redirected to the Sign In page. 

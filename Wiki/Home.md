@@ -4,14 +4,14 @@ Welcome to the Gmail Project Wiki! This wiki contains comprehensive documentatio
 
 ## Project Overview
 
-This project aims to create the best Gmail experience ever! Our application combines modern technology stacks including JavaScript, Java, C++, and more to deliver a comprehensive email solution with advanced features.
+This project aims to create the best Gmail experience ever! Our application combines modern technology stacks, to deliver a comprehensive email solution with advanced features.
 
 ## Technology Stack
 
-- **Frontend**: JavaScript/CSS
-- **Backend**: JavaScript/C++
-- **Mobile**: Java/XML (Android App)
-- **Deployment**: Docker
+- **Frontend**: JavaScript, CSS
+- **Backend**: JavaScript, C++
+- **Mobile**: Java, XML (Android App)
+- **Deployment**: Docker, CMakeFile, Shell Scripts
 
 ## Repository Structure
 
@@ -69,6 +69,11 @@ GMAIL_PROJECT_D.T.H/
 ## Team
 
 The D.T.H team is responsible for the development and maintenance of this project.
+
+### Members
+- Daniel Jenudi
+- Harel Mizrahi
+- Tohar Yahakov Cohen
 
 ## Navigation Map
 
