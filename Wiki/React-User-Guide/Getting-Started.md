@@ -29,6 +29,10 @@ Welcome to the Gmail Project! This guide will help you get started with using ou
 4. Click "Sign In"
 5. Upon successful authentication, you'll be redirected to your inbox
 
+> **Note**: The default port for the React client is `3000`.  
+> If port 3000 is unavailable, React will automatically move to the next available port (e.g., 3001, 3002, etc.).  
+> You can see the assigned port in the terminal when running
+
 ## User Interface Overview
 
 ### Main Interface Components
@@ -122,3 +126,21 @@ Now that you're familiar with the basics, explore these guides for more details:
 - [Email Management](Email-Management.md) - Advanced email handling
 - [Labels and Organization](Labels-and-Organization.md) - Organizing your emails
 - [Blacklist Management](Blacklist-Management.md) - Managing spam and blacklisted
+
+
+### Screenshots
+
+**Welcome Page**  
+![Welcome Page](../../images/welcome_page.jpeg)
+
+**Sign Up Page**  
+![Sign Up Page](../../images/sign_up_page.jpeg)
+
+**Sign In Page**  
+![Sign In Page](../../images/sign_in_page.jpeg)
+
+**Main Inbox Page**  
+![Main Inbox Page](../../images/main_inbox_page.jpeg)
+
+**Dark Mode Example**  
+![Dark Mode Example](../../images/dark_mode_example.jpeg)

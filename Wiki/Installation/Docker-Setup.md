@@ -81,3 +81,15 @@ This provides flexibility to access your email system through multiple platforms
 ## Further Information
 
 For advanced Docker configurations, refer to the [Development-Environment.md](Development-Environment.md) document.
+
+
+### Screenshots
+
+**Building the Docker images with Docker Compose:**  
+![Build Command](../../images/build_command.jpeg)
+
+**Starting all services with Docker Compose:**  
+![Docker Compose Up](../../images/compose_up.jpeg)
+
+**Removing all services with Docker Compose Down:**  
+![Docker Compose Down](../../images/compose_down.jpeg)

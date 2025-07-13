@@ -9,17 +9,62 @@ This project aims to create the best Gmail experience ever! Our application comb
 ## Technology Stack
 
 - **Frontend**: JavaScript/CSS
-- **Backend**: C++
+- **Backend**: JavaScript/C++
 - **Mobile**: Java/XML (Android App)
 - **Deployment**: Docker
 
 ## Repository Structure
 
-- `idea/` - IDE configuration files
-- `androidApp/` - Mobile application code
-- `images/` - Project images and assets
-- `node_modules/` - Node.js dependencies
-- `src/` - Source code for the server, node and client application
+```
+GMAIL_PROJECT_D.T.H/
+├── androidApp/                      # Android application
+├── src/                             # Project source code
+│   ├── client/                      # React frontend application
+│   │   ├── .gitignore               # Git ignore file for React client
+│   │   ├── package.json             # React client dependencies
+│   │   ├── src/                     # React source code
+│   │       ├── components/          # Reusable UI components
+│   │       │   ├── Inbox/           # Inbox-related components
+│   │       │   ├── SideBar/         # Sidebar and label management
+│   │       │   ├── TopBar/          # Top navigation bar
+│   │       │   ├── SignUp/          # Sign-up form components
+│   │       │   ├── SignIn/          # Sign-in form components
+│   │       │   ├── FetchWithAuth/   # Authenticator component
+│   │       │   ├── Styles/          # Styles component
+│   │       │   
+│   │       ├── pages/  
+│   │       │   ├── SignUp/          # Sign-up page
+│   │       │   ├── SignIn/          # Sign-in page
+│   │       │   ├── MainPage/        # Main application page
+│   │       │   ├── WelcomePage/     # Welcome page
+│   │       │
+│   │       ├── utils/               # Utility functions
+│   │       ├── config/              # Configuration files (e.g., API URLs)
+│   │       ├── index.js             # Application entry point
+│   │       ├── App.js               # Main application component
+│   │
+│   ├── blacklist/                   # C++ Bloom Filter server implementation
+│   │   ├── cpp/                     # C++ source files
+│   │   ├── hpp/                     # C++ header files
+│   │   ├── client.py                # Python client for testing the server
+│   │
+│   ├── server/ 
+│       ├── controllers/                 # Node.js controllers for handling API logic
+│       ├── models/                      # Node.js models for database and application logic
+│       ├── routes/                      # Node.js routes for API endpoints
+│       │── app.js                       # Main Node.js server file
+│       │── package.json                 # Node.js server dependencies
+│
+├── images/                          # Project images for documentation  
+├── .env                             # Environment variables for the project
+├── .dockerignore                    # Docker ignore file
+├── .gitignore                       # Git ignore file
+├── CMakeLists.txt                   # CMake configuration for building the C++ server
+├── Dockerfile                       # Dockerfile for building the project
+├── docker-compose.yml               # Docker Compose configuration
+├── README.md                        # Project documentation
+├── details.txt                      # Project details (authors, repository link, etc.)
+```
 
 ## Team
 
