@@ -2,7 +2,7 @@ package com.example.gmail_app_dth.requests;
 
 public class SignInRequest {
     private final String userName;
-    private final String password;
+    private final String password; // unused, for server communication usage
 
     public SignInRequest(String userName, String password) {
         this.userName = userName;
@@ -14,8 +14,5 @@ public class SignInRequest {
         return userName;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
 }

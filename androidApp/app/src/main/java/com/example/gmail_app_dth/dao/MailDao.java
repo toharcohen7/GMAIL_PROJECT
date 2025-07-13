@@ -16,9 +16,6 @@ import java.util.List;
 public interface MailDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Mail mail);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Mail> mails);
 
     @Update

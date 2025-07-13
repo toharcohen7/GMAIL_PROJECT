@@ -48,7 +48,7 @@ public class LabelRepository {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://383e-79-181-175-112.ngrok-free.app/api/")
+                .baseUrl("https://c69f0021a35e.ngrok-free.app/api/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -61,7 +61,7 @@ public class LabelRepository {
     }
 
     public void createLabel(LabelRequest request, MutableLiveData<Boolean> result) {
-        api.createLabel(request).enqueue(new Callback<Void>() {
+        api.createLabel(request).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 boolean success = response.isSuccessful();
@@ -79,7 +79,7 @@ public class LabelRepository {
     }
 
     public void fetchLabels(@Nullable MutableLiveData<List<Label>> labelsLiveData) {
-        api.getLabels().enqueue(new Callback<List<Label>>() {
+        api.getLabels().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Label>> call, @NonNull Response<List<Label>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -106,21 +106,18 @@ public class LabelRepository {
 
 
     private void saveLabelsToLocal(List<Label> labels) {
-        executor.execute(() -> {
-            labelDao.insertAll(labels);
-        });
+        executor.execute(() -> labelDao.insertAll(labels));
     }
     public void editLabel(String labelName, LabelRequest request, MutableLiveData<Boolean> result) {
         Log.d("LABEL_REPO", "Calling editLabel. NAME: " + labelName + ", New Name: " + request.getName());
 
-        api.updateLabel(labelName, request).enqueue(new Callback<Void>() {
+        api.updateLabel(labelName, request).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 Log.d("LABEL_REPO", "editLabel response code: " + response.code());
 
                 boolean success = response.isSuccessful();
 
-                // ✅ הגנה אמיתית – לפני כל שימוש ב־result
                 if (result != null) {
                     result.postValue(success);
                 }
@@ -143,14 +140,10 @@ public class LabelRepository {
         });
     }
 
-
-
-
-
     public void deleteLabel(String labelName, MutableLiveData<Boolean> result) {
         Log.d("LABEL_REPO", "Calling deleteLabel. NAME: " + labelName);
 
-        api.deleteLabel(labelName).enqueue(new Callback<Void>() {
+        api.deleteLabel(labelName).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 Log.d("LABEL_REPO", "deleteLabel response code: " + response.code());
@@ -161,12 +154,9 @@ public class LabelRepository {
                 }
 
                 if (success) {
-                    executor.execute(() -> {
-                        labelDao.deleteByName(labelName); // ✅ מוחק מה־Room לפי השם
-                    });
+                    executor.execute(() -> labelDao.deleteByName(labelName));
                     fetchLabels(null);
-                }
-                 else {
+                } else {
                     Log.e("LABEL_REPO", "deleteLabel failed. Body: " + response.message());
                 }
             }
@@ -184,14 +174,6 @@ public class LabelRepository {
 
     public LiveData<List<Label>> getAllLabels() {
         return labelDao.getAll();
-    }
-
-    public void insert(Label label) {
-        executor.execute(() -> labelDao.insert(label));
-    }
-
-    public void delete(Label label) {
-        executor.execute(() -> labelDao.delete(label));
     }
 
     public void update(Label label) {

@@ -1,5 +1,6 @@
 package com.example.gmail_app_dth.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ import com.example.gmail_app_dth.entities.Mail;
 import com.example.gmail_app_dth.entities.User;
 import com.example.gmail_app_dth.interfaces.MailInteractionListener;
 import com.example.gmail_app_dth.MailViewHolder;
-import com.example.gmail_app_dth.viewmodel.MailViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,15 +33,13 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
     private final Context context;
     private final List<Mail> mailList = new ArrayList<>();
     private final MailInteractionListener listener;
-    private final MailViewModel viewModel;
 
     private final Set<String> selectedMailIds = new HashSet<>();
     private boolean selectionMode = false;
 
-    public MailAdapter(Context context, MailInteractionListener listener, MailViewModel viewModel) {
+    public MailAdapter(Context context, MailInteractionListener listener) {
         this.context = context;
         this.listener = listener;
-        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -52,12 +50,14 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
         return new MailViewHolder(itemView);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(List<Mail> newList) {
         mailList.clear();
         mailList.addAll(newList);
         notifyDataSetChanged();
     }
 
+    @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull MailViewHolder holder, int position) {
         Mail mail = mailList.get(position);
@@ -182,6 +182,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
 
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private void toggleSelection(String mailId) {
         if (selectedMailIds.contains(mailId)) {
             selectedMailIds.remove(mailId);
@@ -207,6 +208,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
         return selected;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clearSelection() {
         selectedMailIds.clear();
         selectionMode = false;
@@ -229,6 +231,7 @@ public class MailAdapter extends RecyclerView.Adapter<MailViewHolder> {
 
             Calendar now = Calendar.getInstance();
             Calendar mailCal = Calendar.getInstance();
+            assert mailDate != null;
             mailCal.setTime(mailDate);
 
             boolean isToday =

@@ -6,18 +6,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.gmail_app_dth.R;
-import com.example.gmail_app_dth.repository.AppDatabase;
 import com.example.gmail_app_dth.repository.LocalDatabase;
 import com.example.gmail_app_dth.requests.SignInRequest;
 import com.example.gmail_app_dth.viewmodel.UserViewModel;
-
-import java.util.Calendar;
 import java.util.concurrent.Executors;
 
 
@@ -66,7 +61,5 @@ public class SignInActivity extends AppCompatActivity {
             Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
             startActivity(intent);
         });
-
-
     }
 }

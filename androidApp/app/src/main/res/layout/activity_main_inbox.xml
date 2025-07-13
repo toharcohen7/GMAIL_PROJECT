@@ -9,17 +9,14 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <!-- תוכן המסך העיקרי -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- כולל את כל ה־AppBar וכל התוכן -->
         <include
             android:id="@+id/app_bar_main_inbox"
             layout="@layout/app_bar_main_inbox" />
 
-        <!-- FAB של עריכת label -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_edit_label"
             android:layout_width="wrap_content"
@@ -28,11 +25,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
             android:visibility="gone"
-            android:contentDescription="Edit Label"
+            android:contentDescription="@string/edit_label"
             app:srcCompat="@android:drawable/ic_menu_edit" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <!-- תפריט צד -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

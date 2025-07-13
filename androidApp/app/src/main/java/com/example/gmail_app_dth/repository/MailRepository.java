@@ -5,7 +5,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.gmail_app_dth.AuthInterceptor;
@@ -47,7 +46,7 @@ public class MailRepository {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://383e-79-181-175-112.ngrok-free.app/api/")
+                .baseUrl("https://c69f0021a35e.ngrok-free.app/api/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -61,34 +60,30 @@ public class MailRepository {
     }
 
     public void fetchMailsByLabel(String labelName, @Nullable MutableLiveData<List<Mail>> liveData) {
-        api.getMailsByLabel(labelName).enqueue(new Callback<List<Mail>>() {
+        api.getMailsByLabel(labelName).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Mail> mails = response.body();
-                    String finalLabelName = labelName;
 
                     executor.execute(() -> {
-                        mailDao.deleteByLabel(finalLabelName);
-                        // מוודאים שלכל מייל מוגדר labelName לפני שמירה
+                        mailDao.deleteByLabel(labelName);
                         for (Mail mail : mails) {
-                            mail.setLabelName(finalLabelName);
+                            mail.setLabelName(labelName);
                         }
 
-                        // שומרים ל־Room
                         mailDao.insertAll(mails);
 
-                        // 🔍 הדפסה ללוג: מה נשמר בפועל בטבלת Room
-                        List<Mail> allMails = mailDao.getAllImmediate(); // ← פונקציה רגילה (לא LiveData)
+                        List<Mail> allMails = mailDao.getAllImmediate();
                         for (Mail m : allMails) {
                             Log.d("MAIL_AFTER_INSERT", "mail: " + m.getId() + ", label=" + m.getLabelName());
                         }
 
-                        // טוענים גם את השולח
                         for (Mail mail : mails) {
                             userRepository.getUserById(mail.getSenderId(), new UserDataCallback() {
                                 @Override
-                                public void onSuccess(User user) {}
+                                public void onSuccess(User user) {
+                                }
 
                                 @Override
                                 public void onError(String errorMessage) {
@@ -111,25 +106,9 @@ public class MailRepository {
         });
     }
 
-
-
-
-
-    public LiveData<List<Mail>> getAllMails() {
-        return mailDao.getAll();
-    }
-
-    public LiveData<List<Mail>> getMailsByLabel(String labelName) {
-        return mailDao.getByLabel(labelName);
-    }
-
-    public LiveData<List<Mail>> getStarredMails() {
-        return mailDao.getStarred();
-    }
-
     public void updateStarStatus(String mailId, boolean newStatus, Runnable onSuccess, Runnable onError) {
         MailUpdateRequest request = new MailUpdateRequest(newStatus, null, null,null,null,null);
-        api.updateMails(mailId, request).enqueue(new Callback<Void>() {
+        api.updateMails(mailId, request).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -155,7 +134,7 @@ public class MailRepository {
 
     public void updateMailReadStatus(String mailId, boolean newStatus, Runnable onSuccess, Runnable onError) {
         MailUpdateRequest request = new MailUpdateRequest(null, newStatus, null,null,null,null);
-        api.updateMails(mailId, request).enqueue(new Callback<Void>() {
+        api.updateMails(mailId, request).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -181,7 +160,7 @@ public class MailRepository {
 
     public void updateLabel(String mailId, String labelName, Runnable onSuccess, Runnable onError) {
         MailUpdateRequest request = new MailUpdateRequest(null, null, labelName,null,null,null);
-        api.updateMails(mailId, request).enqueue(new Callback<Void>() {
+        api.updateMails(mailId, request).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -206,7 +185,7 @@ public class MailRepository {
     }
 
     public void deleteMail(String mailId, Runnable onSuccess, Runnable onError) {
-        api.deleteMail(mailId).enqueue(new Callback<Void>() {
+        api.deleteMail(mailId).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -233,7 +212,7 @@ public class MailRepository {
         Map<String, String> body = new HashMap<>();
         body.put("url", url);
 
-        api.addToBlacklist(body).enqueue(new Callback<Void>() {
+        api.addToBlacklist(body).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -251,7 +230,7 @@ public class MailRepository {
     }
 
     public void createMail(Consumer<String> onSuccess, Runnable onError) {
-        api.createMail().enqueue(new Callback<Mail>() {
+        api.createMail().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Mail> call, @NonNull Response<Mail> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -284,7 +263,7 @@ public class MailRepository {
     }
 
     private void updateMail(String mailId, MailUpdateRequest request, Runnable onSuccess, Runnable onError) {
-        api.updateMail(mailId, request).enqueue(new Callback<Void>() {
+        api.updateMail(mailId, request).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -301,7 +280,7 @@ public class MailRepository {
         });
     }
     public void searchMails(String query, MutableLiveData<List<Mail>> liveData) {
-        api.searchMails(query).enqueue(new Callback<List<Mail>>() {
+        api.searchMails(query).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -319,7 +298,7 @@ public class MailRepository {
     }
 
     public void fetchMailsByLabelWithOffset(String labelName, int offset, Consumer<List<Mail>> onSuccess) {
-        api.getMailsByLabel(labelName, offset).enqueue(new Callback<List<Mail>>() {
+        api.getMailsByLabel(labelName, offset).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<List<Mail>> call, @NonNull Response<List<Mail>> response) {
                 if (response.isSuccessful() && response.body() != null) {

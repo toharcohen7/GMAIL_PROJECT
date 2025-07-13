@@ -43,7 +43,4 @@ public class Label {
         this.name = name;
     }
 
-    public void setIconClass(String iconClass) {
-        this.iconClass = iconClass;
-    }
 }

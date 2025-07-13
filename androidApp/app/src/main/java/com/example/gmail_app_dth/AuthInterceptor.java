@@ -1,5 +1,7 @@
 package com.example.gmail_app_dth;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -13,6 +15,7 @@ public class AuthInterceptor implements Interceptor {
         this.userId = userId;
     }
 
+    @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();

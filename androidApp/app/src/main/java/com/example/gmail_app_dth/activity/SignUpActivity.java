@@ -12,15 +12,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Base64;
-
 import android.util.Log;
 import android.widget.Button;
-
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -28,12 +25,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.bumptech.glide.Glide;
 import com.example.gmail_app_dth.R;
 import com.example.gmail_app_dth.requests.UserRegistrationRequest;
 import com.example.gmail_app_dth.viewmodel.UserViewModel;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -196,5 +191,4 @@ public class SignUpActivity extends AppCompatActivity {
             Log.e("UserRepository", "Error while parsing image", e);
         }
     }
-
 }
