@@ -35,7 +35,10 @@ import com.example.gmail_app_dth.activity.MainInboxActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment {
@@ -224,22 +227,44 @@ public class HomeFragment extends Fragment {
                 .setNegativeButton("Cancel", null)
                 .create();
 
-        dialog.setOnShowListener(dlg -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String to = editReceivers.getText().toString().trim();
-            String subject = editSubject.getText().toString().trim();
-            String content = editContent.getText().toString().trim();
+        dialog.setOnShowListener(dlg -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String to = editReceivers.getText().toString().trim();
+                String subject = editSubject.getText().toString().trim();
+                String content = editContent.getText().toString().trim();
 
-            if (to.isEmpty()) {
-                Toast.makeText(requireContext(), "Recipient is required", Toast.LENGTH_SHORT).show();
-                return;
-            }
+                if (to.isEmpty()) {
+                    Toast.makeText(requireContext(), "Recipient is required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            viewModel.sendMail(mail.getId(), to, subject, content);
-            dialog.dismiss();
-        }));
+                viewModel.sendMail(mail.getId(), to, subject, content);
+                dialog.dismiss();
+            });
+
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v -> {
+                String to = editReceivers.getText().toString().trim();
+                String subject = editSubject.getText().toString().trim();
+                String content = editContent.getText().toString().trim();
+
+                boolean isEmpty = to.isEmpty() && subject.isEmpty() && content.isEmpty();
+
+                if (isEmpty) {
+                    viewModel.deleteMailsById(Collections.singletonList(mail.getId()));
+                } else {
+                    List<String> receivers = Arrays.asList(to.split("\\s*,\\s*"));
+                    viewModel.updateMailAsDraft(mail.getId(), subject, content, receivers);
+                    viewModel.fetchMailsByLabel(viewModel.getCurrentLabel());
+
+                }
+
+                dialog.dismiss();
+            });
+        });
 
         dialog.show();
     }
+
 
 
 }
