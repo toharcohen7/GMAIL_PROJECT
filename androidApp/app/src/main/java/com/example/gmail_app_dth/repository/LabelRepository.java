@@ -14,6 +14,8 @@ import com.example.gmail_app_dth.dao.LabelDao;
 import com.example.gmail_app_dth.entities.Label;
 import com.example.gmail_app_dth.interfaces.WebServiceAPI;
 import com.example.gmail_app_dth.requests.LabelRequest;
+import com.example.gmail_app_dth.BuildConfig;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -47,8 +49,11 @@ public class LabelRepository {
                 .addInterceptor(new AuthInterceptor(userId))
                 .build();
 
+        String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
+        Log.d("Retrofit", "Base URL = " + baseUrl);
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://${BuildConfig.NODE_HOST}:${BuildConfig.NODE_PORT}/api/")
+                .baseUrl(baseUrl)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

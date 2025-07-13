@@ -31,6 +31,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -62,21 +63,22 @@ configurations.all {
     exclude(group = "com.intellij", module = "annotations")
 }
 
-afterEvaluate {
-    val dotenvFile = rootProject.rootDir.resolve("../.env")
-    if (dotenvFile.exists()) {
-        val envVars = dotenvFile.readLines()
-            .filter { it.contains("=") }
-            .associate {
-                val (key, value) = it.split("=", limit = 2)
-                key.trim() to value.trim().replace("\"", "")
-            }
+val dotenvFile = rootProject.rootDir.resolve("../.env")
+if (dotenvFile.exists()) {
+    val envVars = dotenvFile.readLines()
+        .filter { it.contains("=") }
+        .associate {
+            val (key, value) = it.split("=", limit = 2)
+            key.trim() to value.trim().replace("\"", "")
+        }
+    println("✅ Loaded NODE_HOST=${envVars["NODE_HOST"]}, NODE_PORT=${envVars["NODE_PORT"]}")
 
-        android.defaultConfig.apply {
+    android {
+        defaultConfig {
             buildConfigField("String", "NODE_HOST", "\"${envVars["NODE_HOST"]}\"")
             buildConfigField("String", "NODE_PORT", "\"${envVars["NODE_PORT"]}\"")
         }
-    } else {
-        println("⚠️ .env file not found at: ${dotenvFile.absolutePath}")
     }
+} else {
+    println("⚠️ .env file not found at: ${dotenvFile.absolutePath}")
 }

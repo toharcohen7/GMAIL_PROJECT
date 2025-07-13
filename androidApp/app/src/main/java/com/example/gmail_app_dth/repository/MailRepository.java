@@ -14,6 +14,8 @@ import com.example.gmail_app_dth.entities.User;
 import com.example.gmail_app_dth.interfaces.UserDataCallback;
 import com.example.gmail_app_dth.interfaces.WebServiceAPI;
 import com.example.gmail_app_dth.requests.MailUpdateRequest;
+import com.example.gmail_app_dth.BuildConfig;
+
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,11 +47,15 @@ public class MailRepository {
                 .addInterceptor(new AuthInterceptor(userId))
                 .build();
 
+        String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
+        Log.d("Retrofit", "Base URL = " + baseUrl);
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://${BuildConfig.NODE_HOST}:${BuildConfig.NODE_PORT}/api/")
+                .baseUrl(baseUrl)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
 
         api = retrofit.create(WebServiceAPI.class);
 
