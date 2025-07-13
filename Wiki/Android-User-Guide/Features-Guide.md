@@ -68,11 +68,11 @@ This document provides an overview of the key features in the Gmail Project Andr
 
 Select multiple emails by long-pressing on one email, then tapping others to perform:
 
-- **Mark as Read/Unread**: Tap envelope icon
-- **Star/Unstar**: Tap star icon
+- **Mark as Read**: Tap open envelope icon
+- **Mark as Unread**: Tap closed envelope icon
 - **Delete**: Tap trash icon (moves to trash label)
-- **Move**: Tap folder icon and select destination
-- **Mark as Spam**: Tap shield with X icon
+- **Move**: Tap the move to label button and select destination
+- **Mark as Spam**: Tap the shield icon
 
 ## Search Functionality
 
@@ -114,23 +114,3 @@ Select multiple emails by long-pressing on one email, then tapping others to per
 1. Tap the three dots menu in the top-right corner
 2. Select "Sign Out"
 3. You'll be redirected to the sign-in screen
-
-## Interface Personalization
-
-### Dark Mode / Light Mode
-
-1. Tap the three dots menu in the top-right corner
-2. Select the dark/light mode toggle
-3. The interface will immediately update
-4. Your preference is remembered between sessions
-
-### Refresh and Sync
-
-- **Pull to Refresh**: Pull down on the email list to sync with the server
-- **Automatic Updates**: The app automatically refreshes when changing labels
-
-## Offline Access
-
-- **Cached Emails**: Previously loaded emails are available offline
-- **Offline Drafts**: Create and edit drafts without internet connection
-- **Sync on Reconnect**: Changes sync automatically when connection is restored
