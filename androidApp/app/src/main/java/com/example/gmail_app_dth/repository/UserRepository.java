@@ -32,7 +32,7 @@ public class UserRepository {
     private final ExecutorService executor;
 
     public UserRepository(Context context) {
-        String baseUrl = "https://c69f0021a35e.ngrok-free.app" + "/api/";
+        String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
         Log.d("Retrofit", "Base URL = " + baseUrl);
 
         Retrofit retrofit = new Retrofit.Builder()

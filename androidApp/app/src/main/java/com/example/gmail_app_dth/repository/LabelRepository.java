@@ -49,7 +49,7 @@ public class LabelRepository {
                 .addInterceptor(new AuthInterceptor(userId))
                 .build();
 
-        String baseUrl = "https://c69f0021a35e.ngrok-free.app" + "/api/";
+        String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
         Log.d("Retrofit", "Base URL = " + baseUrl);
 
         Retrofit retrofit = new Retrofit.Builder()
