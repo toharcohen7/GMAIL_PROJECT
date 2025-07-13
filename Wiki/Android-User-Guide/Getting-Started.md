@@ -155,4 +155,3 @@ Now that you're familiar with the basics, explore these guides for more details:
 - [User Interface](User-Interface.md) - Detailed overview of the Android app interface
 - [Features Guide](Features-Guide.md) - Comprehensive feature documentation
 - [Settings Guide](Settings-Guide.md) - Customizing your app experience
-- [Troubleshooting](Troubleshooting.md) - Solutions

@@ -42,7 +42,6 @@ The D.T.H team is responsible for the development and maintenance of this projec
   - [User Interface](Android-User-Guide/User-Interface.md)
   - [Features Guide](Android-User-Guide/Features-Guide.md)
   - [Settings Guide](Android-User-Guide/Settings-Guide.md)
-  - [Troubleshooting](Android-User-Guide/Troubleshooting.md)
 - [React Web Client](React-User-Guide/Getting-Started.md)
   - [Email Management](React-User-Guide/Email-Management.md)
   - [Labels and Organization](React-User-Guide/Labels-and-Organization.md)
@@ -62,4 +61,5 @@ The D.T.H team is responsible for the development and maintenance of this projec
   - [Users API](API-Documentation/Users.md)
   - [Blacklist API](API-Documentation/Blacklist.md)
 - [Developer Guide](Developer-Guide/Code-Standards.md)
+  - [Milestones](Developer-Guide/Milestones.md)
 
