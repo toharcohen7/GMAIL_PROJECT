@@ -153,43 +153,45 @@ Now that you're familiar with the basics, explore these guides for more details:
 
 <table>
   <tr>
-    <td width="50%" align="center">
+    <td align="center" width="50%">
       <p><strong>App Welcome Page</strong></p>
-      <img src="../../images/android_welcome.jpeg" alt="App Welcome Page" width="200">
+      <img src="../../images/android_welcome.jpeg" alt="App Welcome Page" width="300">
     </td>
-    <td width="50%" align="center">
+    <td align="center" width="50%">
       <p><strong>App Sign Up Page</strong></p>
-      <img src="../../images/android_signup.jpeg" alt="App Sign Up Page" width="200">
+      <img src="../../images/android_signup.jpeg" alt="App Sign Up Page" width="300">
     </td>
   </tr>
   <tr>
-    <td width="50%" align="center">
+    <td align="center" width="50%">
       <p><strong>App Sign In Page</strong></p>
-      <img src="../../images/android_signin.jpeg" alt="App Sign In Page" width="200">
+      <img src="../../images/android_signin.jpeg" alt="App Sign In Page" width="300">
     </td>
-    <td width="50%" align="center">
+    <td align="center" width="50%">
       <p><strong>App Main Inbox Page</strong></p>
-      <img src="../../images/android_main_inbox.jpeg" alt="App Main Inbox Page" width="200">
+      <img src="../../images/android_main_inbox.jpeg" alt="App Main Inbox Page" width="300">
     </td>
   </tr>
   <tr>
-    <td width="50%" align="center">
+    <td align="center" width="50%">
       <p><strong>App Dark Mode Example</strong></p>
-      <img src="../../images/android_darkmode.jpeg" alt="App Dark Mode Example" width="200">
+      <img src="../../images/android_darkmode.jpeg" alt="App Dark Mode Example" width="300">
     </td>
-    <td width="50%" align="center">
+    <td align="center" width="50%">
       <p><strong>App Navigation Drawer</strong></p>
-      <img src="../../images/android_sidebar.jpeg" alt="App Navigation Drawer" width="200">
+      <img src="../../images/android_sidebar.jpeg" alt="App Navigation Drawer" width="300">
     </td>
   </tr>
   <tr>
-    <td width="50%" align="center">
+    <td align="center" width="50%">
       <p><strong>App Top-Bar On Select</strong></p>
-      <img src="../../images/android_bulkselect.jpeg" alt="App Top-Bar On Select" width="200">
+      <img src="../../images/android_bulkselect.jpeg" alt="App Top-Bar On Select" width="300">
     </td>
-    <td width="50%" align="center">
-      <!-- Empty cell or another image -->
+    <td align="center" width="50%">
+      <p><strong>App Draft Page</strong></p>
+      <img src="../../images/android_draft.jpeg" alt="App Draft Page" width="300">
     </td>
   </tr>
 </table>
+
 
