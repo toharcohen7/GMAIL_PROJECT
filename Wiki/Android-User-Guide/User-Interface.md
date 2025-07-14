@@ -40,8 +40,8 @@ The navigation drawer contains:
 
 The email list displays:
 
-1. **Sender Photo**: Photo of the email sender
-2. **Sender Name**: Name of the email sender
+1. **Sender's Photo**: Photo of the email sender
+2. **Sender's Name**: Name of the email sender
 3. **Subject Line**: Email subject with preview text
 4. **Timestamp**: When the email was received
 5. **Star Icon**: Indicates starred status
@@ -67,7 +67,7 @@ When viewing an individual email:
 The top-bar menu provides access to:
 
 1. **User Profile**: View your account information
-2. **Dark/Light Mode Toggle**: Switch between display themes
+2. **Dark/Light Mode**: Switch between display themes
 3. **Sign Out**: Log out of your account
 4. **search**: Search in emails
 
@@ -75,7 +75,7 @@ The top-bar menu provides access to:
 
 When selecting multiple emails:
 
-1. **Mark as Read/Unread**: Open envelope icon
+1. **Mark as Read**: Open envelope icon
 2. **Mark as Unread**: Closed envelope icon
 3. **Move to Label**: Fat arrow icon
 4. **Delete**: Trash icon
@@ -95,7 +95,7 @@ When selecting multiple emails:
 
 1. **Mark as Read/Unread**:
    - Select email(s) and tap the envelope icon
-   - Visual indicator (Light-Blue backround) shows unread status
+   - Visual indicator (Soft-Blue background) shows unread status
 
 2. **Star Important Emails**:
    - Tap the star icon

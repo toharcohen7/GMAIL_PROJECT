@@ -10,7 +10,7 @@ This document provides an overview of the key features in the Gmail Project Andr
 - **Email Preview**: Tap on any email to open it and view its complete content
 - **Email Details**: View sender information, subject, content, and timestamp
 - **Email Indicators**:
-  - Bold text indicates unread emails
+  - Soft-Blue background indicates unread emails
   - Star icon indicates starred emails
 - **Automatic Read Marking**: Emails are automatically marked as read when opened
 
@@ -25,7 +25,7 @@ This document provides an overview of the key features in the Gmail Project Andr
 ### Draft Management
 
 - **Accessing Drafts**: Select the "Draft" label from the navigation drawer
-- **Continuing Drafts**: Tap on any draft to resume editing
+- **Continuing Drafts**: Tap on the "complete" button to resume editing
 - **Sending Drafts**: Complete your draft and tap "Send" to deliver it
 - **Empty Drafts**: Drafts with no content will be automatically deleted
 
@@ -51,18 +51,18 @@ This document provides an overview of the key features in the Gmail Project Andr
 2. Enter a name for your new label
 3. Tap "Add" to create the label
 
-### Editing and Deleting Labels
+### Editing Labels
 
-- **Edit Label**:
-  1. Long-press on a custom label in the navigation drawer
-  2. Select "Edit" from the options
-  3. Enter a new name
-  4. Tap "Save"
+1. Tap the floating action button at the bottom left (it will appear only when you are on a user label).
+2. Select "Edit" from the options.
+3. Enter a new name for the label.
+4. Tap "Save" to update the label.
 
-- **Delete Label**:
-  1. Long-press on a custom label in the navigation drawer
-  2. Select "Delete" from the options
-  3. Confirm deletion
+### Deleting Labels
+
+1. Tap the floating action button at the bottom left (it will appear only when you are on a user label).
+2. Select "Delete" from the options.
+3. Confirm deletion when prompted.
 
 ## Bulk Actions
 
@@ -88,7 +88,7 @@ Select multiple emails by long-pressing on one email, then tapping others to per
 
 - **Marking as Spam**: 
   1. Select one or more emails
-  2. Tap the shield with X icon
+  2. Tap the shield icon
   3. URLs in these emails are automatically extracted and blacklisted
 
 - **Removing from Spam**:
@@ -111,6 +111,6 @@ Select multiple emails by long-pressing on one email, then tapping others to per
 
 ### Signing Out
 
-1. Tap the three dots menu in the top-right corner
-2. Select "Sign Out"
-3. You'll be redirected to the sign-in screen
+1. Tap the "Sign Out" button located on the top bar.
+2. Confirm the action if prompted.
+3. You will be logged out and redirected to the Sign In page.
