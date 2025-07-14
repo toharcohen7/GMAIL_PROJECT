@@ -151,47 +151,45 @@ Now that you're familiar with the basics, explore these guides for more details:
 
 ### Screenshots
 
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td width="50%" align="center" style="border:none; background:none;">
+<table style="border-collapse: collapse; border: none; background: white;">
+  <tr style="background: white;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Welcome Page</strong></p>
       <img src="../../images/android_welcome.jpeg" alt="App Welcome Page" style="width: 100%; max-width: 400px; height: auto;">
     </td>
-    <td width="50%" align="center" style="border:none; background:none;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Sign Up Page</strong></p>
       <img src="../../images/android_signup.jpeg" alt="App Sign Up Page" style="width: 100%; max-width: 400px; height: auto;">
     </td>
   </tr>
-  <tr>
-    <td width="50%" align="center" style="border:none; background:none;">
+  <tr style="background: white;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Sign In Page</strong></p>
       <img src="../../images/android_signin.jpeg" alt="App Sign In Page" style="width: 100%; max-width: 400px; height: auto;">
     </td>
-    <td width="50%" align="center" style="border:none; background:none;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Main Inbox Page</strong></p>
       <img src="../../images/android_main_inbox.jpeg" alt="App Main Inbox Page" style="width: 100%; max-width: 400px; height: auto;">
     </td>
   </tr>
-  <tr>
-    <td width="50%" align="center" style="border:none; background:none;">
+  <tr style="background: white;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Dark Mode Example</strong></p>
       <img src="../../images/android_darkmode.jpeg" alt="App Dark Mode Example" style="width: 100%; max-width: 400px; height: auto;">
     </td>
-    <td width="50%" align="center" style="border:none; background:none;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Navigation Drawer</strong></p>
       <img src="../../images/android_sidebar.jpeg" alt="App Navigation Drawer" style="width: 100%; max-width: 400px; height: auto;">
     </td>
   </tr>
-  <tr>
-    <td width="50%" align="center" style="border:none; background:none;">
+  <tr style="background: white;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Top-Bar On Select</strong></p>
       <img src="../../images/android_bulkselect.jpeg" alt="App Top-Bar On Select" style="width: 100%; max-width: 400px; height: auto;">
     </td>
-    <td width="50%" align="center" style="border:none; background:none;">
+    <td width="50%" align="center" style="border: none; padding: 10px;">
       <p><strong>App Draft Page</strong></p>
       <img src="../../images/android_draft.jpeg" alt="App Draft Page" style="width: 100%; max-width: 400px; height: auto;">
     </td>
   </tr>
 </table>
-
-
