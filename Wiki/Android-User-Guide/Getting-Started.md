@@ -151,41 +151,45 @@ Now that you're familiar with the basics, explore these guides for more details:
 
 ### Screenshots
 
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <p><strong>App Welcome Page</strong></p>
+      <img src="../../images/android_welcome.jpeg" alt="App Welcome Page" width="200">
+    </td>
+    <td width="50%" align="center">
+      <p><strong>App Sign Up Page</strong></p>
+      <img src="../../images/android_signup.jpeg" alt="App Sign Up Page" width="200">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <p><strong>App Sign In Page</strong></p>
+      <img src="../../images/android_signin.jpeg" alt="App Sign In Page" width="200">
+    </td>
+    <td width="50%" align="center">
+      <p><strong>App Main Inbox Page</strong></p>
+      <img src="../../images/android_main_inbox.jpeg" alt="App Main Inbox Page" width="200">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <p><strong>App Dark Mode Example</strong></p>
+      <img src="../../images/android_darkmode.jpeg" alt="App Dark Mode Example" width="200">
+    </td>
+    <td width="50%" align="center">
+      <p><strong>App Navigation Drawer</strong></p>
+      <img src="../../images/android_sidebar.jpeg" alt="App Navigation Drawer" width="200">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <p><strong>App Top-Bar On Select</strong></p>
+      <img src="../../images/android_bulkselect.jpeg" alt="App Top-Bar On Select" width="200">
+    </td>
+    <td width="50%" align="center">
+      <!-- Empty cell or another image -->
+    </td>
+  </tr>
+</table>
 
-  <div style="width: 45%; margin-bottom: 20px;">
-    <p><strong>App Welcome Page</strong></p>
-    <img src="../../images/android_welcome.jpeg" alt="App Welcome Page" style="width: 100%; height: auto;">
-  </div>
-
-  <div style="width: 45%; margin-bottom: 20px;">
-    <p><strong>App Sign Up Page</strong></p>
-    <img src="../../images/android_signup.jpeg" alt="App Sign Up Page" style="width: 100%; height: auto;">
-  </div>
-
-  <div style="width: 45%; margin-bottom: 20px;">
-    <p><strong>App Sign In Page</strong></p>
-    <img src="../../images/android_signin.jpeg" alt="App Sign In Page" style="width: 100%; height: auto;">
-  </div>
-
-  <div style="width: 45%; margin-bottom: 20px;">
-    <p><strong>App Main Inbox Page</strong></p>
-    <img src="../../images/android_main_inbox.jpeg" alt="App Main Inbox Page" style="width: 100%; height: auto;">
-  </div>
-
-  <div style="width: 45%; margin-bottom: 20px;">
-    <p><strong>App Dark Mode Example</strong></p>
-    <img src="../../images/android_darkmode.jpeg" alt="App Dark Mode Example" style="width: 100%; height: auto;">
-  </div>
-
-  <div style="width: 45%; margin-bottom: 20px;">
-    <p><strong>App Navigation Drawer</strong></p>
-    <img src="../../images/android_sidebar.jpeg" alt="App Navigation Drawer" style="width: 100%; height: auto;">
-  </div>
-
-  <div style="width: 45%; margin-bottom: 20px;">
-    <p><strong>App Top-Bar On Select</strong></p>
-    <img src="../../images/android_bulkselect.jpeg" alt="App Top-Bar On Select" style="width: 100%; height: auto;">
-  </div>
-
-</div>
