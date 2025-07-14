@@ -48,7 +48,6 @@ public class MailRepository {
                 .build();
 
         String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
-        Log.d("Retrofit", "Base URL = " + baseUrl);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -79,11 +78,6 @@ public class MailRepository {
                         }
 
                         mailDao.insertAll(mails);
-
-                        List<Mail> allMails = mailDao.getAllImmediate();
-                        for (Mail m : allMails) {
-                            Log.d("MAIL_AFTER_INSERT", "mail: " + m.getId() + ", label=" + m.getLabelName());
-                        }
 
                         for (Mail mail : mails) {
                             userRepository.getUserById(mail.getSenderId(), new UserDataCallback() {

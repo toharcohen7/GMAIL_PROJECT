@@ -50,7 +50,6 @@ public class LabelRepository {
                 .build();
 
         String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
-        Log.d("Retrofit", "Base URL = " + baseUrl);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -114,12 +113,10 @@ public class LabelRepository {
         executor.execute(() -> labelDao.insertAll(labels));
     }
     public void editLabel(String labelName, LabelRequest request, MutableLiveData<Boolean> result) {
-        Log.d("LABEL_REPO", "Calling editLabel. NAME: " + labelName + ", New Name: " + request.getName());
 
         api.updateLabel(labelName, request).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                Log.d("LABEL_REPO", "editLabel response code: " + response.code());
 
                 boolean success = response.isSuccessful();
 
@@ -146,12 +143,10 @@ public class LabelRepository {
     }
 
     public void deleteLabel(String labelName, MutableLiveData<Boolean> result) {
-        Log.d("LABEL_REPO", "Calling deleteLabel. NAME: " + labelName);
 
         api.deleteLabel(labelName).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                Log.d("LABEL_REPO", "deleteLabel response code: " + response.code());
 
                 boolean success = response.isSuccessful();
                 if (result != null) {

@@ -41,17 +41,10 @@ public class MailViewModel extends AndroidViewModel {
         SharedPreferences prefs = application.getSharedPreferences("auth", Context.MODE_PRIVATE);
         String userId = prefs.getString("userId", null);
 
-        if (userId == null || userId.isEmpty()) {
-            Log.e("MAIL_VM", " userId is null or empty – this will cause 401 Unauthorized");
-        } else {
-            Log.d("MAIL_VM", "userId loaded: " + userId);
-        }
-
         mailRepository = new MailRepository(userId, application.getApplicationContext());
     }
 
     public void fetchMailsByLabel(String labelName) {
-        Log.d("MAIL_VM", "Fetching mails for label: " + labelName);
         currentLabel = labelName;
         currentOffset = 0;
         isLoading = false;

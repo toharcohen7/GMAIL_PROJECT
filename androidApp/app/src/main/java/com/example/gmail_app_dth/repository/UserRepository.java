@@ -33,7 +33,6 @@ public class UserRepository {
 
     public UserRepository(Context context) {
         String baseUrl = "http://" + BuildConfig.NODE_HOST + ":" + BuildConfig.NODE_PORT + "/api/";
-        Log.d("Retrofit", "Base URL = " + baseUrl);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
