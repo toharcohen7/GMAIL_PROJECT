@@ -149,7 +149,7 @@ Now that you're familiar with the basics, explore these guides for more details:
 - [Features Guide](Features-Guide.md) - Comprehensive feature documentation
 - [Settings Guide](Settings-Guide.md) - Customizing your app experience
 
-### Screenshots
+## Screenshots
 
 <table style="border-collapse: collapse; border: none; background: white;">
   <tr style="background: white;">
