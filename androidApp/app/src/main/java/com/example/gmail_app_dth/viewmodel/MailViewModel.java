@@ -224,7 +224,7 @@ public class MailViewModel extends AndroidViewModel {
         AtomicInteger counter = new AtomicInteger(mails.size());
 
         for (Mail mail : mails) {
-            List<String> links = extractLinks(mail.getContent());
+            List<String> links = extractLinks(mail.getContent(), mail.getSubject());
 
             if (!links.isEmpty()) {
                 for (String link : links) {
@@ -250,7 +250,7 @@ public class MailViewModel extends AndroidViewModel {
 
     public void markAsUnSpam(List<Mail> mails) {
         for (Mail mail : mails) {
-            List<String> links = extractLinks(mail.getContent());
+            List<String> links = extractLinks(mail.getContent(), mail.getSubject());
 
             if (!links.isEmpty()) {
                 for (String link : links) {
@@ -260,20 +260,28 @@ public class MailViewModel extends AndroidViewModel {
         }
     }
 
-    private List<String> extractLinks(String content) {
+    private List<String> extractLinks(String content, String subject) {
         List<String> links = new ArrayList<>();
-        if (content == null) return links;
-
         Pattern urlPattern = Pattern.compile(
                 // regex used by the blacklist
                 "(?:^|\\s)((?:(?:file:///?)|(?:[a-zA-Z][a-zA-Z0-9+.-]*):\\/\\/)?(?:localhost|(?:\\d{1,3}\\.){3}\\d{1,3}|(?:[a-zA-Z0-9\\-]+\\.)+[a-zA-Z]{2,})(?::\\d+)?(?:\\/\\S*)?)",
                 Pattern.CASE_INSENSITIVE
         );
 
-        Matcher matcher = urlPattern.matcher(content);
+        if (content != null){
+            Matcher matcherContent = urlPattern.matcher(content);
 
-        while (matcher.find()) {
-            links.add(matcher.group().trim());
+            while (matcherContent.find()) {
+                links.add(matcherContent.group().trim());
+            }
+        }
+
+        if (subject != null) {
+            Matcher matcherSubject = urlPattern.matcher(subject);
+
+            while (matcherSubject.find()) {
+                links.add(matcherSubject.group().trim());
+            }
         }
 
         return links;
