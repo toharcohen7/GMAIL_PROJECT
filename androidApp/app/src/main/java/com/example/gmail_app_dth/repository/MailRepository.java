@@ -235,6 +235,24 @@ public class MailRepository {
         });
     }
 
+    public void deleteUrlFromBlacklist(String url, Runnable onSuccess, Runnable onError) {
+        api.deleteFromBlacklist(url).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                if (response.isSuccessful()) {
+                    onSuccess.run();
+                } else {
+                    onError.run();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                onError.run();
+            }
+        });
+    }
+
     public void createMail(Consumer<String> onSuccess, Runnable onError) {
         api.createMail().enqueue(new Callback<>() {
             @Override

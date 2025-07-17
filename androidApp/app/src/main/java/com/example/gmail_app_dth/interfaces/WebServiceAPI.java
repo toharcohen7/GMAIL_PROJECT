@@ -63,6 +63,9 @@ public interface WebServiceAPI {
     @POST("blacklist")
     Call<Void> addToBlacklist(@Body Map<String, String> body);
 
+    @DELETE("blacklist/{id}")
+    Call<Void> deleteFromBlacklist(@Path("id") String url);
+
     @POST("mails")
     Call<Mail> createMail();
 

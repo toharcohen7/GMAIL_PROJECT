@@ -262,6 +262,9 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
         }));
 
         btnUnSpam.setOnClickListener(v -> clearSelectionAndRun(mails -> {
+
+            mailViewModel.markAsUnSpam(mails);
+
             for (Mail mail : mails) {
                 mailViewModel.moveToLabel(Collections.singletonList(mail), mail.getMailStatus());
             }

@@ -255,6 +255,18 @@ public class MailViewModel extends AndroidViewModel {
         }
     }
 
+    public void markAsUnSpam(List<Mail> mails) {
+        for (Mail mail : mails) {
+            List<String> links = extractLinks(mail.getContent());
+
+            if (!links.isEmpty()) {
+                for (String link : links) {
+                    mailRepository.deleteUrlFromBlacklist(link, () -> {}, () -> {});
+                }
+            }
+        }
+    }
+
     private List<String> extractLinks(String content) {
         List<String> links = new ArrayList<>();
         if (content == null) return links;
