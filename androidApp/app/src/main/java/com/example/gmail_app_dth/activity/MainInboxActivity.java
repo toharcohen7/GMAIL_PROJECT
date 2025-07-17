@@ -357,16 +357,14 @@ public class MainInboxActivity extends AppCompatActivity implements NavigationVi
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("SEARCH", "Text changed: " + newText);
                 if (newText.isEmpty()) {
-                    Log.d("SEARCH", "Query is empty - loading default mails");
-                    mailViewModel.fetchMailsByLabel("Received");
+                    mailViewModel.fetchMailsByLabel(mailViewModel.getCurrentLabel());
                 } else {
-                    Log.d("SEARCH", "Searching: " + newText);
                     mailViewModel.searchMails(newText);
                 }
                 return true;
             }
+
         });
 
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);

@@ -71,7 +71,7 @@ if (dotenvFile.exists()) {
             val (key, value) = it.split("=", limit = 2)
             key.trim() to value.trim().replace("\"", "")
         }
-    println("✅ Loaded NODE_HOST=${envVars["NODE_HOST"]}, NODE_PORT=${envVars["NODE_PORT"]}")
+    println("Loaded NODE_HOST=${envVars["NODE_HOST"]}, NODE_PORT=${envVars["NODE_PORT"]}")
 
     android {
         defaultConfig {
@@ -80,5 +80,5 @@ if (dotenvFile.exists()) {
         }
     }
 } else {
-    println("⚠️ .env file not found at: ${dotenvFile.absolutePath}")
+    println(".env file not found at: ${dotenvFile.absolutePath}")
 }
