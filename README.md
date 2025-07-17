@@ -55,6 +55,12 @@ Milestone 4 branch:
 GPDTH-323-branch-for-milestone-4
 ```
 
+Milestone 5 branch:
+
+```sh
+GPDTH-351-branch-for-milestone-5
+```
+
 ## Building with Docker
 
 This project is designed to build and run inside Docker containers. It uses GCC, CMake, Python3, Node.js, and npm to build and execute the application components.

@@ -44,5 +44,17 @@ This document outlines the key milestones achieved during the development of the
   - Built a secure and scalable email management system with robust URL filtering.
 
 ---
+## Milestone 5: Android Mobile Application
+
+- **Branch**: `GPDTH-351-branch-for-milestone-5`
+- **Description**:  
+  - Developed a native Android mobile application for the Gmail Project.
+  - Implemented user authentication and account management features.
+  - Created a responsive and intuitive mobile interface for email management.
+  - Added support for core functionality including composing, reading, and organizing emails.
+  - Integrated with the backend server for data synchronization and URL filtering.
+  - Implemented features like dark mode, navigation drawer, and bulk email actions.
+
+---
 
 For more details on each milestone, refer to the respective branch in the repository.

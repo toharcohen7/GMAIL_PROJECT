@@ -68,8 +68,8 @@ This document provides an overview of the key features in the Gmail Project Andr
 
 Select multiple emails by long-pressing on one email, then tapping others to perform:
 
-- **Mark as Read**: Tap open envelope icon
-- **Mark as Unread**: Tap closed envelope icon
+- **Mark as Read**: Tap closed with V envelope icon
+- **Mark as Unread**: Tap closed-open envelope icon
 - **Delete**: Tap trash icon (moves to trash label)
 - **Move**: Tap the move to label button and select destination
 - **Mark as Spam**: Tap the shield icon

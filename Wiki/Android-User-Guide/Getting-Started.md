@@ -72,8 +72,8 @@ The Android app interface is organized into several key areas:
 1. Long-press on an email to enter selection mode
 2. Tap additional emails to select multiple items
 3. Use the action buttons to:
-   - Mark as read (open envelope icon)
-   - Mark as unread (closed envelope icon)
+   - Mark as read (closed with V envelope icon)
+   - Mark as unread (closed-open envelope icon)
    - Delete (trash icon)
    - Move to another label 
    - Mark as spam (shield icon)
